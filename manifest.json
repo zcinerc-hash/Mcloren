@@ -71,15 +71,15 @@
   ],
   "screenshots": [
     {
-      "src": "img/screenshot-dashboard-wide.png",
+      "src": "img/screenshot-dashboard-wide.jpg",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
-      "src": "img/screenshot-dashboard-mobile.png",
+      "src": "img/screenshot-dashboard-mobile.jpg",
       "sizes": "540x720",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ],
   "protocol_handlers": [
@@ -89,3 +89,4 @@
     }
   ]
 }
+

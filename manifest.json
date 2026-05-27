@@ -3,7 +3,7 @@
   "name": "McLaren Capital - Plataforma de Investimentos",
   "short_name": "McLaren",
   "description": "Invista e ganhe com a McLaren Capital - Programa de referência, tarefas diárias e investimentos lucrativos",
-  "start_url": "/auth.html",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -15,25 +15,25 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "img/icon-192.png",
+      "src": "/img/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "img/icon-512.png",
+      "src": "/img/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "img/icon-192-maskable.png",
+      "src": "/img/icon-192-maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "img/icon-512-maskable.png",
+      "src": "/img/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -47,7 +47,7 @@
       "url": "/index.html",
       "icons": [
         {
-          "src": "img/icon-192.png",
+          "src": "/img/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -56,15 +56,16 @@
   ],
   "screenshots": [
     {
-      "src": "img/screenshot-dashboard-wide.jpg",
+      "src": "/img/screenshot-dashboard-wide.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
-      "src": "img/screenshot-dashboard-mobile.jpg",
+      "src": "/img/screenshot-dashboard-mobile.jpg",
       "sizes": "540x720",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "form_factor": "narrow"
     }
   ]
 }

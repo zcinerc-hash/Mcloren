@@ -1,9 +1,7 @@
 // ─── McLaren Service Worker com suporte offline e preload ───
 
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
-
 const CACHE = "mclaren-cache-v1";
-const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "/offline.html";
 
 // ─── Mensagem para ativar imediatamente ───
 self.addEventListener("message", (event) => {
@@ -15,17 +13,31 @@ self.addEventListener("message", (event) => {
 // ─── Instala e adiciona a página offline ao cache ───
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.add(offlineFallbackPage))
+    caches.open(CACHE)
+      .then((cache) => cache.add(offlineFallbackPage))
+      .catch((error) => {
+        console.warn('[SW] Offline page failed to cache:', error);
+      })
   );
+  self.skipWaiting(); // ativação mais rápida
 });
 
 // ─── Ativa e assume controle dos clientes ───
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // habilita navigation preload
-    if (self.registration.navigationPreload) {
+    if (self.registration && self.registration.navigationPreload) {
       await self.registration.navigationPreload.enable();
     }
+    
+    // limpa caches antigos
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames
+        .filter(name => name !== CACHE)
+        .map(name => caches.delete(name))
+    );
+    
     await self.clients.claim();
   })());
 });
@@ -42,7 +54,7 @@ self.addEventListener('fetch', (event) => {
       url.hostname.includes('googleapis.com') ||
       url.hostname.includes('gstatic.com')
     ) {
-      return; // deixa o navegador lidar normalmente
+      return;
     }
 
     event.respondWith((async () => {
@@ -55,9 +67,10 @@ self.addEventListener('fetch', (event) => {
         return await fetch(event.request);
       } catch (error) {
         // fallback offline
+        console.warn('[SW] Fetch failed, showing offline page:', error);
         const cache = await caches.open(CACHE);
         const cachedResp = await cache.match(offlineFallbackPage);
-        return cachedResp;
+        return cachedResp || new Response('Offline', { status: 503 });
       }
     })());
   }

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <title>Offline - McLaren Capital</title>
+
+  <!-- PWA metas -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="McLaren Capital">
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --navy:#1B3A6B;
+      --navy-dark:#0F2347;
+      --navy-light:#2952A3;
+      --white:#FFFFFF;
+      --off-white:#F8F6F3;
+      --black:#0D0D0D;
+      --gray-soft:#6B6B6B;
+      --gray-line:#E0DEDD;
+    }
+    
+    html,body{
+      height:100%;
+      font-family:'DM Sans','Segoe UI',sans-serif;
+      background:var(--off-white);
+      color:var(--black);
+      overflow-x:hidden
+    }
+    
+    .bg-layer{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      background:linear-gradient(160deg,#EBF2FF 0%,#E6ECFF 40%,#F0F6FF 100%);
+      overflow:hidden
+    }
+    
+    .bg-layer::before{
+      content:'';
+      position:absolute;
+      top:-20%;
+      right:-10%;
+      width:600px;
+      height:600px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(27,58,107,0.08) 0%,transparent 70%);
+      animation:pbg 9s ease-in-out infinite alternate
+    }
+    
+    .bg-layer::after{
+      content:'';
+      position:absolute;
+      bottom:-10%;
+      left:-10%;
+      width:400px;
+      height:400px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(27,58,107,0.05) 0%,transparent 70%);
+      animation:pbg 12s ease-in-out infinite alternate-reverse
+    }
+    
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.2)}}
+    
+    .content{
+      position:relative;
+      z-index:1;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px
+    }
+    
+    .container{
+      max-width:420px;
+      width:100%;
+      background:var(--white);
+      padding:40px 28px;
+      border-radius:20px;
+      box-shadow:0 8px 32px rgba(27,58,107,0.12);
+      text-align:center;
+      animation:slideUp .6s ease-out
+    }
+    
+    @keyframes slideUp{
+      from{
+        opacity:0;
+        transform:translateY(20px)
+      }
+      to{
+        opacity:1;
+        transform:translateY(0)
+      }
+    }
+    
+    .offline-icon{
+      width:80px;
+      height:80px;
+      margin:0 auto 24px;
+      background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:40px;
+      animation:float 3s ease-in-out infinite
+    }
+    
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+    
+    h1{
+      font-family:'Cormorant Garamond',serif;
+      font-size:32px;
+      font-weight:700;
+      color:var(--navy);
+      margin-bottom:12px;
+      letter-spacing:0.02em
+    }
+    
+    .status-text{
+      font-size:16px;
+      color:var(--gray-soft);
+      margin-bottom:8px;
+      line-height:1.5
+    }
+    
+    .description{
+      font-size:14px;
+      color:var(--gray-soft);
+      opacity:0.85;
+      margin-bottom:28px;
+      line-height:1.6
+    }
+    
+    .tagline{
+      font-size:12px;
+      color:var(--navy);
+      font-weight:600;
+      opacity:0.7;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      margin-top:16px
+    }
+    
+    .retry-btn{
+      display:inline-block;
+      padding:12px 32px;
+      background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+      color:var(--white);
+      border:none;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s;
+      margin-top:20px;
+      letter-spacing:0.05em
+    }
+    
+    .retry-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(27,58,107,0.3)
+    }
+    
+    .retry-btn:active{
+      transform:translateY(0)
+    }
+    
+    .logo-text{
+      font-family:'Cormorant Garamond',serif;
+      font-size:14px;
+      color:var(--navy-dark);
+      margin-top:24px;
+      opacity:0.6
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer"></div>
+  
+  <div class="content">
+    <div class="container">
+      <div class="offline-icon">📡</div>
+      
+      <h1>McLaren Capital</h1>
+      
+      <p class="status-text">Você está offline no momento.</p>
+      
+      <p class="description">Verifique sua conexão com a internet para continuar usando o aplicativo.</p>
+      
+      <button class="retry-btn" onclick="location.reload()">Tentar Novamente</button>
+      
+      <p class="tagline">Plataforma de Investimentos</p>
+      
+      <div class="logo-text">Invista e ganhe com McLaren Capital</div>
+    </div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ Service Worker registrado'))
+          .catch(err => console.log('❌ Erro:', err));
+      });
+    }
+
+    // Verifica conexão a cada 3 segundos
+    setInterval(() => {
+      fetch('/manifest.json', {method: 'HEAD'})
+        .then(() => {
+          location.reload(); // Reconectou, recarrega
+        })
+        .catch(() => {
+          // Ainda offline
+        });
+    }, 3000);
+  </script>
+</body>
+</html>

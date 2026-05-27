@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Metadados motivacionais -->
+  <meta name="title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital. Uma plataforma de investimento que transforma cada conquista em oportunidade.">
+  <meta name="keywords" content="investimentos, referência, vitória, ganhos, plataforma financeira, Mclaren Capital">
+  <meta name="author" content="McLaren Capital">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Mclaren Capital — Dia de Vitória">
+  <meta property="og:description" content="Ganhe por referência e celebre o seu sucesso. Mclaren Capital, onde cada investimento é um passo rumo à vitória.">
+  <meta property="og:image" content="/favicon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mclaren-capital.onrender.com">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="twitter:description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital.">
+  <meta name="twitter:image" content="/favicon-512x512.png">
+
+  <!-- Ícones e Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <title>McLaren Capital</title>
+    <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;}
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black)}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 50%,#F5F8FF 100%)}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 8s ease infinite alternate}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.15)}}
+    .header{position:sticky;top:0;z-index:100;background:rgba(240,244,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+    .back-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:var(--black);transition:all .25s;flex-shrink:0}
+    .back-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .h-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+    .content{position:relative;z-index:1;padding:24px 20px 60px;max-width:500px;margin:0 auto}
+
+    .hero{text-align:center;margin-bottom:28px;animation:fadeUp .6s ease both}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:8px}
+    .hero-sub{font-size:13px;color:var(--gray-soft);line-height:1.7}
+
+    .support-cards{display:flex;flex-direction:column;gap:14px}
+    .sup-card{background:var(--white);border-radius:18px;padding:22px;border:1px solid var(--gray-line);box-shadow:0 4px 16px rgba(0,0,0,.04);display:flex;align-items:center;gap:16px;cursor:pointer;text-decoration:none;transition:all .3s;animation:fadeUp .6s ease both}
+    .sup-card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 8px 28px rgba(27,58,107,.1)}
+    .sup-icon{width:52px;height:52px;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--white)}
+    .sup-icon svg{width:24px;height:24px}
+    .sup-info{flex:1}
+    .sup-type{font-size:11px;color:var(--gray-soft);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+    .sup-title{font-size:16px;font-weight:600;color:var(--black);margin-bottom:2px}
+    .sup-contact{font-size:13px;color:var(--navy);font-weight:500}
+    .sup-arrow{color:var(--gray-soft)}
+    .sup-arrow svg{width:18px;height:18px}
+
+    .limits-card{background:var(--white);border-radius:18px;padding:22px;border:1px solid var(--gray-line);box-shadow:0 4px 16px rgba(0,0,0,.04);margin-top:20px;animation:fadeUp .6s ease .2s both}
+    .lc-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-soft);margin-bottom:16px}
+    .limit-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-line)}
+    .limit-row:last-child{border-bottom:none}
+    .lr-label{font-size:13px;color:var(--gray-soft)}
+    .lr-val{font-size:13px;font-weight:600;color:var(--black)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="header">
+  <a href="index.html" class="back-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></a>
+  <div class="h-title">Apoio ao Cliente</div>
+</div>
+<div class="content">
+  <div class="hero">
+    <div class="hero-title">Como podemos ajudar?</div>
+    <div class="hero-sub">Escolha o tipo de atendimento e entre em contacto connosco via WhatsApp.</div>
+  </div>
+
+  <div class="support-cards">
+    <a href="https://wa.me/936953643" target="_blank" class="sup-card" style="animation-delay:.05s">
+      <div class="sup-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="sup-info">
+        <div class="sup-type">Atendimento Geral</div>
+        <div class="sup-title">Reclamações &amp; Suporte</div>
+        <div class="sup-contact">+936 953 643</div>
+      </div>
+      <div class="sup-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </a>
+    <a href="https://wa.me/945561341" target="_blank" class="sup-card" style="animation-delay:.1s">
+      <div class="sup-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+      <div class="sup-info">
+        <div class="sup-type">Conta &amp; Acesso</div>
+        <div class="sup-title">Problemas de Conta</div>
+        <div class="sup-contact">+936 953 643</div>
+      </div>
+      <div class="sup-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </a>
+  </div>
+
+  <div class="limits-card">
+    <div class="lc-title">Limites por Transacção</div>
+    <div class="limit-row"><span class="lr-label">Depósito mínimo</span><span class="lr-val">250 MT</span></div>
+    <div class="limit-row"><span class="lr-label">Depósito máximo</span><span class="lr-val">8000 MT</span></div>
+    <div class="limit-row"><span class="lr-label">Levantamento mínimo</span><span class="lr-val">50 MT</span></div>
+    <div class="limit-row"><span class="lr-label">Levantamento máximo/dia</span><span class="lr-val">10.000 MT</span></div>
+    <div class="limit-row"><span class="lr-label">Taxa de levantamento</span><span class="lr-val">15%</span></div>
+    <div class="limit-row"><span class="lr-label">Taxa de depósito</span><span class="lr-val">Gratuito</span></div>
+    <div class="limit-row"><span class="lr-label">Investimentos por conta</span><span class="lr-val">1 activo</span></div>
+    <div class="limit-row"><span class="lr-label">Limite de afiliados</span><span class="lr-val">Ilimitado</span></div>
+  </div>
+</div>
+</body>
+</html>

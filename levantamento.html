@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Metadados motivacionais -->
+  <meta name="title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital. Uma plataforma de investimento que transforma cada conquista em oportunidade.">
+  <meta name="keywords" content="investimentos, referência, vitória, ganhos, plataforma financeira, Mclaren Capital">
+  <meta name="author" content="McLaren Capital">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Mclaren Capital — Dia de Vitória">
+  <meta property="og:description" content="Ganhe por referência e celebre o seu sucesso. Mclaren Capital, onde cada investimento é um passo rumo à vitória.">
+  <meta property="og:image" content="/favicon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mclaren-capital.onrender.com">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="twitter:description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital.">
+  <meta name="twitter:image" content="/favicon-512x512.png">
+
+  <!-- Ícones e Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <title>McLaren Capital</title>
+    <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;}
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black)}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 50%,#F5F8FF 100%)}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 8s ease infinite alternate}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.15)}}
+
+    .header{position:sticky;top:0;z-index:100;background:rgba(240,244,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+    .back-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:var(--black);transition:all .25s;flex-shrink:0}
+    .back-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .h-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+
+    .content{position:relative;z-index:1;padding:20px 20px 40px;max-width:500px;margin:0 auto}
+
+    /* ── MINI BALANCE CARD — igual ao index ── */
+    .balance-card{background:var(--white);border-radius:18px;padding:14px 18px;margin-bottom:16px;border:1px solid var(--gray-line);box-shadow:0 4px 24px rgba(0,0,0,.06);animation:fadeUp .6s ease both;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .bc-left{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+    .bc-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-soft);font-weight:600}
+    .bc-amount-row{display:flex;align-items:baseline;gap:5px}
+    .bc-amount{font-family:'DM Sans',sans-serif;font-size:26px;font-weight:600;color:var(--black);line-height:1;white-space:nowrap;letter-spacing:0}
+    .bc-currency{font-size:13px;font-weight:500;color:var(--gray-soft);letter-spacing:0}
+    .bc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .bc-accent{background:var(--navy);border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;gap:1px}
+    .bc-accent-val{font-size:12px;font-weight:700;color:var(--white);line-height:1;white-space:nowrap}
+    .bc-accent-lbl{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.07em;text-transform:uppercase}
+
+    /* ── TABS (igual ao auth) ── */
+    .tabs{display:flex;gap:4px;background:var(--white);border-radius:16px;padding:5px;margin-bottom:16px;border:1px solid var(--gray-line);box-shadow:0 2px 12px rgba(0,0,0,.04);animation:fadeUp .6s ease .05s both}
+    .tab-btn{flex:1;padding:11px;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .3s;background:transparent;color:var(--gray-soft);letter-spacing:.01em}
+    .tab-btn.active{background:var(--navy);color:var(--white);box-shadow:0 4px 14px rgba(27,58,107,.28)}
+
+    /* ── PANELS ── */
+    .panel{display:none}
+    .panel.visible{display:block;animation:fadeIn .35s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* ── INFO PILLS ── */
+    .info-pills{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .info-pill{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border-radius:10px;font-size:12px;color:var(--gray-soft);border:1px solid var(--gray-line)}
+    .info-pill svg{width:15px;height:15px;color:var(--navy);flex-shrink:0}
+
+    /* ── FORM CARD ── */
+    .card{background:var(--white);border-radius:18px;padding:22px;margin-bottom:14px;border:1px solid var(--gray-line);box-shadow:0 4px 20px rgba(0,0,0,.04)}
+    .card-title{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-soft);margin-bottom:16px}
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-soft);margin-bottom:6px}
+    .input-wrap{position:relative}
+    .input-wrap input{width:100%;padding:13px 48px 13px 14px;border:1.5px solid var(--gray-line);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;background:#FAFAF9;color:var(--black);outline:none;transition:all .25s}
+    .input-wrap input:focus{border-color:var(--navy);background:var(--white);box-shadow:0 0 0 4px rgba(27,58,107,.08)}
+    .input-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gray-soft);font-weight:500}
+
+    .fee-preview{background:var(--off-white);border-radius:12px;padding:13px 15px;margin-bottom:14px;border:1px solid var(--gray-line)}
+    .fp-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+    .fp-row.total{font-weight:600;padding-top:9px;border-top:1px solid var(--gray-line);margin-top:5px}
+    .fp-row span:first-child{color:var(--gray-soft)}
+    .fp-row span.red{color:var(--navy);font-weight:600}
+
+    .btn-main{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(27,58,107,.28)}
+    .btn-main:hover{background:var(--navy-dark);transform:translateY(-1px)}
+    .btn-main:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    /* ── HISTORY ── */
+    .hist-item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--gray-line)}
+    .hist-item:last-child{border-bottom:none}
+    .hist-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .hist-icon.pending{background:rgba(245,158,11,.1);color:#D97706}
+    .hist-icon.approved{background:rgba(22,163,74,.1);color:#16A34A}
+    .hist-icon.rejected{background:rgba(27,58,107,.1);color:var(--navy)}
+    .hist-icon svg{width:17px;height:17px}
+    .hist-info{flex:1}
+    .hist-amount{font-size:14px;font-weight:600}
+    .hist-date{font-size:11px;color:var(--gray-soft);margin-top:1px}
+    .hist-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.05em}
+    .hist-badge.pending{background:rgba(245,158,11,.1);color:#D97706}
+    .hist-badge.approved{background:rgba(22,163,74,.1);color:#16A34A}
+    .hist-badge.rejected{background:rgba(27,58,107,.1);color:var(--navy)}
+    .hist-empty{text-align:center;padding:32px 20px;color:var(--gray-soft);font-size:13px}
+    .hist-empty svg{width:36px;height:36px;margin:0 auto 10px;display:block;opacity:.3}
+
+    /* ── SPINNER ── */
+    .spinner-overlay{position:fixed;inset:0;z-index:1000;background:rgba(248,246,243,.88);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+    .spinner-overlay.show{opacity:1;pointer-events:all}
+    .spinner-ring{width:68px;height:68px}
+    .spinner-ring svg{width:100%;height:100%;animation:spin 1.2s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner-ring svg circle{fill:none;stroke-width:3;stroke-linecap:round}
+    .spinner-ring svg circle.track{stroke:rgba(27,58,107,.15)}
+    .spinner-ring svg circle.arc{stroke:var(--navy);stroke-dasharray:160;stroke-dashoffset:40}
+    .spinner-label{margin-top:18px;font-size:13px;font-weight:500;color:var(--gray-soft)}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(calc(-100% - 30px));opacity:0;visibility:hidden;background:var(--white);border-radius:13px;padding:12px 18px;box-shadow:0 14px 44px rgba(0,0,0,.13);border-left:4px solid var(--navy);display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s ease,visibility 0s linear .4s;max-width:92vw;pointer-events:none}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;pointer-events:all;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s ease,visibility 0s linear 0s}
+    .toast.success{border-left-color:#16A34A}
+    .toast.error{border-left-color:var(--navy)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  </style>
+  
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<div class="spinner-overlay" id="spinner">
+  <div class="spinner-ring"><svg viewBox="0 0 72 72"><circle class="track" cx="36" cy="36" r="30"/><circle class="arc" cx="36" cy="36" r="30"/></svg></div>
+  <p class="spinner-label">A processar...</p>
+</div>
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<div class="header">
+  <a href="index.html" class="back-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></a>
+  <div class="h-title">Levantamento</div>
+</div>
+
+<div class="content">
+
+  <!-- MINI BALANCE CARD — igual ao index -->
+  <div class="balance-card">
+    <div class="bc-left">
+      <div class="bc-label">Saldo Disponível</div>
+      <div class="bc-amount-row">
+        <div class="bc-amount" id="heroBalance">0</div>
+        <div class="bc-currency">MT</div>
+      </div>
+    </div>
+    <div class="bc-right">
+      <div class="bc-accent">
+        <div class="bc-accent-val">15%</div>
+        <div class="bc-accent-lbl">Taxa</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS — lado levantamento | lado histórico -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tabW" onclick="switchTab('withdraw')">Levantar</button>
+    <button class="tab-btn" id="tabH" onclick="switchTab('history')">Histórico</button>
+  </div>
+
+  <!-- PANEL: LEVANTAMENTO -->
+  <div class="panel visible" id="panelWithdraw">
+    <div class="info-pills">
+      <div class="info-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Processamento: 30 min a 24h &middot; Sexta-feira até 72h</div>
+      <div class="info-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>Mínimo 50 MT &middot; Máximo 10.000 MT por dia</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Solicitar Levantamento</div>
+      <div class="field">
+        <label>Valor a Levantar</label>
+        <div class="input-wrap">
+          <input type="number" id="wAmount" placeholder="Mínimo 50" min="50" max="100000" oninput="calcFee(this.value)"/>
+          <span class="input-suffix">MT</span>
+        </div>
+      </div>
+      <div class="fee-preview" id="feePreview" style="display:none">
+        <div class="fp-row"><span>Valor solicitado</span><span id="fpGross">—</span></div>
+        <div class="fp-row"><span>Taxa (15%)</span><span class="red" id="fpFee">—</span></div>
+        <div class="fp-row total"><span>Receberá</span><span id="fpNet">—</span></div>
+      </div>
+      <button class="btn-main" id="wBtn" onclick="doWithdraw()">Solicitar Levantamento</button>
+    </div>
+  </div>
+
+  <!-- PANEL: HISTÓRICO -->
+  <div class="panel" id="panelHistory">
+    <div class="card">
+      <div class="card-title">Histórico de Saques</div>
+      
+      <!-- 📊 ESTATÍSTICAS (como no arquivo de histórico) -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding:12px;background:#f5f5f5;border-radius:8px">
+  <div>
+    <div style="font-size:12px;color:#666">Total Levantado</div>
+    <div id="totalLevantado" style="font-size:18px;font-weight:700;color:#27ae60">0 MT</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#666">Saques</div>
+    <div id="histCount" style="font-size:18px;font-weight:700">0</div>
+  </div>
+</div>
+       
+
+      <div id="histList">
+        <div class="hist-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>
+          Sem levantamentos registados.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    getFirestore, doc, getDoc, updateDoc, increment,
+    addDoc, collection, query, where, orderBy, getDocs, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔑 Configuração do projeto proibidoreplica
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+    authDomain: "proibidoreplica.firebaseapp.com",
+    projectId: "proibidoreplica",
+    storageBucket: "proibidoreplica.firebasestorage.app",
+    messagingSenderId: "794009646952",
+    appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+  };
+
+  // ✅ Inicialização
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  let uid = '', userBalance = 0;
+  let allW_Data = [];
+  let allW_Total = 0;
+
+  function fmt(n){return Number(n).toLocaleString('pt-AO');}
+
+  onAuthStateChanged(auth, async user=>{
+    if(!user){window.location.href='auth.html';return;}
+    uid=user.uid;
+    try {
+      const snap=await getDoc(doc(db,'users',uid));
+      if(!snap.exists()){
+        console.warn('Usuário não encontrado no Firestore');
+        return;
+      }
+      const d=snap.data();
+      userBalance=d.balance||0;
+      document.getElementById('heroBalance').textContent=fmt(userBalance);
+      loadHistory();
+    } catch(e) {
+      console.error('Erro ao autenticar:', e);
+      window.toast('Erro ao carregar dados do usuário', 'error');
+    }
+  });
+
+  window.loadHistory=async function(){
+    try{
+      const list=document.getElementById('histList');
+      let snaps;
+      
+      try {
+        const q=query(
+          collection(db,'withdrawals'),
+          where('uid','==',uid),
+          orderBy('createdAt','desc')
+        );
+        snaps=await getDocs(q);
+      } catch(orderByError) {
+        console.warn('⚠️ OrderBy falhou, tentando sem ordenação...', orderByError.message);
+        const q=query(
+          collection(db,'withdrawals'),
+          where('uid','==',uid)
+        );
+        snaps=await getDocs(q);
+      }
+      
+      if(snaps.empty){
+        list.innerHTML='<div class="hist-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>Sem levantamentos registados.</div>';
+        allW_Data = [];
+        allW_Total = 0;
+        if(document.getElementById('histCount')) {
+          document.getElementById('histCount').textContent = '0';
+        }
+        return;
+      }
+
+      allW_Data = [];
+      list.innerHTML = '';
+      allW_Total = 0;
+
+      const docs = snaps.docs.map(doc => ({...doc.data(), docId: doc.id}));
+      docs.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return dateB - dateA;
+      });
+
+      docs.forEach((w, idx) => {
+        const sm = {pending:'Em análise', approved:'Aprovado', rejected:'Rejeitado'};
+        
+        let dt = '—';
+        if(w.createdAt) {
+          try {
+            const dateObj = w.createdAt.toDate ? w.createdAt.toDate() : new Date(w.createdAt);
+            dt = dateObj.toLocaleDateString('pt-AO');
+          } catch(e) {
+            console.warn('Erro ao converter data:', e);
+            dt = '—';
+          }
+        }
+
+        const amount = w.amount || w.gross || 0;
+        const netAmount = w.netAmount || w.net || 0;
+        const status = w.status || 'pending';
+
+        if(status === 'approved') {
+          allW_Total += netAmount;
+        }
+
+        allW_Data.push(w);
+
+        list.innerHTML += `<div class="hist-item" onclick="showWithdrawDetail(${idx})" style="cursor:pointer">
+          <div class="hist-icon ${status}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+              <path d="M5 20h14"/>
+            </svg>
+          </div>
+          <div class="hist-info">
+            <div class="hist-amount">${fmt(amount)} MT</div>
+            <div class="hist-date">${dt}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+            <span class="hist-badge ${status}">${sm[status]}</span>
+            <div style="font-size:11px;color:var(--text-secondary,#999)">Líquido: ${fmt(netAmount)} MT</div>
+          </div>
+        </div>`;
+      });
+
+if(document.getElementById('histCount')) {
+  document.getElementById('histCount').textContent = allW_Data.length;
+}
+
+// ✅ Atualizar total levantado
+if(document.getElementById('totalLevantado')) {
+  document.getElementById('totalLevantado').textContent = fmt(allW_Total) + ' MT';
+}
+
+console.log('✅ Histórico carregado:', allW_Data.length, 'saques');
+
+    } catch(e){
+      console.error('❌ Erro ao carregar histórico:', e);
+      const list=document.getElementById('histList');
+      if(list) {
+        list.innerHTML = `<div class="hist-empty"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg><p>Erro ao carregar histórico</p><p style="font-size:11px;color:#999">${e.message}</p></div>`;
+      }
+    }
+  };
+
+  // ✅ MODAL: Mostrar detalhes do saque
+  window.showWithdrawDetail = function(idx) {
+    const w = allW_Data[idx];
+    if(!w) return;
+    
+    const amount = w.amount || w.gross || 0;
+    const fee = w.fee || Math.round(amount * 0.15) || 0;
+    const netAmount = w.netAmount || w.net || 0;
+    const status = w.status || 'pending';
+    const sm = {pending:'Em análise', approved:'Aprovado', rejected:'Rejeitado'};
+    
+    let dt = '—';
+    if(w.createdAt) {
+      try { 
+        const dateObj = w.createdAt.toDate ? w.createdAt.toDate() : new Date(w.createdAt);
+        dt = dateObj.toLocaleString('pt-AO'); 
+      }
+      catch(e) { dt = '—'; }
+    }
+
+    // Preencher modal com detalhes
+    document.getElementById('detailStatus').innerHTML = sm[status];
+    document.getElementById('detailStatus').className = 'detail-status ' + status;
+    document.getElementById('detailAmount').textContent = fmt(amount) + ' Kz';
+    document.getElementById('detailFee').textContent = fmt(fee) + ' Kz';
+    document.getElementById('detailNet').textContent = fmt(netAmount) + ' Kz';
+    document.getElementById('detailDate').textContent = dt;
+
+    
+    // Mostrar modal
+    document.getElementById('detailModal').classList.add('open');
+  };
+
+  window.closeDetailModal = function() {
+    document.getElementById('detailModal').classList.remove('open');
+  };
+
+  window.doWithdraw=async function(){
+    const amount=parseInt(document.getElementById('wAmount').value)||0;
+    if(amount<50){window.toast('O valor mínimo de levantamento é 50 MT.','error');return;}
+    if(amount>100000){window.toast('O valor máximo diário é 10.000 Kz.','error');return;}
+    if(amount>userBalance){window.toast('Saldo insuficiente para este levantamento.','error');return;}
+
+    document.getElementById('spinner').classList.add('show');
+    document.getElementById('wBtn').disabled=true;
+
+    try{
+      await addDoc(collection(db,'withdrawals'),{
+        uid, amount,
+        fee: Math.round(amount*0.15),
+        netAmount: Math.round(amount*0.85),
+        status:'pending',
+        createdAt: serverTimestamp()
+      });
+
+      await updateDoc(doc(db,'users',uid),{
+        balance: increment(-amount)
+      });
+
+      userBalance -= amount;
+      document.getElementById('heroBalance').textContent=fmt(userBalance);
+
+      document.getElementById('spinner').classList.remove('show');
+      window.toast('Solicitação enviada! Saldo debitado.','success');
+      document.getElementById('wAmount').value='';
+      document.getElementById('feePreview').style.display='none';
+
+      await loadHistory();
+      
+      setTimeout(() => switchTab('history'), 500);
+
+    }catch(e){
+      document.getElementById('spinner').classList.remove('show');
+      window.toast('Erro ao processar. Tente novamente.','error');
+      console.error('❌ Erro no saque:', e);
+    }
+    document.getElementById('wBtn').disabled=false;
+  };
+</script>
+
+<script>
+  function fmt(n){return Number(n).toLocaleString('pt-AO');}
+
+  function switchTab(tab){
+    document.getElementById('panelWithdraw').classList.toggle('visible', tab==='withdraw');
+    document.getElementById('panelHistory').classList.toggle('visible', tab==='history');
+    document.getElementById('panelWithdraw').classList.toggle('panel', true);
+    document.getElementById('panelHistory').classList.toggle('panel', true);
+    document.getElementById('tabW').classList.toggle('active', tab==='withdraw');
+    document.getElementById('tabH').classList.toggle('active', tab==='history');
+    if(tab==='withdraw'){
+      document.getElementById('panelWithdraw').style.display='block';
+      document.getElementById('panelHistory').style.display='none';
+    } else {
+      document.getElementById('panelWithdraw').style.display='none';
+      document.getElementById('panelHistory').style.display='block';
+      loadHistory();
+    }
+  }
+
+  function calcFee(val){
+    const v=parseInt(val)||0;
+    const fp=document.getElementById('feePreview');
+    if(v>=50){
+      fp.style.display='block';
+      const fee=Math.round(v*0.15);
+      document.getElementById('fpGross').textContent=fmt(v)+' Kz';
+      document.getElementById('fpFee').textContent='-'+fmt(fee)+' Kz';
+      document.getElementById('fpNet').textContent=fmt(v-fee)+' Kz';
+    } else {
+      fp.style.display='none';
+    }
+  }
+
+  let _tt=null;
+  function toast(msg,type){
+    if(_tt)clearTimeout(_tt);
+    const t=document.getElementById('toast'),m=document.getElementById('toastMsg');
+    t.className='toast';m.textContent='';void t.offsetHeight;
+    m.textContent=msg;t.className='toast '+(type||'success')+' show';
+    _tt=setTimeout(()=>{t.classList.remove('show');_tt=setTimeout(()=>{t.className='toast';},450);},3200);
+  }
+  window.toast=toast;
+</script>
+
+<!-- 🎨 MODAL DE DETALHES (OFUSCADO) -->
+<div id="detailModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;justify-content:center;align-items:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)closeDetailModal()">
+  <div style="background:white;border-radius:12px;padding:24px;width:90%;max-width:400px;box-shadow:0 10px 40px rgba(0,0,0,0.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px">Detalhes do Saque</h3>
+      <button onclick="closeDetailModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#999">✕</button>
+    </div>
+    
+    <div style="background:#f5f5f5;padding:16px;border-radius:8px;margin-bottom:20px">
+      <div style="font-size:14px;color:#666;margin-bottom:4px">Estado</div>
+      <div id="detailStatus" style="font-size:16px;font-weight:700">—</div>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <div style="font-size:12px;color:#666;margin-bottom:4px">Valor Solicitado</div>
+        <div id="detailAmount" style="font-size:16px;font-weight:700">—</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#666;margin-bottom:4px">Taxa (15%)</div>
+        <div id="detailFee" style="font-size:16px;font-weight:700;color:#e74c3c">—</div>
+      </div>
+    </div>
+    
+    <div style="background:#f0f0f0;padding:12px;border-radius:8px;margin-bottom:20px">
+      <div style="font-size:12px;color:#666;margin-bottom:4px">Valor Líquido</div>
+      <div id="detailNet" style="font-size:18px;font-weight:700;color:#27ae60">—</div>
+    </div>
+    
+    <div style="border-top:1px solid #eee;padding-top:12px;margin-bottom:20px">
+      <div style="font-size:12px;color:#666;margin-bottom:4px">Data e Hora</div>
+      <div id="detailDate" style="font-size:14px">—</div>
+    </div>
+    
+    <button onclick="closeDetailModal()" style="width:100%;padding:12px;background:#007AFF;color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer">Fechar</button>
+  </div>
+</div>
+
+<style>
+  #detailModal {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  #detailModal.open {
+    display: flex !important;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .detail-status {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+  }
+  
+  .detail-status.pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .detail-status.approved {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .detail-status.rejected {
+    background: #f8d7da;
+    color: #721c24;
+  }
+</style>
+
+</body>
+</html>

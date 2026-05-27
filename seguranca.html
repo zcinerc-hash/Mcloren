@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Magnus Capital — Segurança</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;--green:#16A34A;}
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black)}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 50%,#F5F8FF 100%)}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 8s ease infinite alternate}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.15)}}
+    .header{position:sticky;top:0;z-index:100;background:rgba(240,244,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+    .back-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:var(--black);transition:all .25s;flex-shrink:0}
+    .back-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .h-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+    .content{position:relative;z-index:1;padding:24px 20px 40px;max-width:500px;margin:0 auto}
+
+    .score-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-radius:16px;padding:16px 18px;color:var(--white);margin-bottom:16px;animation:fadeUp .6s ease both;position:relative;overflow:hidden;display:flex;align-items:center;gap:16px}
+    .score-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(27,58,107,.08)}
+    .score-ring{width:70px;height:70px;flex-shrink:0;position:relative}
+    .score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+    .score-ring svg circle{fill:none;stroke-width:7;stroke-linecap:round}
+    .score-ring svg circle.track{stroke:rgba(255,255,255,.1)}
+    .score-ring svg circle.fill{stroke:var(--navy);stroke-dasharray:283;transition:stroke-dashoffset 1s ease}
+    .score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-num span{font-size:20px;font-weight:700;line-height:1;color:#fff}
+    .score-num small{font-size:9px;opacity:.55;letter-spacing:.05em;text-transform:uppercase;color:#fff}
+    .score-info{flex:1;position:relative;z-index:1}
+    .score-title{font-size:15px;font-weight:700;margin-bottom:3px;color:#fff}
+    .score-sub{font-size:11px;opacity:.65;line-height:1.5;color:#fff}
+    .score-level{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.05em;margin-top:7px}
+    .score-level.low{background:rgba(27,58,107,.2);color:#FCA5A5}
+    .score-level.mid{background:rgba(245,158,11,.2);color:#FCD34D}
+    .score-level.high{background:rgba(22,163,74,.2);color:#86EFAC}
+
+    .section-title{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-soft);margin-bottom:12px;margin-top:4px}
+
+    .options-card{background:var(--white);border-radius:18px;overflow:hidden;border:1px solid var(--gray-line);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:16px;animation:fadeUp .6s ease .08s both}
+    .opt-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--gray-line);transition:background .2s;cursor:pointer}
+    .opt-item:last-child{border-bottom:none}
+    .opt-item:hover{background:rgba(27,58,107,.03)}
+    .opt-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .opt-icon svg{width:18px;height:18px}
+    .opt-info{flex:1}
+    .opt-title{font-size:14px;font-weight:600;color:var(--black)}
+    .opt-sub{font-size:11px;color:var(--gray-soft);margin-top:2px}
+    .opt-right{display:flex;align-items:center;gap:8px}
+    .opt-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px}
+    .opt-badge.active{background:rgba(22,163,74,.1);color:var(--green)}
+    .opt-badge.inactive{background:rgba(27,58,107,.08);color:var(--navy)}
+    .opt-badge.info{background:var(--off-white);color:var(--gray-soft)}
+    .toggle{width:44px;height:24px;border-radius:12px;position:relative;cursor:pointer;transition:background .3s;border:none;flex-shrink:0}
+    .toggle.on{background:var(--green)}
+    .toggle.off{background:var(--gray-line)}
+    .toggle-dot{position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:var(--white);transition:left .3s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle.on .toggle-dot{left:23px}
+    .toggle.off .toggle-dot{left:3px}
+    .opt-chevron{color:var(--gray-soft)}
+    .opt-chevron svg{width:16px;height:16px}
+
+    /* 2FA Modal */
+    .modal-overlay{position:fixed;inset:0;z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal-backdrop{position:absolute;inset:0;background:rgba(13,13,13,.5);backdrop-filter:blur(6px)}
+    .modal-box{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-radius:24px 24px 0 0;padding:28px 24px 40px;transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+    .modal-overlay.open .modal-box{transform:translateY(0)}
+    .modal-handle{width:40px;height:4px;background:var(--gray-line);border-radius:2px;margin:0 auto 20px}
+    .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+    .modal-sub{font-size:12px;color:var(--gray-soft);margin-bottom:20px;line-height:1.6}
+    .modal-steps{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+    .modal-step{display:flex;gap:12px;align-items:flex-start}
+    .ms-num{width:26px;height:26px;background:var(--navy);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .ms-text{font-size:13px;line-height:1.6;padding-top:3px}
+    .ms-text strong{color:var(--black)}
+    .btn-modal{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(27,58,107,.25);transition:all .3s}
+    .btn-modal:hover{background:var(--navy-dark)}
+    .btn-modal-sec{width:100%;padding:13px;border:1.5px solid var(--gray-line);border-radius:12px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:var(--gray-soft);margin-top:8px;transition:all .2s}
+    .btn-modal-sec:hover{border-color:var(--navy);color:var(--navy)}
+
+    /* Login history */
+    .hist-card{background:var(--white);border-radius:18px;overflow:hidden;border:1px solid var(--gray-line);box-shadow:0 4px 20px rgba(0,0,0,.04);margin-bottom:16px;animation:fadeUp .6s ease .16s both}
+    .hist-item{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--gray-line)}
+    .hist-item:last-child{border-bottom:none}
+    .hist-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .hist-dot.current{background:var(--green)}
+    .hist-dot.old{background:var(--gray-line)}
+    .hist-info{flex:1}
+    .hist-device{font-size:13px;font-weight:600}
+    .hist-time{font-size:11px;color:var(--gray-soft);margin-top:1px}
+    .hist-location{font-size:11px;color:var(--gray-soft)}
+    .hist-current-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(22,163,74,.1);color:var(--green)}
+
+    .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(calc(-100% - 30px));opacity:0;visibility:hidden;background:var(--white);border-radius:13px;padding:12px 18px;box-shadow:0 14px 44px rgba(0,0,0,.13);border-left:4px solid var(--navy);display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;z-index:9999;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s ease,visibility 0s linear .4s;max-width:92vw;pointer-events:none}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;pointer-events:all;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s ease,visibility 0s linear 0s}
+    .toast.success{border-left-color:#16A34A}
+    .toast.error{border-left-color:var(--navy)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<!-- 2FA Modal -->
+<div class="modal-overlay" id="tfaModal">
+  <div class="modal-backdrop" onclick="closeModal('tfaModal')"></div>
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Autenticação de Dois Fatores</div>
+    <div class="modal-sub">A 2FA adiciona uma camada extra de segurança à sua conta. Para activar, siga os passos abaixo.</div>
+    <div class="modal-steps">
+      <div class="modal-step"><div class="ms-num">1</div><div class="ms-text">Instale a app <strong>Google Authenticator</strong> ou <strong>Authy</strong> no seu telemóvel.</div></div>
+      <div class="modal-step"><div class="ms-num">2</div><div class="ms-text">Digitalize o código QR que aparecerá após confirmar, ou insira o código manualmente.</div></div>
+      <div class="modal-step"><div class="ms-num">3</div><div class="ms-text">Baixe o App no sininho para mais segurança.</div></div>
+      <div class="modal-step"><div class="ms-num">4</div><div class="ms-text">Guarde os <strong>códigos de recuperação</strong> em local seguro para acesso de emergência.</div></div>
+    </div>
+    <button class="btn-modal" onclick="activate2FA()">Activar 2FA</button>
+    <button class="btn-modal-sec" onclick="closeModal('tfaModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- Devices Modal -->
+<div class="modal-overlay" id="devicesModal">
+  <div class="modal-backdrop" onclick="closeModal('devicesModal')"></div>
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Dispositivos Conectados</div>
+    <div class="modal-sub">Estes são os dispositivos que acederam recentemente à sua conta.</div>
+    <div id="devicesList" style="margin-bottom:20px"></div>
+    <button class="btn-modal" onclick="closeModal('devicesModal')">Fechar</button>
+  </div>
+</div>
+
+<div class="header">
+  <a href="index.html" class="back-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></a>
+  <div class="h-title">Central de Segurança</div>
+</div>
+
+<div class="content">
+  <!-- SECURITY SCORE -->
+  <div class="score-card">
+    <div class="score-ring">
+      <svg viewBox="0 0 100 100">
+        <circle class="track" cx="50" cy="50" r="45"/>
+        <circle class="fill" cx="50" cy="50" r="45" id="scoreArc"/>
+      </svg>
+      <div class="score-num"><span id="scoreNum">40</span><small>/ 100</small></div>
+    </div>
+    <div class="score-info">
+      <div class="score-title">Pontuação de Segurança</div>
+      <div class="score-sub" id="scoreDesc">Active mais opções para proteger a sua conta.</div>
+      <div class="score-level low" id="scoreLevelBadge">Segurança Básica</div>
+    </div>
+  </div>
+
+  <!-- PROTECTION -->
+  <div class="section-title">Protecção da Conta</div>
+  <div class="options-card">
+    <div class="opt-item" onclick="openModal('tfaModal')">
+      <div class="opt-icon" style="background:rgba(27,58,107,.08);color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>
+      <div class="opt-info">
+        <div class="opt-title">Autenticação de 2 Fatores</div>
+        <div class="opt-sub">Protecção extra com código de verificação</div>
+      </div>
+      <div class="opt-right">
+        <span class="opt-badge inactive" id="tfa2Badge">Inactivo</span>
+        <button class="toggle off" id="tfaToggle" onclick="event.stopPropagation();toggleOpt('tfa')">
+          <div class="toggle-dot"></div>
+        </button>
+      </div>
+    </div>
+    <div class="opt-item">
+      <div class="opt-icon" style="background:rgba(22,163,74,.08);color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 19a19.5 19.5 0 0 1-6.39-6.39A19.79 19.79 0 0 1 2.1 4.19 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+      <div class="opt-info">
+        <div class="opt-title">Alertas por SMS</div>
+        <div class="opt-sub">Notificação a cada login na conta</div>
+      </div>
+      <div class="opt-right">
+        <span class="opt-badge active" id="smsBadge">Activo</span>
+        <button class="toggle on" id="smsToggle" onclick="event.stopPropagation();toggleOpt('sms')">
+          <div class="toggle-dot"></div>
+        </button>
+      </div>
+    </div>
+    <div class="opt-item">
+      <div class="opt-icon" style="background:rgba(59,130,246,.08);color:#3B82F6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <div class="opt-info">
+        <div class="opt-title">Alertas por Email</div>
+        <div class="opt-sub">Receba um email a cada acesso suspeito</div>
+      </div>
+      <div class="opt-right">
+        <span class="opt-badge inactive" id="emailBadge">Inactivo</span>
+        <button class="toggle off" id="emailToggle" onclick="event.stopPropagation();toggleOpt('email')">
+          <div class="toggle-dot"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="section-title">Actividade &amp; Dispositivos</div>
+  <div class="options-card">
+    <div class="opt-item" onclick="openModal('devicesModal')">
+      <div class="opt-icon" style="background:rgba(245,158,11,.08);color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <div class="opt-info">
+        <div class="opt-title">Dispositivos Conectados</div>
+        <div class="opt-sub" id="devicesSubText">1 dispositivo activo</div>
+      </div>
+      <div class="opt-right opt-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>
+    <div class="opt-item" id="historyBtn">
+      <div class="opt-icon" style="background:rgba(139,92,246,.08);color:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg></div>
+      <div class="opt-info">
+        <div class="opt-title">Histórico de Login</div>
+        <div class="opt-sub">Ver acessos recentes à conta</div>
+      </div>
+      <div class="opt-right opt-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>
+  </div>
+
+  <!-- LOGIN HISTORY -->
+  <div class="section-title">Acessos Recentes</div>
+  <div class="hist-card" id="loginHistCard">
+    <div class="hist-item">
+      <div class="hist-dot current"></div>
+      <div class="hist-info">
+        <div class="hist-device">Este dispositivo</div>
+        <div class="hist-time" id="currentTime">Agora mesmo</div>
+      </div>
+      <span class="hist-current-badge">Actual</span>
+    </div>
+    <div class="hist-item">
+      <div class="hist-dot old"></div>
+      <div class="hist-info">
+        <div class="hist-device">Dispositivo móvel</div>
+        <div class="hist-time">Ontem, 14:32</div>
+        <div class="hist-location">Moçambique, Maputo</div>
+      </div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-dot old"></div>
+      <div class="hist-info">
+        <div class="hist-device">Dispositivo móvel</div>
+        <div class="hist-time">Há 3 dias, 09:15</div>
+        <div class="hist-location">Moçambique, Maputo</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    getFirestore, doc, getDoc, collection, query, where, onSnapshot, updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+    authDomain: "proibidoreplica.firebaseapp.com",
+    projectId: "proibidoreplica",
+    storageBucket: "proibidoreplica.firebasestorage.app",
+    messagingSenderId: "794009646952",
+    appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+  let uid = '';
+
+  function fmt(n){return Number(Math.round(n)).toLocaleString('pt-AO');}
+
+  onAuthStateChanged(auth, async user => {
+    if(!user){window.location.href='auth.html';return;}
+    uid = user.uid;
+    const snap = await getDoc(doc(db,'users',uid));
+    if(!snap.exists())return;
+    const d = snap.data();
+    const sec = d.security || {};
+    if(sec.smsAlerts === false){setToggle('sms', false);}
+    if(sec.tfa === true){setToggle('tfa', true);}
+    if(sec.emailAlerts === true){setToggle('email', true);}
+    updateScore();
+    await updateDoc(doc(db,'users',uid),{'security.lastLogin': new Date().toISOString()});
+  });
+
+  window.toggleOpt = async function(type){
+    const toggle = document.getElementById(type+'Toggle');
+    const isOn = toggle.classList.contains('on');
+    const newVal = !isOn;
+    setToggle(type, newVal);
+    if(type === 'tfa' && newVal){openModal('tfaModal');return;}
+    try{
+      const update = {};
+      if(type === 'sms')update['security.smsAlerts'] = newVal;
+      if(type === 'email')update['security.emailAlerts'] = newVal;
+      if(type === 'tfa')update['security.tfa'] = newVal;
+      if(uid) await updateDoc(doc(db,'users',uid), update);
+      window.toast(newVal?'Opção activada com sucesso!':'Opção desactivada.', newVal?'success':'error');
+    }catch(e){console.error(e);}
+    updateScore();
+  };
+
+  function setToggle(type, on){
+    const t = document.getElementById(type+'Toggle');
+    const b = document.getElementById(type === 'tfa'?'tfa2Badge':(type+'Badge'));
+    if(on){
+      t.classList.remove('off');
+      t.classList.add('on');
+      if(b){b.className='opt-badge active';b.textContent='Activo';}
+    }else{
+      t.classList.remove('on');
+      t.classList.add('off');
+      if(b){b.className='opt-badge inactive';b.textContent='Inactivo';}
+    }
+  }
+
+  function updateScore(){
+    const tfa = document.getElementById('tfaToggle').classList.contains('on');
+    const sms = document.getElementById('smsToggle').classList.contains('on');
+    const email = document.getElementById('emailToggle').classList.contains('on');
+    let score = 40;
+    if(tfa)score += 30;
+    if(sms)score += 20;
+    if(email)score += 10;
+    document.getElementById('scoreNum').textContent = score;
+    const arc = document.getElementById('scoreArc');
+    const circumference = 2*Math.PI*45;
+    arc.style.strokeDashoffset = circumference-(circumference*(score/100));
+    arc.style.stroke = score>=80?'#16A34A':score>=60?'#F59E0B':'#1B3A6B';
+    const lb = document.getElementById('scoreLevelBadge');
+    const desc = document.getElementById('scoreDesc');
+    if(score>=80){
+      lb.className='score-level high';
+      lb.textContent='Segurança Elevada';
+      desc.textContent='A sua conta está muito bem protegida. Excelente!';
+    }else if(score>=60){
+      lb.className='score-level mid';
+      lb.textContent='Segurança Moderada';
+      desc.textContent='Bom progresso! Active mais opções para máxima segurança.';
+    }else{
+      lb.className='score-level low';
+      lb.textContent='Segurança Básica';
+      desc.textContent='Active mais opções de segurança para proteger melhor a sua conta.';
+    }
+  }
+
+  window.activate2FA = function(){
+    setToggle('tfa', true);
+    closeModal('tfaModal');
+    window.toast('Pedido de 2FA enviado. Contacte o suporte para finalizar a activação.','success');
+    updateScore();
+  };
+
+  document.getElementById('devicesModal').querySelector('#devicesList').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(22,163,74,.06);border-radius:12px;border:1px solid rgba(22,163,74,.15)">
+        <div style="width:36px;height:36px;background:rgba(22,163,74,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#16A34A">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">Este dispositivo</div><div style="font-size:11px;color:#6B6B6B;margin-top:1px">Activo agora · Moçambique, Maputo</div></div>
+        <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:rgba(22,163,74,.1);color:#16A34A">Actual</span>
+      </div>
+    </div>`;
+</script>
+<script>
+  function openModal(id){document.getElementById(id).classList.add('open');}
+  function closeModal(id){document.getElementById(id).classList.remove('open');}
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+
+  document.getElementById('currentTime').textContent = new Date().toLocaleString('pt-AO');
+
+  let _tt = null;
+  function toast(msg, type){
+    if(_tt)clearTimeout(_tt);
+    const t = document.getElementById('toast'), m = document.getElementById('toastMsg');
+    t.className = 'toast';
+    m.textContent = '';
+    void t.offsetHeight;
+    m.textContent = msg;
+    t.className = 'toast '+(type||'success')+' show';
+    _tt = setTimeout(()=>{
+      t.classList.remove('show');
+      _tt = setTimeout(()=>{t.className='toast';},450);
+    },3200);
+  }
+  window.toast = toast;
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Metadados motivacionais -->
+  <meta name="title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital. Uma plataforma de investimento que transforma cada conquista em oportunidade.">
+  <meta name="keywords" content="investimentos, referência, vitória, ganhos, plataforma financeira, Mclaren Capital">
+  <meta name="author" content="McLaren Capital">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Mclaren Capital — Dia de Vitória">
+  <meta property="og:description" content="Ganhe por referência e celebre o seu sucesso. Mclaren Capital, onde cada investimento é um passo rumo à vitória.">
+  <meta property="og:image" content="/favicon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mclaren-capital.onrender.com">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="twitter:description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital.">
+  <meta name="twitter:image" content="/favicon-512x512.png">
+
+  <!-- Ícones e Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <title>McLaren Capital</title>
+
+    <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;}
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black)}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 50%,#F5F8FF 100%)}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 8s ease infinite alternate}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.15)}}
+    .header{position:sticky;top:0;z-index:100;background:rgba(240,244,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+    .back-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:var(--black);transition:all .25s;flex-shrink:0}
+    .back-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .h-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+    .content{position:relative;z-index:1;padding:24px 20px 40px;max-width:500px;margin:0 auto}
+
+    /* HERO DICA DO DIA */
+    .dica-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);border-radius:16px;padding:16px 18px;color:var(--white);margin-bottom:16px;animation:fadeUp .6s ease both;position:relative;overflow:hidden}
+    .dica-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.05)}
+    .dh-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+    .dh-badge svg{width:11px;height:11px}
+    .dh-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;line-height:1.3;margin-bottom:8px}
+    .dh-highlight{background:rgba(255,255,255,.13);border-radius:9px;padding:9px 12px;font-size:12px;font-weight:600;margin-bottom:9px;border-left:3px solid rgba(255,255,255,.4)}
+    .dh-sub{font-size:11px;opacity:.75;line-height:1.6}
+    .dh-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,.13)}
+    .dh-dots{display:flex;gap:4px}
+    .dh-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s;cursor:pointer}
+    .dh-dot.active{background:var(--white);width:14px;border-radius:2px}
+    .dh-arrows{display:flex;gap:6px}
+    .dh-arrow{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.13);border:none;color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .dh-arrow:hover{background:rgba(255,255,255,.22)}
+    .dh-arrow svg{width:13px;height:13px}
+
+    /* CATEGORIA TABS */
+    .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px;scrollbar-width:none;animation:fadeUp .6s ease .08s both}
+    .cat-tabs::-webkit-scrollbar{display:none}
+    .cat-tab{padding:7px 14px;border-radius:20px;border:1.5px solid var(--gray-line);background:var(--white);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .25s;color:var(--gray-soft)}
+    .cat-tab.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+
+    /* DICAS LIST */
+    .dicas-list{display:flex;flex-direction:column;gap:12px}
+    .dica-card{background:var(--white);border-radius:16px;padding:18px;border:1px solid var(--gray-line);box-shadow:0 3px 14px rgba(0,0,0,.04);animation:fadeUp .5s ease both;transition:transform .25s,box-shadow .25s;cursor:pointer}
+    .dica-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,58,107,.08);border-color:rgba(27,58,107,.2)}
+    .dc-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .dc-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .dc-icon svg{width:18px;height:18px}
+    .dc-cat{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+    .dc-question{font-size:14px;font-weight:600;color:var(--black);line-height:1.4}
+    .dc-answer{font-size:12px;color:var(--gray-soft);line-height:1.7}
+    .dc-highlight{background:rgba(27,58,107,.06);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:8px 12px;font-size:12px;color:var(--black);font-weight:500;margin-top:10px;line-height:1.6}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="header">
+  <a href="index.html" class="back-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></a>
+  <div class="h-title">Você Sabia?</div>
+</div>
+
+<div class="content">
+  <!-- HERO DICA DO DIA -->
+  <div class="dica-hero" id="dicaHero">
+    <div class="dh-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Dica do Dia</div>
+    <div class="dh-title" id="heroTitle">A carregar...</div>
+    <div class="dh-highlight" id="heroHighlight"></div>
+    <div class="dh-sub" id="heroSub"></div>
+    <div class="dh-nav">
+      <div class="dh-dots" id="heroDots"></div>
+      <div class="dh-arrows">
+        <button class="dh-arrow" onclick="prevHero()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="dh-arrow" onclick="nextHero()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIA TABS -->
+  <div class="cat-tabs" id="catTabs">
+    <div class="cat-tab active" onclick="filterCat('all',this)">Todas</div>
+    <div class="cat-tab" onclick="filterCat('investimento',this)">Investimento</div>
+    <div class="cat-tab" onclick="filterCat('poupanca',this)">Poupança</div>
+    <div class="cat-tab" onclick="filterCat('rendimento',this)">Rendimento</div>
+    <div class="cat-tab" onclick="filterCat('afiliados',this)">Afiliados</div>
+  </div>
+
+  <!-- DICAS LIST -->
+  <div class="dicas-list" id="dicasList"></div>
+</div>
+
+<script>
+  const fmt=n=>Number(Math.round(n)).toLocaleString('pt-AO');
+
+  const heroTips=[
+    {title:'Investir 50.000 MT/mês durante 1 ano',highlight:'Se investir 50.000 MT por mês durante 1 ano, acumulará aproximadamente '+fmt(50000*12+50000*12*0.05*30*6)+' MT.',sub:'Os rendimentos diários de 5% sobre o seu investimento trabalham para si todos os dias, 24 horas por dia.'},
+    {title:'O poder do reinvestimento',highlight:'Reinvestir os seus rendimentos mensalmente pode triplicar o resultado em 5 anos.',sub:'Em vez de levantar todos os ganhos, mantê-los investidos acelera exponencialmente o crescimento do seu capital.'},
+    {title:'Convide 5 amigos e multiplique os ganhos',highlight:'5 afiliados com plano G3 (10.000 MT) geram-lhe 5.000 MT de comissão instantânea.',sub:'O programa de afiliados da McLaren Capital é ilimitado. Cada indicação activa representa 10% do primeiro investimento directamente para si.'},
+    {title:'Consistência é mais importante que valor',highlight:'Investir 10.000 MT/mês durante 24 meses supera investir 200.000 MT uma única vez.',sub:'A regularidade permite acumular rendimentos compostos mês após mês, enquanto um depósito único produz apenas rendimentos lineares.'},
+  ];
+
+  const allDicas=[
+    {cat:'investimento',color:'rgba(27,58,107,.08)',textColor:'var(--navy)',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',question:'Você sabia que investindo 50.000 MT/dia, em 1 ano acumula mais de '+fmt(50000*365*0.05)+' MT em rendimentos?',answer:'Com uma taxa diária de 5%, cada 50.000 MT investidos gera 2.500 MT por dia. Em 365 dias, são mais de 912.500 MT apenas em rendimentos, além do capital inicial.',highlight:'50.000 MT × 5%/dia × 365 dias = '+fmt(50000*0.05*365)+' MT em rendimentos'},
+    {cat:'poupanca',color:'rgba(22,163,74,.08)',textColor:'#16A34A',icon:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',question:'Guardar dinheiro em casa vs investir na McLaren Capital — qual a diferença?',answer:'Guardar 100.000 MT em casa durante 1 ano continua sendo 100.000 MT. Investindo na McLaren Capital ao plano G3, gera 5% por dia, podendo acumular muito mais.',highlight:'100.000 MT guardados = 0 MT de crescimento. 100.000 MT investidos = rendimento diário activo'},
+    {cat:'rendimento',color:'rgba(245,158,11,.08)',textColor:'#D97706',icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',question:'Você sabia que os seus rendimentos são creditados todos os dias à mesma hora?',answer:'A McLaren Capital credita os rendimentos exactamente 24 horas após a activação do seu investimento. Isso significa que sabe exactamente quando o seu dinheiro cresce.',highlight:'Rendimento disponível todos os dias na mesma hora — sem surpresas'},
+    {cat:'afiliados',color:'rgba(139,92,246,.08)',textColor:'#7C3AED',icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>',question:'Com 10 afiliados activos no Plano G5, quanto ganha de comissão?',answer:'O Plano G5 exige 30.000 MT de investimento. Com 10% de comissão sobre esse valor, cada afiliado gera 3.000 MT para si. Com 10 afiliados: 30.000 MT de comissão.',highlight:'10 afiliados × 30.000 MT × 10% = '+fmt(10*30000*0.1)+' MT de comissão total'},
+    {cat:'investimento',color:'rgba(27,58,107,.08)',textColor:'var(--navy)',icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',question:'Qual é o melhor plano para quem está a começar?',answer:'O Plano G1 (4.000 MT) é ideal para iniciantes. Com 5% de rendimento diário, gera 200 MT por dia — suficiente para sentir o crescimento e ganhar confiança antes de escalar.',highlight:'Plano G1: 4.000 MT investidos = 200 MT/dia = 6.000 MT/mês em rendimentos'},
+    {cat:'poupanca',color:'rgba(22,163,74,.08)',textColor:'#16A34A',icon:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',question:'Você sabia que pode levantar os rendimentos e manter o capital a trabalhar?',answer:'Na McLaren Capital, os rendimentos são convertidos separadamente do capital investido. Pode levantar os ganhos diários e manter o investimento original a gerar mais rendimento.',highlight:'Capital principal intacto + levantamento de rendimentos = estratégia equilibrada'},
+    {cat:'rendimento',color:'rgba(245,158,11,.08)',textColor:'#D97706',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',question:'Quanto tempo demora a dobrar o investimento no Plano G3?',answer:'Com 5% de rendimento diário sobre 10.000 MT, gera 500 MT por dia. Para acumular mais 10.000 MT em rendimentos, são necessários 20 dias de investimento activo.',highlight:'10.000 MT ÷ 500 MT/dia = 20 dias para duplicar via rendimentos'},
+    {cat:'afiliados',color:'rgba(139,92,246,.08)',textColor:'#7C3AED',icon:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',question:'Como funciona exactamente o programa de afiliados da McLaren Capital?',answer:'Ao partilhar o seu link de convite, cada pessoa que se regista e faz o primeiro investimento gera para si 10% do valor desse investimento, pago como comissão única.',highlight:'Sem limite de afiliados · Comissão paga pelo primeiro investimento de cada indicado'},
+  ];
+
+  let currentHero=0;
+  let currentCat='all';
+  let heroInterval;
+
+  function renderHero(){
+    const h=heroTips[currentHero];
+    document.getElementById('heroTitle').textContent=h.title;
+    document.getElementById('heroHighlight').textContent=h.highlight;
+    document.getElementById('heroSub').textContent=h.sub;
+    const dots=document.getElementById('heroDots');
+    dots.innerHTML='';
+    heroTips.forEach((_,i)=>{
+      const d=document.createElement('div');
+      d.className='dh-dot'+(i===currentHero?' active':'');
+      d.onclick=()=>{currentHero=i;renderHero();};
+      dots.appendChild(d);
+    });
+  }
+  function nextHero(){currentHero=(currentHero+1)%heroTips.length;renderHero();}
+  function prevHero(){currentHero=(currentHero-1+heroTips.length)%heroTips.length;renderHero();}
+
+  function renderDicas(){
+    const list=document.getElementById('dicasList');
+    list.innerHTML='';
+    const filtered=currentCat==='all'?allDicas:allDicas.filter(d=>d.cat===currentCat);
+    filtered.forEach((d,i)=>{
+      list.innerHTML+=`<div class="dica-card" style="animation-delay:${i*0.06}s">
+        <div class="dc-header">
+          <div class="dc-icon" style="background:${d.color};color:${d.textColor}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${d.icon}</svg></div>
+          <div><div class="dc-cat" style="color:${d.textColor}">${d.cat}</div><div class="dc-question">${d.question}</div></div>
+        </div>
+        <div class="dc-answer">${d.answer}</div>
+        <div class="dc-highlight">${d.highlight}</div>
+      </div>`;
+    });
+  }
+
+  function filterCat(cat,el){
+    currentCat=cat;
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    renderDicas();
+  }
+
+  window.nextHero=nextHero;window.prevHero=prevHero;window.filterCat=filterCat;
+
+  renderHero();
+  renderDicas();
+  heroInterval=setInterval(nextHero,5000);
+</script>
+</body>
+</html>

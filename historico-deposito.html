@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Metadados motivacionais -->
+  <meta name="title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital. Uma plataforma de investimento que transforma cada conquista em oportunidade.">
+  <meta name="keywords" content="investimentos, referência, vitória, ganhos, plataforma financeira, Mclaren Capital">
+  <meta name="author" content="McLaren Capital">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Mclaren Capital — Dia de Vitória">
+  <meta property="og:description" content="Ganhe por referência e celebre o seu sucesso. Mclaren Capital, onde cada investimento é um passo rumo à vitória.">
+  <meta property="og:image" content="/favicon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mclaren-capital.onrender.com">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="twitter:description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital.">
+  <meta name="twitter:image" content="/favicon-512x512.png">
+
+  <!-- Ícones e Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <title>McLaren Capital</title>
+    <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;}
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black)}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 50%,#F5F8FF 100%)}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 8s ease infinite alternate}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.15)}}
+
+    .header{position:sticky;top:0;z-index:100;background:rgba(240,244,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;gap:14px}
+    .back-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;color:var(--black);transition:all .25s;flex-shrink:0}
+    .back-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .h-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700}
+
+    .content{position:relative;z-index:1;padding:20px 20px 40px;max-width:500px;margin:0 auto}
+
+    /* MINI SUMMARY CARD — igual ao index */
+    .summary-card{background:var(--white);border-radius:18px;padding:14px 18px;margin-bottom:16px;border:1px solid var(--gray-line);box-shadow:0 4px 24px rgba(0,0,0,.06);animation:fadeUp .6s ease both;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .sc-left{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+    .sc-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-soft);font-weight:600}
+    .sc-amount-row{display:flex;align-items:baseline;gap:4px}
+    .sc-total{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:600;color:var(--black);line-height:1;white-space:nowrap}
+    .sc-currency{font-size:12px;font-weight:600;color:var(--gray-soft)}
+    .sc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .sc-accent{background:var(--navy);border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;gap:1px}
+    .sc-accent-val{font-size:13px;font-weight:600;color:var(--white);line-height:1;white-space:nowrap}
+    .sc-accent-lbl{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.07em;text-transform:uppercase}
+
+    /* STATS STRIP */
+    .stats-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:16px;animation:fadeUp .6s ease .05s both}
+    .stat-box{background:var(--white);border-radius:13px;padding:13px 14px;border:1px solid var(--gray-line);box-shadow:0 2px 10px rgba(0,0,0,.04);text-align:center}
+    .stat-val{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;color:var(--black)}
+    .stat-lbl{font-size:10px;color:var(--gray-soft);margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
+
+    /* FILTER TABS */
+    .filter-tabs{display:flex;gap:6px;margin-bottom:14px;animation:fadeUp .6s ease .08s both;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+    .filter-tabs::-webkit-scrollbar{display:none}
+    .ftab{padding:7px 14px;border-radius:20px;border:1.5px solid var(--gray-line);background:var(--white);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .25s;color:var(--gray-soft)}
+    .ftab.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+
+    /* LIST CARD */
+    .list-card{background:var(--white);border-radius:18px;overflow:hidden;border:1px solid var(--gray-line);box-shadow:0 4px 20px rgba(0,0,0,.04);animation:fadeUp .6s ease .1s both}
+    .lc-header{padding:16px 18px;border-bottom:1px solid var(--gray-line);display:flex;align-items:center;justify-content:space-between}
+    .lc-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-soft)}
+    .lc-count{font-size:11px;color:var(--gray-soft)}
+
+    /* DEPOSIT ITEM */
+    .dep-item{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--gray-line);animation:fadeUp .4s ease both}
+    .dep-item:last-child{border-bottom:none}
+    .dep-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .dep-icon.pending{background:rgba(245,158,11,.1);color:#D97706}
+    .dep-icon.approved{background:rgba(22,163,74,.1);color:#16A34A}
+    .dep-icon.rejected{background:rgba(27,58,107,.1);color:var(--navy)}
+    .dep-icon svg{width:18px;height:18px}
+    .dep-info{flex:1;min-width:0}
+    .dep-amount{font-size:15px;font-weight:600;color:var(--black)}
+    .dep-account{font-size:11px;color:var(--gray-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .dep-date{font-size:10px;color:var(--gray-soft);margin-top:1px}
+    .dep-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.05em;white-space:nowrap;flex-shrink:0}
+    .dep-badge.pending{background:rgba(245,158,11,.1);color:#D97706}
+    .dep-badge.approved{background:rgba(22,163,74,.1);color:#16A34A}
+    .dep-badge.rejected{background:rgba(27,58,107,.1);color:var(--navy)}
+
+    /* EMPTY */
+    .empty-state{padding:40px 20px;text-align:center}
+    .empty-icon{width:52px;height:52px;background:rgba(27,58,107,.07);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--navy)}
+    .empty-icon svg{width:24px;height:24px}
+    .empty-title{font-size:15px;font-weight:600;margin-bottom:6px}
+    .empty-sub{font-size:12px;color:var(--gray-soft);line-height:1.6}
+
+    /* BTN DEPOSIT */
+    .btn-deposit{display:block;text-align:center;margin-top:16px;padding:14px;background:var(--navy);color:var(--white);border-radius:13px;text-decoration:none;font-size:14px;font-weight:600;box-shadow:0 8px 28px rgba(27,58,107,.28);animation:fadeUp .6s ease .15s both;transition:all .3s}
+    .btn-deposit:hover{background:var(--navy-dark);transform:translateY(-1px)}
+
+    /* PROOF IMAGE MODAL */
+    .proof-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+    .proof-modal.open{opacity:1;pointer-events:all}
+    .proof-modal img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .proof-close{position:absolute;top:20px;right:20px;width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+    .loader{text-align:center;padding:32px;color:var(--gray-soft);font-size:13px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<!-- PROOF IMAGE MODAL -->
+<div class="proof-modal" id="proofModal" onclick="closeProof()">
+  <button class="proof-close" onclick="closeProof()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img id="proofImg" src="" alt="Comprovativo"/>
+</div>
+
+<div class="header">
+  <a href="index.html" class="back-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></a>
+  <div class="h-title">Histórico de Depósitos</div>
+</div>
+
+<div class="content">
+
+  <!-- SUMMARY CARD -->
+  <div class="summary-card">
+    <div class="sc-left">
+      <div class="sc-label">Total Depositado</div>
+      <div class="sc-amount-row">
+        <div class="sc-total" id="totalDeposited">0</div>
+        <div class="sc-currency">MT</div>
+      </div>
+    </div>
+    <div class="sc-right">
+      <div class="sc-accent">
+        <div class="sc-accent-val" id="approvedCount">0</div>
+        <div class="sc-accent-lbl">Aprovados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-box">
+      <div class="stat-val" id="totalCount">0</div>
+      <div class="stat-lbl">Total</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="pendingCount">0</div>
+      <div class="stat-lbl">Pendentes</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="rejectedCount">0</div>
+      <div class="stat-lbl">Rejeitados</div>
+    </div>
+  </div>
+
+  <!-- FILTER TABS -->
+  <div class="filter-tabs">
+    <div class="ftab active" onclick="filter('all',this)">Todos</div>
+    <div class="ftab" onclick="filter('approved',this)">Aprovados</div>
+    <div class="ftab" onclick="filter('pending',this)">Pendentes</div>
+    <div class="ftab" onclick="filter('rejected',this)">Rejeitados</div>
+  </div>
+
+  <!-- LIST -->
+  <div class="list-card">
+    <div class="lc-header">
+      <div class="lc-title">Registos de Depósito</div>
+      <div class="lc-count" id="listCount">—</div>
+    </div>
+    <div id="depList"><div class="loader">A carregar...</div></div>
+  </div>
+
+  <!-- CTA -->
+  <a href="deposito.html" class="btn-deposit">Fazer Novo Depósito</a>
+
+</div>
+
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    getFirestore, collection, query, where, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔑 Configuração do seu projeto Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+    authDomain: "proibidoreplica.firebaseapp.com",
+    projectId: "proibidoreplica",
+    storageBucket: "proibidoreplica.firebasestorage.app",
+    messagingSenderId: "794009646952",
+    appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+  };
+
+  // ✅ Inicialização correta
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const fmt = n => Number(Math.round(n||0)).toLocaleString('pt-AO');
+
+  let allDeposits = [];
+  let currentFilter = 'all';
+
+  onAuthStateChanged(auth,async user=>{
+    if(!user){window.location.href='auth.html';return;}
+
+    try{
+      const q=query(collection(db,'deposits'),where('uid','==',user.uid));
+      const snap=await getDocs(q);
+
+      allDeposits=[];
+      snap.forEach(d=>allDeposits.push({id:d.id,...d.data()}));
+
+      // Sort by date desc client-side
+      allDeposits.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+      updateStats();
+      renderList(allDeposits);
+    }catch(e){
+      document.getElementById('depList').innerHTML=`<div class="loader">Erro: ${e.message}</div>`;
+    }
+  });
+
+  function updateStats(){
+    const approved=allDeposits.filter(d=>d.status==='approved');
+    const pending=allDeposits.filter(d=>d.status==='pending');
+    const rejected=allDeposits.filter(d=>d.status==='rejected');
+    const totalAmt=approved.reduce((s,d)=>s+(d.amount||0),0);
+
+    document.getElementById('totalDeposited').textContent=fmt(totalAmt);
+    document.getElementById('approvedCount').textContent=approved.length;
+    document.getElementById('totalCount').textContent=allDeposits.length;
+    document.getElementById('pendingCount').textContent=pending.length;
+    document.getElementById('rejectedCount').textContent=rejected.length;
+  }
+
+  window.filter=function(status,el){
+    currentFilter=status;
+    document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    const filtered=status==='all'?allDeposits:allDeposits.filter(d=>d.status===status);
+    renderList(filtered);
+  };
+
+  function renderList(list){
+    const el=document.getElementById('depList');
+    document.getElementById('listCount').textContent=list.length+' registo'+(list.length!==1?'s':'');
+
+    if(!list.length){
+      el.innerHTML=`<div class="empty-state">
+        <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="empty-title">Sem depósitos</div>
+        <div class="empty-sub">Não há registos para o filtro seleccionado.</div>
+      </div>`;
+      return;
+    }
+
+    const statusLabel={pending:'Em análise',approved:'Aprovado',rejected:'Rejeitado'};
+    const accountLabel={bfa:'EMOLA · 866 891 230',express:'USDT · TV4JWMtudWnKyffe8DLGVGA83Eo2sotNEH'};
+
+    el.innerHTML='';
+    list.forEach((d,i)=>{
+      const status=d.status||'pending';
+      const dt=d.createdAt?.toDate?.()?.toLocaleString('pt-AO')||'—';
+      const hasProof=d.proofBase64&&d.proofBase64!=='ficheiro_grande';
+      const proofId='proof_'+d.id;
+
+      el.innerHTML+=`<div class="dep-item" style="animation-delay:${i*0.04}s">
+        <div class="dep-icon ${status}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            ${status==='approved'
+              ?'<polyline points="20 6 9 17 4 12"/>'
+              :status==='rejected'
+              ?'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+              :'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'}
+          </svg>
+        </div>
+        <div class="dep-info">
+          <div class="dep-amount">${fmt(d.amount)}MT</div>
+          <div class="dep-account">${accountLabel[d.account]||d.account||'—'}</div>
+          <div class="dep-date">${dt}</div>
+          ${hasProof?`<div style="margin-top:6px"><img src="${d.proofBase64}" style="height:48px;border-radius:7px;cursor:pointer;border:1px solid var(--gray-line);object-fit:cover" onclick="openProof('${proofId}')" title="Ver comprovativo"/></div>`
+          :d.proofBase64==='ficheiro_grande'?`<div style="font-size:10px;color:var(--gray-soft);margin-top:4px">Comprovativo: ficheiro grande</div>`:''}
+        </div>
+        <span class="dep-badge ${status}">${statusLabel[status]}</span>
+      </div>`;
+
+      // Store proof data
+      if(hasProof){
+        window['_proofData_'+d.id]=d.proofBase64;
+      }
+    });
+  }
+
+  window.openProof=function(proofId){
+    const uid=proofId.replace('proof_','');
+    const src=window['_proofData_'+uid];
+    if(!src)return;
+    document.getElementById('proofImg').src=src;
+    document.getElementById('proofModal').classList.add('open');
+  };
+  window.closeProof=function(){
+    document.getElementById('proofModal').classList.remove('open');
+    document.getElementById('proofImg').src='';
+  };
+</script>
+</body>
+</html>

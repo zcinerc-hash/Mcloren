@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Metadados motivacionais -->
+  <meta name="title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital. Uma plataforma de investimento que transforma cada conquista em oportunidade.">
+  <meta name="keywords" content="investimentos, referência, vitória, ganhos, plataforma financeira, Mclaren Capital">
+  <meta name="author" content="McLaren Capital">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Mclaren Capital — Dia de Vitória">
+  <meta property="og:description" content="Ganhe por referência e celebre o seu sucesso. Mclaren Capital, onde cada investimento é um passo rumo à vitória.">
+  <meta property="og:image" content="/favicon-512x512.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mclaren-capital.onrender.com">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mclaren Capital — Dia de Vitória">
+  <meta name="twitter:description" content="Ganhe por referência e conquiste sua vitória financeira com a Mclaren Capital.">
+  <meta name="twitter:image" content="/favicon-512x512.png">
+
+  <!-- Ícones e Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <title>McLaren Capital</title>
+
+   <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#1B3A6B;--navy-dark:#0F2347;--navy-light:#2952A3;--white:#FFFFFF;--off-white:#F8F6F3;--black:#0D0D0D;--gray-soft:#6B6B6B;--gray-line:#E0DEDD;}
+    html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--black);overflow-x:hidden}
+    .bg-layer{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#F0F4FF 0%,#EEF2FB 40%,#F5F8FF 100%);overflow:hidden}
+    .bg-layer::before{content:'';position:absolute;top:-20%;right:-10%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.07) 0%,transparent 70%);animation:pbg 9s ease-in-out infinite alternate}
+    .bg-layer::after{content:'';position:absolute;bottom:-10%;left:-10%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(27,58,107,0.04) 0%,transparent 70%);animation:pbg 12s ease-in-out infinite alternate-reverse}
+    @keyframes pbg{from{transform:scale(1)}to{transform:scale(1.2)}}
+    .header{position:sticky;top:0;z-index:100;background:rgba(248,246,243,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-line);padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
+    .h-logo{display:flex;align-items:center;gap:10px}
+    .h-logo svg{width:28px;height:28px}
+    .h-logo-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+    .h-logo-text span{color:var(--navy)}
+    .h-right{display:flex;align-items:center;gap:10px}
+    .notif-btn{width:36px;height:36px;border:1.5px solid var(--gray-line);border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;color:var(--black)}
+    .notif-btn:hover{border-color:var(--navy);color:var(--navy)}
+    .menu-btn{width:36px;height:36px;border:none;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;color:var(--white);animation:btnPulse 2.5s ease-in-out infinite}
+    .menu-btn:hover{background:var(--navy-dark)}
+    .menu-btn:active{transform:scale(.93)}
+    @keyframes btnPulse{
+      0%,100%{transform:scale(1) rotate(0deg);box-shadow:0 0 0 0 rgba(27,58,107,.5)}
+      10%{transform:scale(1.08) rotate(-4deg)}
+      20%{transform:scale(1.08) rotate(4deg)}
+      30%{transform:scale(1.08) rotate(-3deg)}
+      40%{transform:scale(1) rotate(0deg);box-shadow:0 0 0 8px rgba(27,58,107,0)}
+      100%{box-shadow:0 0 0 0 rgba(27,58,107,0)}
+    }
+    .menu-overlay{position:fixed;inset:0;z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+    .menu-overlay.open{opacity:1;pointer-events:all}
+    .menu-backdrop{position:absolute;inset:0;background:rgba(13,13,13,0.45);backdrop-filter:blur(6px)}
+    .menu-panel{position:absolute;top:0;right:0;width:300px;height:100%;background:var(--white);box-shadow:-20px 0 60px rgba(0,0,0,0.15);transform:translateX(100%);transition:transform .4s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;overflow-y:auto}
+    .menu-overlay.open .menu-panel{transform:translateX(0)}
+    .menu-header{padding:28px 24px 20px;border-bottom:1px solid var(--gray-line);display:flex;align-items:center;justify-content:space-between}
+    .menu-header-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700}
+    .menu-close{width:32px;height:32px;border:1.5px solid var(--gray-line);border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .menu-close:hover{border-color:var(--navy);color:var(--navy)}
+    .menu-user{padding:20px 24px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);color:var(--white)}
+    .menu-user-name{font-size:13px;opacity:.75;margin-bottom:4px;letter-spacing:.04em}
+    .menu-user-id{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;letter-spacing:.08em}
+    .menu-items{padding:16px 0;flex:1}
+    .menu-item{display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--black);border:none;background:transparent;width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500}
+    .menu-item:hover{background:rgba(27,58,107,0.06);color:var(--navy)}
+    .menu-item:hover .mi-icon{color:var(--navy)}
+    .mi-icon{width:20px;height:20px;color:var(--gray-soft);flex-shrink:0;transition:color .2s}
+    .menu-item.danger{color:var(--navy)}
+    .menu-item.danger .mi-icon{color:var(--navy)}
+    .menu-item.danger:hover{background:rgba(27,58,107,0.08)}
+    .menu-divider{height:1px;background:var(--gray-line);margin:8px 24px}
+    .content{position:relative;z-index:1;padding:20px 20px 32px}
+
+    /* ── MINI BALANCE CARD ── */
+    /* Replaces the big red gradient card with a slim white pill */
+    .balance-card{
+      background:var(--white);
+      border-radius:18px;
+      padding:14px 18px;
+      margin-bottom:14px;
+      border:1px solid var(--gray-line);
+      box-shadow:0 4px 24px rgba(0,0,0,0.06);
+      animation:fadeUp .6s ease both;
+      transition:transform .15s ease;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    /* left side: label + amount */
+    .bc-left{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+    .bc-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-soft);font-weight:600}
+    .bc-amount-row{display:flex;align-items:baseline;gap:4px}
+    .bc-amount{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:600;color:var(--black);line-height:1;transition:all .25s;white-space:nowrap;letter-spacing:0}
+    .bc-currency{font-size:12px;font-weight:600;color:var(--gray-soft);letter-spacing:0}
+    /* right side: eye + red accent pill */
+    .bc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .eye-btn{width:34px;height:34px;background:var(--off-white);border:1.5px solid var(--gray-line);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;color:var(--gray-soft)}
+    .eye-btn:hover{border-color:var(--navy);color:var(--navy);background:rgba(27,58,107,0.06)}
+    .eye-btn svg{width:16px;height:16px}
+    .bc-accent{background:var(--navy);border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;gap:1px}
+    .bc-accent-val{font-size:13px;font-weight:600;color:var(--white);line-height:1;transition:all .25s;white-space:nowrap}
+    .bc-accent-lbl{font-size:9px;color:rgba(255,255,255,0.7);letter-spacing:.07em;text-transform:uppercase}
+
+    /* LEVEL */
+    .level-card{background:var(--white);border-radius:16px;padding:16px 18px;margin-bottom:14px;border:1px solid var(--gray-line);animation:fadeUp .7s ease .08s both;box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+    .lc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .lc-title{font-size:10px;font-weight:600;color:var(--gray-soft);letter-spacing:.1em;text-transform:uppercase}
+    .lc-badge{background:var(--navy);color:var(--white);font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px;letter-spacing:.04em}
+    .lc-progress-bg{height:6px;background:var(--off-white);border-radius:99px;overflow:hidden}
+    .lc-progress-fill{height:100%;background:linear-gradient(90deg,var(--navy-dark),var(--navy-light));border-radius:99px;transition:width 1.2s ease;width:0%}
+    .lc-progress-labels{display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--gray-soft)}
+
+    /* TICKER */
+    .ticker-card{background:var(--white);border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid var(--gray-line);animation:fadeUp .7s ease .13s both;box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+    .ticker-tabs{display:flex;border-bottom:1px solid var(--gray-line)}
+    .ticker-tab{flex:1;padding:10px 4px;text-align:center;font-size:10px;font-weight:500;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--gray-soft);transition:all .25s}
+    .ticker-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+    .ticker-body{padding:18px;min-height:84px;position:relative}
+    .ticker-slide{position:absolute;inset:0;padding:18px;opacity:0;transform:translateY(8px);transition:all .45s ease;pointer-events:none}
+    .ticker-slide.active{opacity:1;transform:none;pointer-events:all;position:relative}
+    .ticker-slide .ts-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;margin-bottom:5px}
+    .ticker-slide .ts-desc{font-size:12px;color:var(--gray-soft);line-height:1.6}
+    .ticker-dots{display:flex;justify-content:center;gap:5px;padding:0 18px 12px}
+    .td-dot{width:5px;height:5px;border-radius:50%;background:var(--gray-line);transition:all .3s;cursor:pointer}
+    .td-dot.active{background:var(--navy);width:14px;border-radius:2px}
+
+    /* CHART */
+    .chart-card{background:var(--white);border-radius:16px;padding:16px 18px 10px;margin-bottom:14px;border:1px solid var(--gray-line);box-shadow:0 4px 20px rgba(0,0,0,.04);animation:fadeUp .7s ease .18s both}
+    .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .chart-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-soft)}
+    .chart-meta{display:flex;align-items:baseline;gap:5px}
+    .chart-val{font-size:18px;font-weight:600;color:var(--black)}
+    .chart-change{font-size:11px;color:#16A34A;font-weight:500}
+    .chart-tabs{display:flex;gap:4px;margin-bottom:12px}
+    .chart-tab{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid var(--gray-line);color:var(--gray-soft);background:transparent;transition:all .2s}
+    .chart-tab.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+    .chart-wrap{position:relative;height:120px}
+    canvas#chartCanvas{width:100%;height:100%;display:block}
+    .chart-labels{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px}
+    .chart-label{font-size:9px;color:var(--gray-soft)}
+    .chart-legend{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-line)}
+    .cl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--gray-soft)}
+    .cl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* STATS */
+    .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;animation:fadeUp .7s ease .22s both}
+    .stat-card{background:var(--white);border-radius:13px;padding:15px;border:1px solid var(--gray-line);box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+    .stat-card .sc-label{font-size:10px;color:var(--gray-soft);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+    .stat-card .sc-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--black)}
+    .stat-card .sc-val span{font-size:11px;color:var(--gray-soft);font-family:'DM Sans',sans-serif}
+    .stat-card .sc-change{font-size:11px;color:#16A34A;margin-top:3px;font-weight:500}
+
+    /* WHATSAPP CARD */
+    .wa-card{text-decoration:none;background:var(--white);border-radius:13px;padding:15px;border:1px solid var(--gray-line);box-shadow:0 2px 10px rgba(0,0,0,.04);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;animation:waPulse 2.2s ease-in-out infinite;cursor:pointer}
+    @keyframes waPulse{
+      0%,100%{transform:scale(1)}
+      10%{transform:scale(1.05) rotate(-3deg)}
+      20%{transform:scale(1.05) rotate(3deg)}
+      30%{transform:scale(1.04) rotate(-2deg)}
+      40%{transform:scale(1)}
+    }
+    .wa-icon-box{width:28px;height:28px;background:#25D366;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .wa-icon{width:16px;height:16px;color:#fff}
+    .wa-lbl{font-size:10px;color:var(--gray-soft);letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+    .wa-val{font-size:13px;font-weight:600;color:#25D366}
+
+    /* WELCOME BANNER */
+    .welcome-banner{background:linear-gradient(135deg,#1B3A6B 0%,#2952A3 100%);border-radius:16px;padding:16px 18px;margin-bottom:14px;animation:fadeUp .6s ease both;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;overflow:hidden}
+    .welcome-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .wb-left{position:relative;z-index:1}
+    .wb-greeting{font-size:11px;opacity:.7;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:3px}
+    .wb-name{font-size:17px;font-weight:700;color:#fff;font-family:'Cormorant Garamond',serif}
+    .wb-right{position:relative;z-index:1;text-align:right}
+    .wb-rate{font-size:22px;font-weight:700;color:#fff;line-height:1}
+    .wb-rate-lbl{font-size:9px;opacity:.65;color:#fff;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+
+    /* MARQUEE STRIP */
+    .marquee-wrap{background:#1B3A6B;border-radius:10px;padding:8px 0;margin-bottom:14px;overflow:hidden;animation:fadeUp .6s ease .04s both}
+    .marquee-track{display:flex;gap:0;animation:marquee 22s linear infinite;white-space:nowrap}
+    .marquee-item{display:inline-flex;align-items:center;gap:6px;padding:0 20px;font-size:11px;font-weight:500;color:rgba(255,255,255,.85)}
+    .marquee-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-backdrop" onclick="closeMenu()"></div>
+  <div class="menu-panel">
+    <div class="menu-header">
+      <span class="menu-header-title">Menu</span>
+      <button class="menu-close" onclick="closeMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="menu-user">
+      <div class="menu-user-name">ID da Conta</div>
+      <div class="menu-user-id" id="menuUserId">MC——————</div>
+    </div>
+    <div class="menu-items">
+      <a href="perfil.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Ver Perfil</a>
+      <a href="deposito.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Depósito</a>
+      <a href="levantamento.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Levantamento</a>
+      <a href="planos.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Planos de Investimento</a>
+      <a href="financas.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Finanças</a>
+      <div class="menu-divider"></div>
+      <a href="apoio.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Apoio ao Cliente</a>
+      <a href="convite.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Convite &amp; Afiliados</a>
+      <a href="rendimento.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Histórico de Rendimento</a>
+      <a href="historico-deposito.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Histórico de Depósitos</a>
+      <div class="menu-divider"></div>
+      <a href="simulador.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Simulador de Aposentadoria</a>
+      <a href="dicas.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Você Sabia? — Dicas Diárias</a>
+      <a href="seguranca.html" class="menu-item"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Central de Segurança</a>
+      <div class="menu-divider"></div>
+      <button class="menu-item danger" onclick="doLogout()"><svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sair com Segurança</button>
+    </div>
+  </div>
+</div>
+
+ 
+<!-- HEADER -->
+<div class="header">
+  <div class="h-logo">
+    <svg viewBox="0 0 64 64" fill="none"><polygon points="32,4 60,52 4,52" fill="none" stroke="#1B3A6B" stroke-width="3.5" stroke-linejoin="round"/><line x1="32" y1="16" x2="32" y2="44" stroke="#1B3A6B" stroke-width="2.5" stroke-linecap="round"/><line x1="20" y1="44" x2="44" y2="44" stroke="#1B3A6B" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <div class="h-logo-text">McLaren <span>Capital</span></div>
+  </div>
+  <div class="h-right">
+     <a href="public/downloads/McLaren-Capital.apk" button class="notif-btn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></a>
+    <button class="menu-btn" onclick="openMenu()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.5" fill="white"/><circle cx="12" cy="12" r="1.5" fill="white"/><circle cx="12" cy="19" r="1.5" fill="white"/></svg></button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- WELCOME BANNER -->
+  <div class="welcome-banner">
+    <div class="wb-left">
+      <div class="wb-greeting">Bem-vindo de volta</div>
+      <div class="wb-name" id="wbName">McLaren Capital</div>
+    </div>
+    <div class="wb-right">
+      <div class="wb-rate" id="wbRate">5%</div>
+      <div class="wb-rate-lbl">Rendimento / dia</div>
+    </div>
+  </div>
+
+  <!-- MARQUEE STRIP -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="marquee-dot"></span>G1 · 5% ao dia</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>G2 · 6% ao dia</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Depósitos sem taxa</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Levantamentos em 24h</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>10% comissão por afiliado</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Plataforma regulada</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>G1 · 5% ao dia</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>G2 · 6% ao dia</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Depósitos sem taxa</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Levantamentos em 24h</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>10% comissão por afiliado</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Plataforma regulada</span>
+    </div>
+  </div>
+
+  <!-- MINI BALANCE CARD -->
+  <div class="balance-card" id="balCard">
+    <div class="bc-left">
+      <div class="bc-label">Saldo Disponível</div>
+      <div class="bc-amount-row">
+        <div class="bc-amount" id="balanceMain">0</div>
+        <div class="bc-currency">MT</div>
+      </div>
+    </div>
+    <div class="bc-right">
+      <button class="eye-btn" id="eyeBtn" onclick="toggleBalance()">
+        <svg id="eyeOpen" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+      <div class="bc-accent">
+        <div class="bc-accent-val" id="totalEarned">0 MT</div>
+        <div class="bc-accent-lbl">Rendimentos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEVEL -->
+  <div class="level-card">
+    <div class="lc-header">
+      <div class="lc-title">Nível de Investimento</div>
+      <div class="lc-badge" id="levelBadge">Sem Plano</div>
+    </div>
+    <div class="lc-progress-bg"><div class="lc-progress-fill" id="levelProgress"></div></div>
+    <div class="lc-progress-labels"><span>Iniciante</span><span id="levelNext">Adquira um plano</span></div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-card">
+    <div class="ticker-tabs">
+      <div class="ticker-tab active" onclick="setTicker(0)">Mercado</div>
+      <div class="ticker-tab" onclick="setTicker(1)">Dicas</div>
+      <div class="ticker-tab" onclick="setTicker(2)">Notícias</div>
+      <div class="ticker-tab" onclick="setTicker(3)">Sobre</div>
+    </div>
+    <div class="ticker-body">
+      <div class="ticker-slide active"><div class="ts-title">Mercados em Alta</div><div class="ts-desc">Os mercados angolanos registam crescimento consistente. A McLaren Capital acompanha os melhores activos para maximizar o seu retorno diário.</div></div>
+      <div class="ticker-slide"><div class="ts-title">Diversifique Sempre</div><div class="ts-desc">Invista nos planos disponíveis e garanta rendimentos diários estáveis. Quanto maior o plano, maior o rendimento disponível.</div></div>
+      <div class="ticker-slide"><div class="ts-title">Convide e Ganhe</div><div class="ts-desc">Cada afiliado activo que fizer o primeiro investimento gera-lhe 10% de comissão directa. Partilhe e multiplique os ganhos.</div></div>
+      <div class="ticker-slide"><div class="ts-title">McLaren Capital</div><div class="ts-desc">Plataforma segura e regulada, dedicada a investidores em Mocambique. Depósitos sem taxa, levantamentos rápidos e suporte 24h.</div></div>
+    </div>
+    <div class="ticker-dots">
+      <div class="td-dot active" onclick="setTicker(0)"></div>
+      <div class="td-dot" onclick="setTicker(1)"></div>
+      <div class="td-dot" onclick="setTicker(2)"></div>
+      <div class="td-dot" onclick="setTicker(3)"></div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">Rendimento Estimado</div>
+      <div class="chart-meta">
+        <div class="chart-val" id="chartTotal">0 MT</div>
+        <div class="chart-change" id="chartChange">+5%/dia</div>
+      </div>
+    </div>
+    <div class="chart-tabs">
+      <div class="chart-tab active" onclick="setChartPeriod(7,this)">7D</div>
+      <div class="chart-tab" onclick="setChartPeriod(15,this)">15D</div>
+      <div class="chart-tab" onclick="setChartPeriod(30,this)">30D</div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chartCanvas"></canvas>
+    </div>
+    <div class="chart-labels" id="chartLabels"></div>
+    <div class="chart-legend">
+      <div class="cl-item"><div class="cl-dot" style="background:var(--navy)"></div>Rendimento diário</div>
+      <div class="cl-item"><div class="cl-dot" style="background:rgba(27,58,107,.15)"></div>Acumulado</div>
+    </div>
+  </div>
+
+
+<!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="sc-label">Próximo Rendimento</div><div class="sc-val" id="nextEarning">— <span>MT</span></div><div class="sc-change">Diário</div></div>
+    <a href="https://chat.whatsapp.com/GOpEnVysOlDLSOFNRSNezW?mode=gi_t" target="_blank" class="wa-card">
+      <div class="wa-icon-box">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.117 1.527 5.845L.057 23.882l6.19-1.623A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.369l-.36-.214-3.724.976.994-3.634-.235-.374A9.818 9.818 0 1 1 12 21.818z"/></svg>
+      </div>
+      <div class="wa-lbl">WhatsApp</div>
+      <div class="wa-val">Entrar</div>
+    </a>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"; // ← ADICIONADO signOut
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+    authDomain: "proibidoreplica.firebaseapp.com",
+    projectId: "proibidoreplica",
+    storageBucket: "proibidoreplica.firebasestorage.app",
+    messagingSenderId: "794009646952",
+    appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const planRates={G1:{min:250,rate:9},G2:{min:500,rate:9},G3:{min:1000,rate:9},G4:{min:1500,rate:9},G5:{min:2000,rate:9},G6:{min:3000,rate:10},G7:{min:4000,rate:10},G8:{min:5000,rate:10},G9:{min:6000,rate:10},G10:{min:8000,rate:11}};
+  let _b=0,_i=0,_e=0,_r=0;
+  function fmt(n){return Number(n).toLocaleString('pt-AO');}
+  onAuthStateChanged(auth,async user=>{
+    if(!user){window.location.href='auth.html';return;}
+    const snap=await getDoc(doc(db,'users',user.uid));
+    if(!snap.exists())return;
+    const d=snap.data();
+    _b=d.balance||0;_i=d.investedAmount||0;_e=d.totalEarned||0;_r=d.referralCount||0;
+    document.getElementById('menuUserId').textContent=d.accountId||'—';
+    const wbName=document.getElementById('wbName');if(wbName)wbName.textContent=d.fullName||d.accountId||'Magnus Capital';
+    applyDisplay(); // visible=false by default, so shows •••
+    const lvl=d.level||'G0';
+    document.getElementById('levelBadge').textContent=lvl==='G0'?'Sem Plano':lvl;
+    if(lvl!=='G0'&&planRates[lvl]){
+      document.getElementById('levelProgress').style.width=((Object.keys(planRates).indexOf(lvl)+1)/10*100)+'%';
+      const daily=Math.round(_i*(planRates[lvl].rate/100));
+      document.getElementById('nextEarning').innerHTML=fmt(daily)+' <span>MT</span>';
+      document.getElementById('levelNext').textContent='Nível '+lvl;
+      window._dailyEarning=daily;
+      const wbR=document.getElementById('wbRate');if(wbR)wbR.textContent=planRates[lvl].rate+'%';
+      document.getElementById('chartChange').textContent='+'+planRates[lvl].rate+'%/dia';
+      document.getElementById('chartTotal').textContent=fmt(daily*7)+' MT';
+      if(window.drawChart)window.drawChart(7);
+    }
+  });
+
+  let visible=false; // oculto por defeito
+  function applyDisplay(){
+    document.getElementById('balanceMain').textContent=visible?fmt(_b):'••••••';
+    document.getElementById('totalEarned').textContent=visible?fmt(_e)+' MT':'••••';
+  }
+  window.toggleBalance=function(){
+    visible=!visible;
+    document.getElementById('eyeOpen').style.display=visible?'block':'none';
+    document.getElementById('eyeClosed').style.display=visible?'none':'block';
+    applyDisplay();
+    const c=document.getElementById('balCard');
+    c.style.transform='scale(0.985)';setTimeout(()=>{c.style.transform='';},140);
+  };
+  window.doLogout=async function(){await signOut(auth);window.location.href='auth.html';};
+</script>
+<script>
+  function openMenu(){document.getElementById('menuOverlay').classList.add('open');}
+  function closeMenu(){document.getElementById('menuOverlay').classList.remove('open');}
+  let cur=0;
+  const slides=document.querySelectorAll('.ticker-slide');
+  const dots=document.querySelectorAll('.td-dot');
+  const tabs=document.querySelectorAll('.ticker-tab');
+  function setTicker(i){
+    slides[cur].classList.remove('active');dots[cur].classList.remove('active');tabs[cur].classList.remove('active');
+    cur=i;
+    slides[i].classList.add('active');dots[i].classList.add('active');tabs[i].classList.add('active');
+  }
+  window.setTicker=setTicker;
+  setInterval(()=>setTicker((cur+1)%4),3500);
+</script>
+<script>
+  // ── CHART ──
+  function drawChart(days){
+    window._chartDays=days;
+    const daily=window._dailyEarning||0;
+    const canvas=document.getElementById('chartCanvas');
+    const wrap=canvas.parentElement;
+    
+    // Ajusta o canvas para não sair da div e ser responsivo
+    const rect=wrap.getBoundingClientRect();
+    const dpr=window.devicePixelRatio||1;
+    
+    canvas.width=rect.width*dpr;
+    canvas.height=rect.height*dpr;
+    canvas.style.width=rect.width+'px';
+    canvas.style.height=rect.height+'px';
+    
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+    
+    const W=rect.width,H=rect.height;
+    ctx.clearRect(0,0,W,H);
+
+    // Generate data points — cumulative earnings per day
+    const pts=[];
+    for(let i=0;i<days;i++){pts.push(daily*(i+1));}
+    const max=Math.max(...pts,1);
+    const padL=10,padR=10,padT=16,padB=10;
+    const cW=W-padL-padR,cH=H-padT-padB;
+
+    const x=i=>padL+(i/(days-1))*cW;
+    const y=v=>padT+cH-(v/max)*cH;
+
+    // Gradient fill
+    const grad=ctx.createLinearGradient(0,padT,0,padT+cH);
+    grad.addColorStop(0,'rgba(27,58,107,0.18)');
+    grad.addColorStop(1,'rgba(27,58,107,0)');
+    ctx.beginPath();
+    ctx.moveTo(x(0),y(pts[0]));
+    for(let i=1;i<days;i++){
+      const cpx=(x(i-1)+x(i))/2;
+      ctx.bezierCurveTo(cpx,y(pts[i-1]),cpx,y(pts[i]),x(i),y(pts[i]));
+    }
+    ctx.lineTo(x(days-1),padT+cH);
+    ctx.lineTo(x(0),padT+cH);
+    ctx.closePath();
+    ctx.fillStyle=grad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(x(0),y(pts[0]));
+    for(let i=1;i<days;i++){
+      const cpx=(x(i-1)+x(i))/2;
+      ctx.bezierCurveTo(cpx,y(pts[i-1]),cpx,y(pts[i]),x(i),y(pts[i]));
+    }
+    ctx.strokeStyle='#1B3A6B';
+    ctx.lineWidth=3;
+    ctx.lineJoin='round';
+    ctx.stroke();
+
+    // Dots at each point
+    pts.forEach((v,i)=>{
+      ctx.beginPath();
+      ctx.arc(x(i),y(v),days>15?3:4,0,Math.PI*2);
+      ctx.fillStyle='#1B3A6B';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x(i),y(v),days>15?1.5:2.5,0,Math.PI*2);
+      ctx.fillStyle='#fff';
+      ctx.fill();
+    });
+
+    // Labels
+    const labelsEl=document.getElementById('chartLabels');
+    const fmt=n=>Number(n).toLocaleString('pt-AO');
+    const step=days<=7?1:days<=15?3:7;
+    let html='';
+    for(let i=0;i<days;i+=step){
+      html+=`<span class="chart-label">D${i+1}</span>`;
+    }
+    labelsEl.innerHTML=html;
+
+    // Update total
+    const total=pts[pts.length-1];
+    document.getElementById('chartTotal').textContent=fmt(total)+' MT';
+  }
+
+  window.drawChart=drawChart;
+  window.setChartPeriod=function(days,el){
+    document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    drawChart(days);
+  };
+
+  // Initial empty chart on load + redraw on resize
+  window.addEventListener('load',()=>{
+    setTimeout(()=>{if(!window._dailyEarning)drawChart(7);},400);
+  });
+  
+  // Redraw chart quando a janela redimensiona (responsivo para celular)
+  window.addEventListener('resize',()=>{
+    if(window._chartDays){
+      drawChart(window._chartDays);
+    }
+  });
+</script>
+
+
+<!-- 
+<!-- 
+    WIDGET SMS CHAT - Copie este código e cole em qualquer página HTML
+    O chat vai aparecer como um botão flutuante no canto inferior direito
+    Clique para abrir/fechar
+-->
+
+<style>
+    /* WIDGET SMS CHAT - Estilos Flutuantes */
+    .sms-chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .sms-chat-button {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1B3A6B 0%, #1B3A6B 100%);
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(27, 58, 107, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 10001;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .sms-chat-button img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .sms-chat-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(27, 58, 107, 0.6);
+    }
+
+    .sms-chat-button.hidden {
+        display: none;
+    }
+
+    /* Overlay de fundo */
+    .sms-chat-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .sms-chat-overlay.active {
+        display: block;
+    }
+
+    /* Container do Chat - Modal em celular */
+    .sms-chat-container {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        background: #fff;
+        border-radius: 0;
+        box-shadow: none;
+        display: none;
+        flex-direction: column;
+        z-index: 10000;
+        animation: slideUp 0.3s ease-out;
+        touch-action: pan-y;
+    }
+
+    .sms-chat-container.active {
+        display: flex;
+    }
+
+    .sms-drag-handle {
+        width: 40px;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+        margin: 8px auto;
+        cursor: grab;
+    }
+
+    .sms-drag-handle:active {
+        cursor: grabbing;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .sms-chat-header {
+        background: linear-gradient(135deg, #1B3A6B 0%, #1B3A6B 100%);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .sms-logo-box {
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 18px;
+        color: #1B3A6B;
+    }
+
+    .sms-header-info {
+        flex: 1;
+    }
+
+    .sms-header-title {
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #fff;
+    }
+
+    .sms-online-dot {
+        width: 8px;
+        height: 8px;
+        background: #00ff00;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .sms-header-subtitle {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-top: 2px;
+        color: #fff;
+    }
+
+    .sms-close-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+
+    .sms-close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .sms-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: #f8f9fa;
+    }
+
+    .sms-chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sms-chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sms-chat-messages::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+
+    .sms-welcome-section {
+        text-align: center;
+        padding: 40px 20px;
+        margin: auto;
+    }
+
+    .sms-welcome-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .sms-welcome-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1B3A6B;
+        margin-bottom: 8px;
+    }
+
+    .sms-welcome-subtitle {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .sms-faq-section {
+        margin-top: 20px;
+    }
+
+    .sms-faq-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1B3A6B;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .sms-message-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .sms-message {
+        display: flex;
+        gap: 8px;
+        position: relative;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .sms-message.user {
+        justify-content: flex-end;
+    }
+
+    .sms-message.admin {
+        justify-content: flex-start;
+    }
+
+    .sms-message-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 85%;
+    }
+
+    .sms-message.user .sms-message-wrapper {
+        align-items: flex-end;
+    }
+
+    .sms-message-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #1B3A6B;
+        margin-bottom: 4px;
+        padding: 0 4px;
+    }
+
+    .sms-message.admin .sms-message-label {
+        color: #333;
+    }
+
+    .sms-message-content {
+        padding: 12px 14px;
+        border-radius: 12px;
+        word-wrap: break-word;
+        font-size: 14px;
+        line-height: 1.4;
+        position: relative;
+        max-width: 100%;
+    }
+
+    .sms-message.user .sms-message-content {
+        background: #1B3A6B;
+        color: #fff;
+        border-radius: 12px 0 12px 12px;
+        font-weight: 500;
+    }
+
+    .sms-message.admin .sms-message-content {
+        background: #000;
+        color: #fff;
+        border-radius: 0 12px 12px 12px;
+        font-weight: 500;
+    }
+
+    .sms-message-time {
+        font-size: 10px;
+        color: #999;
+        margin-top: 4px;
+        padding: 0 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .sms-status-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-weight: 600;
+        background: #1B3A6B;
+        color: #fff;
+    }
+
+    .sms-message-image {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-bottom: 4px;
+    }
+
+    .sms-message-image:hover {
+        transform: scale(1.05);
+    }
+
+    .sms-image-modal {
+        display: none;
+        position: fixed;
+        z-index: 10002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .sms-image-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sms-image-modal-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+    }
+
+    .sms-image-modal-content img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 8px;
+    }
+
+    .sms-image-modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: #fff;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+
+    .sms-chat-input-area {
+        padding: 12px;
+        border-top: 1px solid #e0e0e0;
+        background: #fff;
+        flex-shrink: 0;
+    }
+
+    .sms-input-wrapper {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+    }
+
+    .sms-message-input {
+        flex: 1;
+        padding: 10px 12px;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        color: #333;
+        font-size: 14px;
+        font-family: inherit;
+        resize: none;
+        max-height: 100px;
+    }
+
+    .sms-message-input:focus {
+        outline: none;
+        border-color: #1B3A6B;
+        background: #fff;
+    }
+
+    .sms-message-input::placeholder {
+        color: #999;
+    }
+
+    .sms-input-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .sms-action-btn {
+        width: 36px;
+        height: 36px;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.2s;
+        display: none;
+    }
+
+    .sms-action-btn:hover {
+        background: #e0e0e0;
+        border-color: #1B3A6B;
+        color: #1B3A6B;
+    }
+
+    .sms-send-btn {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #1B3A6B 0%, #0F5C7D 100%);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+
+    .sms-send-btn:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(27, 58, 107, 0.3);
+    }
+
+    .sms-send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .sms-toast-notification {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        background: #1B3A6B;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10001;
+        animation: toastSlide 0.3s ease-out;
+    }
+
+    @keyframes toastSlide {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .sms-faq-questions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .sms-faq-button {
+        background: rgba(27, 58, 107, 0.1);
+        border: 1px solid #1B3A6B;
+        color: #1B3A6B;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s;
+        text-align: left;
+        line-height: 1.3;
+    }
+
+    .sms-faq-button:hover {
+        background: #1B3A6B;
+        color: #fff;
+        transform: translateX(4px);
+    }
+
+    .sms-response-notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #1B3A6B 0%, #0F5C7D 100%);
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 10001;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translate(-50%, -100px);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .sms-chat-container {
+            width: 100%;
+            height: auto;
+            max-height: 85vh;
+            bottom: auto;
+            right: 0;
+            left: 0;
+            border-radius: 16px 16px 0 0;
+            margin: 0;
+            position: fixed;
+            bottom: 0;
+        }
+
+        .sms-message-wrapper {
+            max-width: 90%;
+        }
+
+        .sms-chat-button {
+            width: 50px;
+            height: 50px;
+        }
+
+        .sms-close-btn {
+            display: flex;
+        }
+    }
+</style>
+
+<!-- HTML do Widget -->
+<div class="sms-chat-widget" id="smsChatWidget">
+    <!-- Overlay -->
+    <div class="sms-chat-overlay" id="smsChatOverlay"></div>
+
+    <!-- Botão Flutuante -->
+    <button class="sms-chat-button" id="smsChatButton" onclick="window.toggleSmsChat()">
+        <img src="suporte.png" alt="Chat" class="sms-button-icon">
+    </button>
+
+    <!-- Container do Chat -->
+    <div class="sms-chat-container" id="smsChatContainer">
+        <div class="sms-drag-handle" id="smsDragHandle"></div>
+
+        <div class="sms-chat-header">
+            <div class="sms-logo-box">SP</div>
+            <div class="sms-header-info">
+                <div class="sms-header-title">
+                    <span>Suporte SMS</span>
+                    <div class="sms-online-dot"></div>
+                </div>
+                <div class="sms-header-subtitle">Atendimento online 24/7</div>
+            </div>
+            <button class="sms-close-btn" onclick="window.closeSmsChat()">✕</button>
+        </div>
+
+        <div class="sms-chat-messages" id="smsChatMessages">
+            <div class="sms-welcome-section" id="smsWelcomeSection">
+                <div class="sms-welcome-icon">💬</div>
+                <div class="sms-welcome-text">Olá! Como posso ajudá-lo?</div>
+                <div class="sms-welcome-subtitle">Faça uma pergunta ou escolha um dos tópicos abaixo</div>
+                
+                <div class="sms-faq-section">
+                    <div class="sms-faq-title">Perguntas Frequentes</div>
+                    <div class="sms-faq-questions">
+                        <button class="sms-faq-button" onclick="window.sendSmsFAQ('Como funciona o sistema de verificação?')">
+                            ❓ Como funciona a verificação?
+                        </button>
+                        <button class="sms-faq-button" onclick="window.sendSmsFAQ('Qual é o tempo de resposta do suporte?')">
+                            ⏱️ Tempo de resposta?
+                        </button>
+                        <button class="sms-faq-button" onclick="window.sendSmsFAQ('Como faço para recuperar minha conta?')">
+                            🔐 Recuperar minha conta?
+                        </button>
+                        <button class="sms-faq-button" onclick="window.sendSmsFAQ('Qual é o mínimo de investimento?')">
+                            💰 Mínimo de investimento?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sms-chat-input-area">
+            <div class="sms-input-wrapper">
+                <textarea class="sms-message-input" id="smsMessageInput" placeholder="Digite aqui oque queres entender..." rows="1"></textarea>
+                
+                <div class="sms-input-actions">
+                    <button class="sms-action-btn" id="smsImageBtn" title="Enviar imagem">🖼️</button>
+                    <button class="sms-action-btn" id="smsAudioBtn" title="Gravar áudio">🎤</button>
+                </div>
+
+                <button class="sms-send-btn" onclick="window.sendSmsMessage()" id="smsSendBtn">➤</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Imagem -->
+<div class="sms-image-modal" id="smsImageModal">
+    <div class="sms-image-modal-content">
+        <button class="sms-image-modal-close" onclick="window.closeSmsImageModal()">&times;</button>
+        <img id="smsModalImage" src="" alt="Imagem em fullscreen">
+    </div>
+</div>
+
+<!-- Inputs de Arquivo -->
+<input type="file" id="smsImageInput" accept="image/*" style="display: none;">
+<input type="file" id="smsAudioInput" accept="audio/*" style="display: none;">
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, addDoc, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+        authDomain: "proibidoreplica.firebaseapp.com",
+        projectId: "proibidoreplica",
+        storageBucket: "proibidoreplica.firebasestorage.app",
+        messagingSenderId: "794009646952",
+        appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    let currentUid = '';
+    let unsubscribe = null;
+    let messageResponseCounts = {};
+    let displayedMessages = new Set();
+    let touchStartY = 0;
+    let currentTranslate = 0;
+
+    function showSmsToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'sms-toast-notification';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'toastSlide 0.3s ease-out reverse';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    function showSmsResponseNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'sms-response-notification';
+        notification.textContent = '✓ Nova mensagem do administrador!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideDown 0.3s ease-out reverse';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    window.toggleSmsChat = function() {
+        const container = document.getElementById('smsChatContainer');
+        const button = document.getElementById('smsChatButton');
+        const overlay = document.getElementById('smsChatOverlay');
+        
+        if (container.classList.contains('active')) {
+            container.classList.remove('active');
+            button.classList.remove('hidden');
+            overlay.classList.remove('active');
+        } else {
+            container.classList.add('active');
+            button.classList.add('hidden');
+            overlay.classList.add('active');
+            currentTranslate = 0;
+            container.style.transform = 'translateY(0)';
+        }
+    };
+
+    window.closeSmsChat = function() {
+        document.getElementById('smsChatContainer').classList.remove('active');
+        document.getElementById('smsChatButton').classList.remove('hidden');
+        document.getElementById('smsChatOverlay').classList.remove('active');
+        currentTranslate = 0;
+        document.getElementById('smsChatContainer').style.transform = 'translateY(0)';
+    };
+
+    // Drag to close functionality
+    function setupDragToClose() {
+        const container = document.getElementById('smsChatContainer');
+        const dragHandle = document.getElementById('smsDragHandle');
+        let isDragging = false;
+
+        dragHandle.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            touchStartY = e.touches[0].clientY;
+            container.style.transition = 'none';
+        }, false);
+
+        dragHandle.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - touchStartY;
+
+            if (diff > 0) {
+                currentTranslate = diff;
+                container.style.transform = `translateY(${diff}px)`;
+            }
+        }, false);
+
+        dragHandle.addEventListener('touchend', (e) => {
+            isDragging = false;
+            container.style.transition = 'transform 0.3s ease-out';
+
+            // Se arrastar mais de 100px, fecha
+            if (currentTranslate > 100) {
+                window.closeSmsChat();
+            } else {
+                currentTranslate = 0;
+                container.style.transform = 'translateY(0)';
+            }
+        }, false);
+    }
+
+    // Fechar ao clicar no overlay
+    document.getElementById('smsChatOverlay').addEventListener('click', window.closeSmsChat);
+
+    setTimeout(() => {
+        setupDragToClose();
+    }, 100);
+
+    function getLocalMessages() {
+        const stored = localStorage.getItem(`sms_${currentUid}`);
+        return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveLocalMessage(msg) {
+        const messages = getLocalMessages();
+        messages.push(msg);
+        localStorage.setItem(`sms_${currentUid}`, JSON.stringify(messages));
+    }
+
+    function updateLocalMessage(docId, updates) {
+        const messages = getLocalMessages();
+        const index = messages.findIndex(m => m.id === docId);
+        if (index !== -1) {
+            messages[index] = { ...messages[index], ...updates };
+            localStorage.setItem(`sms_${currentUid}`, JSON.stringify(messages));
+        }
+    }
+
+    window.displaySmsMessage = function(msg, docId) {
+        const messagesDiv = document.getElementById('smsChatMessages');
+        
+        if (displayedMessages.has(docId)) {
+            return;
+        }
+
+        displayedMessages.add(docId);
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'sms-message-group';
+        messageDiv.id = `sms-msg-${docId}`;
+
+        const msgEl = document.createElement('div');
+        msgEl.className = `sms-message ${msg.sender === 'user' ? 'user' : 'admin'}`;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'sms-message-wrapper';
+
+        const time = msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString('pt-AO', { hour: '2-digit', minute: '2-digit' }) : '';
+
+        const label = document.createElement('div');
+        label.className = 'sms-message-label';
+        label.textContent = msg.sender === 'user' ? '📱 Você' : '👨‍💼 Administrador';
+        wrapper.appendChild(label);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'sms-message-content';
+        
+        if (msg.type === 'image') {
+            const img = document.createElement('img');
+            img.src = msg.content;
+            img.alt = 'Imagem';
+            img.className = 'sms-message-image';
+            img.style.cursor = 'pointer';
+            img.onclick = function() {
+                window.openSmsImageModal(msg.content);
+            };
+            contentDiv.appendChild(img);
+        } else if (msg.type === 'audio') {
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.style.maxWidth = '250px';
+            const source = document.createElement('source');
+            source.src = msg.content;
+            source.type = 'audio/webm';
+            audio.appendChild(source);
+            contentDiv.appendChild(audio);
+        } else {
+            contentDiv.textContent = msg.content;
+        }
+        
+        wrapper.appendChild(contentDiv);
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'sms-message-time';
+        timeDiv.textContent = time;
+        
+        if (msg.sender === 'user') {
+            const badge = document.createElement('span');
+            badge.className = 'sms-status-badge';
+            badge.textContent = msg.status === 'read' ? '✓✓ Lido' : '✓ Enviado';
+            badge.id = `sms-status-${docId}`;
+            timeDiv.appendChild(badge);
+        }
+        wrapper.appendChild(timeDiv);
+
+        msgEl.appendChild(wrapper);
+        messageDiv.appendChild(msgEl);
+        messagesDiv.appendChild(messageDiv);
+
+        messageResponseCounts[docId] = 0;
+
+        if (msg.responses && msg.responses.length > 0) {
+            msg.responses.forEach((response, idx) => {
+                window.displaySmsAdminResponse(docId, response, idx);
+                messageResponseCounts[docId]++;
+            });
+        }
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+
+    window.displaySmsAdminResponse = function(docId, response, idx) {
+        const messagesDiv = document.getElementById('smsChatMessages');
+        const responseId = `sms-msg-response-${docId}-${idx}`;
+        
+        if (document.getElementById(responseId)) {
+            return;
+        }
+
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'sms-message-group';
+        responseDiv.id = responseId;
+
+        const respMsgEl = document.createElement('div');
+        respMsgEl.className = 'sms-message admin';
+
+        const respWrapper = document.createElement('div');
+        respWrapper.className = 'sms-message-wrapper';
+
+        const respLabel = document.createElement('div');
+        respLabel.className = 'sms-message-label';
+        respLabel.textContent = '👨‍💼 Administrador';
+        respWrapper.appendChild(respLabel);
+
+        const respContent = document.createElement('div');
+        respContent.className = 'sms-message-content';
+        
+        if (response.type === 'image') {
+            const img = document.createElement('img');
+            img.src = response.content;
+            img.alt = 'Imagem';
+            img.className = 'sms-message-image';
+            img.style.cursor = 'pointer';
+            img.onclick = function() {
+                window.openSmsImageModal(response.content);
+            };
+            respContent.appendChild(img);
+        } else if (response.type === 'audio') {
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.style.maxWidth = '250px';
+            const source = document.createElement('source');
+            source.src = response.content;
+            source.type = 'audio/webm';
+            audio.appendChild(source);
+            respContent.appendChild(audio);
+        } else {
+            respContent.textContent = response.content;
+        }
+        
+        respWrapper.appendChild(respContent);
+
+        const respTime = response.createdAt ? new Date(response.createdAt).toLocaleTimeString('pt-AO', { hour: '2-digit', minute: '2-digit' }) : '';
+        const respTimeDiv = document.createElement('div');
+        respTimeDiv.className = 'sms-message-time';
+        respTimeDiv.textContent = respTime;
+        respWrapper.appendChild(respTimeDiv);
+
+        respMsgEl.appendChild(respWrapper);
+        responseDiv.appendChild(respMsgEl);
+        messagesDiv.appendChild(responseDiv);
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+
+    window.openSmsImageModal = function(imageSrc) {
+        const modal = document.getElementById('smsImageModal');
+        const modalImage = document.getElementById('smsModalImage');
+        modalImage.src = imageSrc;
+        modal.classList.add('active');
+    };
+
+    window.closeSmsImageModal = function() {
+        const modal = document.getElementById('smsImageModal');
+        modal.classList.remove('active');
+    };
+
+    window.sendSmsFAQ = async function(question) {
+        const input = document.getElementById('smsMessageInput');
+        input.value = question;
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+        await window.sendSmsMessage();
+    };
+
+    window.sendSmsMessage = async function(content = null, type = 'text') {
+        const input = document.getElementById('smsMessageInput');
+        const textContent = content || input.value.trim();
+
+        if (!textContent) {
+            showSmsToast('⚠️ Digite uma mensagem');
+            return;
+        }
+
+        if (!currentUid) {
+            showSmsToast('❌ Usuário não autenticado');
+            return;
+        }
+
+        document.getElementById('smsSendBtn').disabled = true;
+
+        try {
+            const welcomeSection = document.getElementById('smsWelcomeSection');
+            if (welcomeSection) {
+                welcomeSection.remove();
+            }
+
+            const msgData = {
+                uid: currentUid,
+                content: textContent,
+                type: type,
+                sender: 'user',
+                status: 'sent',
+                createdAt: new Date().toISOString(),
+                responses: []
+            };
+
+            const docRef = await addDoc(collection(db, 'sms'), msgData);
+
+            msgData.id = docRef.id;
+            saveLocalMessage(msgData);
+
+            window.displaySmsMessage(msgData, docRef.id);
+
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('smsSendBtn').disabled = false;
+            showSmsToast('✅Enviado com sucesso');
+        } catch (e) {
+            console.error('Erro ao enviar mensagem:', e);
+            showSmsToast('❌ Erro ao enviar');
+            document.getElementById('smsSendBtn').disabled = false;
+        }
+    };
+
+    function loadLocalMessages() {
+        const messagesDiv = document.getElementById('smsChatMessages');
+        const welcomeSection = document.getElementById('smsWelcomeSection');
+        const localMessages = getLocalMessages();
+
+        if (localMessages.length > 0) {
+            if (welcomeSection) {
+                welcomeSection.remove();
+            }
+
+            localMessages.forEach(msg => {
+                window.displaySmsMessage(msg, msg.id);
+            });
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }
+
+    function listenToSmsMessages() {
+        try {
+            const q = query(
+                collection(db, 'sms'),
+                where('uid', '==', currentUid)
+            );
+
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                const allDocs = snapshot.docs.map(doc => ({
+                    ...doc.data(),
+                    id: doc.id
+                }));
+
+                allDocs.sort((a, b) => 
+                    new Date(a.createdAt) - new Date(b.createdAt)
+                );
+
+                allDocs.forEach(msg => {
+                    const docId = msg.id;
+
+                    if (!displayedMessages.has(docId)) {
+                        window.displaySmsMessage(msg, docId);
+                        updateLocalMessage(docId, msg);
+                    } else {
+                        const previousCount = messageResponseCounts[docId] || 0;
+                        const currentCount = msg.responses ? msg.responses.length : 0;
+
+                        if (currentCount > previousCount) {
+                            for (let i = previousCount; i < currentCount; i++) {
+                                window.displaySmsAdminResponse(docId, msg.responses[i], i);
+                                showSmsResponseNotification();
+                            }
+                            messageResponseCounts[docId] = currentCount;
+                        }
+
+                        const statusBadge = document.querySelector(`#sms-status-${docId}`);
+                        if (statusBadge && msg.status) {
+                            statusBadge.textContent = msg.status === 'read' ? '✓✓ Lido' : '✓ Enviado';
+                        }
+
+                        updateLocalMessage(docId, { 
+                            responses: msg.responses || [], 
+                            status: msg.status 
+                        });
+                    }
+                });
+            }, (error) => {
+                console.error('Erro ao escutar:', error);
+            });
+        } catch (e) {
+            console.error('Erro ao configurar listener:', e);
+        }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUid = user.uid;
+            messageResponseCounts = {};
+            displayedMessages.clear();
+            loadLocalMessages();
+            listenToSmsMessages();
+        }
+    });
+
+    document.getElementById('smsMessageInput').addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+
+    document.getElementById('smsMessageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            window.sendSmsMessage();
+        }
+    });
+
+    document.getElementById('smsImageModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            window.closeSmsImageModal();
+        }
+    });
+</script>
+</body>
+</html>

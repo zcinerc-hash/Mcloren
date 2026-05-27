@@ -1,0 +1,71 @@
+{
+  "packageId": "com.onrender.nuinvest_3itk.twa",
+  "host": "nuinvest-3itk.onrender.com",
+  "name": "NuInvest - Plataforma de Investimentos",
+  "launcherName": "NuInvest",
+  "display": "standalone",
+  "themeColor": "#1A56DB",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#F5F8FF",
+  "enableNotifications": true,
+  "startUrl": "/auth.html",
+  "iconUrl": "https://nuinvest-3itk.onrender.com/android-chrome-512x512.png",
+  "maskableIconUrl": "https://nuinvest-3itk.onrender.com/android-chrome-512x512.png",
+  "monochromeIconUrl": "https://nuinvest-3itk.onrender.com/android-chrome-192x192.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:\\Users\\HP\\Downloads\\MZ\\android.keystore",
+    "alias": "nuinvestkey"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://nuinvest-3itk.onrender.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://nuinvest-3itk.onrender.com/",
+  "minSdkVersion": 21,
+  "shareTarget": {
+    "action": "https://nuinvest-3itk.onrender.com/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": [
+            "image/*"
+          ]
+        }
+      ]
+    }
+  },
+  "orientation": "portrait-primary",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [
+    {
+      "protocol": "web+nuinvest",
+      "url": "https://nuinvest-3itk.onrender.com/handle?url=%s"
+    }
+  ],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "1"
+}

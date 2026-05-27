@@ -1,8 +1,8 @@
-//Mclaren Service Worker com suporte offline e preload
+// ─── McLaren Service Worker com suporte offline e preload ───
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-const CACHE = "mclareN-cache-v1";
+const CACHE = "mclaren-cache-v1";
 const offlineFallbackPage = "offline.html";
 
 // ─── Mensagem para ativar imediatamente ───
@@ -21,20 +21,21 @@ self.addEventListener('install', (event) => {
 
 // ─── Ativa e assume controle dos clientes ───
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async () => {
+    // habilita navigation preload
+    if (self.registration.navigationPreload) {
+      await self.registration.navigationPreload.enable();
+    }
+    await self.clients.claim();
+  })());
 });
-
-// ─── Habilita navigation preload se suportado ───
-if (workbox.navigationPreload.isSupported()) {
-  workbox.navigationPreload.enable();
-}
 
 // ─── Intercepta navegações ───
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     const url = new URL(event.request.url);
 
-    // ⚠️ Não intercepta login nem chamadas externas do Firebase
+    // ⚠️ Não intercepta login nem chamadas externas
     if (
       url.pathname.includes('/auth.html') ||
       url.hostname.includes('firebaseapp.com') ||
@@ -46,11 +47,14 @@ self.addEventListener('fetch', (event) => {
 
     event.respondWith((async () => {
       try {
+        // espera o preloadResponse corretamente
         const preloadResp = await event.preloadResponse;
         if (preloadResp) return preloadResp;
 
+        // tenta buscar da rede
         return await fetch(event.request);
       } catch (error) {
+        // fallback offline
         const cache = await caches.open(CACHE);
         const cachedResp = await cache.match(offlineFallbackPage);
         return cachedResp;

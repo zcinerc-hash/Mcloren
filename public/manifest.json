@@ -11,11 +11,7 @@
   "lang": "pt-PT",
   "theme_color": "#1B3A6B",
   "background_color": "#FFFFFF",
-  "categories": [
-    "finance",
-    "productivity",
-    "business"
-  ],
+  "categories": ["finance", "productivity", "business"],
   "prefer_related_applications": false,
   "icons": [
     {

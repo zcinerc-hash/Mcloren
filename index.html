@@ -1694,12 +1694,15 @@
         }
     });
 </script>
- <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/pwabuilder-sw.js');
-    });
-  }
+<script>
+// ✅ CORRETO - com scope
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/pwabuilder-sw.js', { scope: '/' })
+      .then(reg => console.log('✅ Service Worker ativo:', reg))
+      .catch(err => console.error('❌ Erro ao registrar SW:', err));
+  });
+}
 </script>
 </body>
 </html>

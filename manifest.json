@@ -1,9 +1,9 @@
 {
-  "id": "/",
+  "id": "mclaren-capital",
   "name": "McLaren Capital - Plataforma de Investimentos",
   "short_name": "McLaren",
   "description": "Invista e ganhe com a McLaren Capital - Programa de referência, tarefas diárias e investimentos lucrativos",
-  "start_url": "/",
+  "start_url": "/auth.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -45,28 +45,13 @@
       "short_name": "Dashboard",
       "description": "Aceda ao seu dashboard",
       "url": "/index.html",
-      "icons": [{ "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" }]
-    },
-    {
-      "name": "Investir",
-      "short_name": "Investir",
-      "description": "Aceda aos planos de investimento",
-      "url": "/planos.html",
-      "icons": [{ "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" }]
-    },
-    {
-      "name": "Referências",
-      "short_name": "Referências",
-      "description": "Veja seus convidados e ganhos",
-      "url": "/convite.html",
-      "icons": [{ "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" }]
-    },
-    {
-      "name": "Perfil",
-      "short_name": "Perfil",
-      "description": "Gerencie seu perfil",
-      "url": "/perfil.html",
-      "icons": [{ "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "img/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "screenshots": [
@@ -81,12 +66,5 @@
       "sizes": "540x720",
       "type": "image/jpeg"
     }
-  ],
-  "protocol_handlers": [
-    {
-      "protocol": "web+mclaren",
-      "url": "/handle?url=%s"
-    }
   ]
 }
-

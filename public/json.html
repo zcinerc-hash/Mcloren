@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Admin</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>Painel Admin</h1>
+
+  <!-- Formulário de login -->
+  <div id="login">
+    <input id="numero" type="text" placeholder="Número (+258...)" />
+    <input id="senha" type="password" maxlength="6" placeholder="PIN (6 dígitos)" />
+    <button onclick="login()">Entrar</button>
+    <button onclick="logout()">Sair</button>
+  </div>
+
+  <!-- Área do painel -->
+  <div id="painel" style="display:none;">
+    <!-- Pesquisar usuário -->
+    <input id="uid" placeholder="UID ou Número">
+    <button onclick="buscarUsuario()">Buscar Usuário</button>
+    <pre id="resultado"></pre>
+
+    <!-- Adicionar saldo -->
+    <input id="valorAdd" type="number" placeholder="Valor a adicionar">
+    <button onclick="adicionarSaldo()">Adicionar Saldo</button>
+
+    <!-- Retirar saldo -->
+    <input id="valorRet" type="number" placeholder="Valor a retirar">
+    <button onclick="retirarSaldo()">Retirar Saldo</button>
+
+    <!-- Alterar nível -->
+    <select id="nivel">
+      <option>Iniciante</option>
+      <option>Ativo</option>
+      <option>VIP</option>
+    </select>
+    <button onclick="alterarNivel()">Alterar Nível</button>
+
+    <!-- Banir / Desbanir -->
+    <button onclick="toggleBan(true)">Banir Usuário</button>
+    <button onclick="toggleBan(false)">Desbanir Usuário</button>
+  </div>
+
+<script>
+  // Configuração Firebase para proibidoreplica
+  const firebaseConfig = {
+    apiKey: "AIzaSyDiuy0PRKp4b8G9xbpj3ro4LbA_Tybt2W8",
+    authDomain: "proibidoreplica.firebaseapp.com",
+    projectId: "proibidoreplica",
+    storageBucket: "proibidoreplica.firebasestorage.app",
+    messagingSenderId: "794009646952",
+    appId: "1:794009646952:web:dfdde843496e8a160e88dd"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  // UID do admin (tem que ser o UID real cadastrado no Firebase)
+  const ADMIN_UID = "DeMl8VlN26hBv1h3kHT4qQUHbAs2";
+
+  let usuarioDoc = null;
+
+  // Função auxiliar: transformar número em email fake
+  function buildEmail(numero){
+    return numero.replace('+','').replace(/\s/g,'') + "@proibidoreplica.com";
+  }
+
+  // Login com número + senha/PIN
+  function login(){
+    const numero = document.getElementById("numero").value.trim();
+    const senha  = document.getElementById("senha").value.trim();
+
+    if(!numero || !senha){
+      alert("Digite número e senha/PIN");
+      return;
+    }
+    if(senha.length !== 6){
+      alert("PIN deve ter 6 dígitos");
+      return;
+    }
+
+    const emailFake = buildEmail(numero);
+
+    auth.signInWithEmailAndPassword(emailFake, senha)
+      .then(userCredential => {
+        // Após login, mostrar JSON do próprio usuário
+        db.collection("users").doc(userCredential.user.uid).get().then(doc=>{
+          if(doc.exists){
+            document.getElementById("resultado").textContent = JSON.stringify(doc.data(),null,2);
+          }
+        });
+      })
+      .catch(err => alert("Erro ao logar: " + err.message));
+  }
+
+  function logout(){
+    auth.signOut();
+  }
+
+  auth.onAuthStateChanged(user => {
+    if(user){
+      if(user.uid === ADMIN_UID){
+        document.getElementById("painel").style.display = "block";
+        document.getElementById("login").style.display = "none";
+      } else {
+        alert("Acesso negado. Apenas admin pode usar este painel.");
+        document.getElementById("painel").style.display = "none";
+      }
+    } else {
+      document.getElementById("painel").style.display = "none";
+      document.getElementById("login").style.display = "block";
+    }
+  });
+
+  function atualizarResultado(){
+    if(!usuarioDoc) return;
+    usuarioDoc.get().then(doc=>{
+      if(doc.exists){
+        document.getElementById("resultado").textContent = JSON.stringify(doc.data(),null,2);
+      }
+    });
+  }
+
+  function buscarUsuario(){
+    const entrada = document.getElementById("uid").value.trim();
+    if(!entrada){alert("Digite UID ou Número");return;}
+
+    db.collection("users").doc(entrada).get().then(doc=>{
+      if(doc.exists){
+        usuarioDoc = doc.ref;
+        atualizarResultado();
+      } else {
+        db.collection("users").where("phone","==",entrada).limit(1).get().then(snap=>{
+          if(!snap.empty){
+            usuarioDoc = snap.docs[0].ref;
+            atualizarResultado();
+          } else {
+            alert("Usuário não encontrado");
+          }
+        });
+      }
+    });
+  }
+
+  function adicionarSaldo(){
+    if(!usuarioDoc){alert("Busque um usuário primeiro");return;}
+    const valor = parseFloat(document.getElementById("valorAdd").value);
+    if(isNaN(valor) || valor <= 0){alert("Digite um valor válido");return;}
+    usuarioDoc.update({
+      balance: firebase.firestore.FieldValue.increment(valor)
+    }).then(()=>{
+      alert("Saldo adicionado!");
+      atualizarResultado();
+    }).catch(err=>alert("Erro: "+err));
+  }
+
+  function retirarSaldo(){
+    if(!usuarioDoc){alert("Busque um usuário primeiro");return;}
+    const valor = parseFloat(document.getElementById("valorRet").value);
+    if(isNaN(valor) || valor <= 0){alert("Digite um valor válido");return;}
+    usuarioDoc.update({
+      balance: firebase.firestore.FieldValue.increment(-valor)
+    }).then(()=>{
+      alert("Saldo retirado!");
+      atualizarResultado();
+    }).catch(err=>alert("Erro: "+err));
+  }
+
+  function alterarNivel(){
+    if(!usuarioDoc){alert("Busque um usuário primeiro");return;}
+    const nivel = document.getElementById("nivel").value;
+    usuarioDoc.update({ level: nivel }).then(()=>{
+      alert("Nível alterado!");
+      atualizarResultado();
+    }).catch(err=>alert("Erro: "+err));
+  }
+
+  function toggleBan(status){
+    if(!usuarioDoc){alert("Busque um usuário primeiro");return;}
+    usuarioDoc.update({ banned: status }).then(()=>{
+      alert(status ? "Usuário banido!" : "Usuário desbanido!");
+      atualizarResultado();
+    }).catch(err=>alert("Erro: "+err));
+  }
+</script>
+</body>
+</html>

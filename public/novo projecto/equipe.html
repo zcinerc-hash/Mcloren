@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BlackRock - Gestão de Equipe e Bônus</title>
+    <style>
+        /* ==================== CYBER-SLEEK DE LUXO ==================== */
+        :root {
+            --bg-canvas: #0A0C12; --bg-card: #141721; --navbar-bg: #0E1117;
+            --borda-nitida: #1A202C; --texto-high: #FFFFFF; --texto-med: #94A3B8;
+            --magenta: #EC1A7C; --violeta: #4E3FEA; --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --verde-menta: #38E090; --cyan-neon: #00FFFF; --alerta: #FF4B4B; --inativo: #64748B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent;}
+        
+        body { background-color: var(--bg-canvas); color: var(--texto-high); min-height: 100dvh; padding-top: 80px; padding-bottom: 100px; overflow-x: hidden; display: block; }
+
+        /* HEADER PADRONIZADO */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background-color: rgba(10, 12, 18, 0.85); backdrop-filter: blur(16px); padding: calc(15px + env(safe-area-inset-top)) 20px 15px; border-bottom: 1px solid var(--borda-nitida); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .h-left { display: flex; align-items: center; gap: 12px; }
+        
+        .h-avatar { 
+            width: 42px; height: 42px; border-radius: 12px; 
+            background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            display: flex; justify-content: center; align-items: center; 
+            font-weight: 900; color: var(--cyan-neon); font-size: 18px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase;
+        }
+        
+        .h-info { display: flex; flex-direction: column; }
+        .h-welcome { font-size: 14px; font-weight: 800; color: #FFF; text-transform: uppercase; letter-spacing: 0.5px; }
+        .h-status { font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 5px; margin-top: 2px; text-transform: uppercase; color: var(--verde-menta); }
+        .h-right { position: relative; }
+        .btn-notif { background: none; border: none; color: var(--texto-high); cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; padding: 5px; text-decoration: none;}
+        .badge-notif { position: absolute; top: 0; right: 2px; background: var(--alerta); color: #FFF; font-size: 8px; font-weight: 900; width: 15px; height: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--bg-canvas); }
+
+        .main-content { padding: 15px 20px; display: flex; flex-direction: column; gap: 18px; animation: fadeIn 0.4s ease; max-width: 600px; margin: 0 auto; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARDS DE RESUMO */
+        .equipe-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-card { background: linear-gradient(145deg, #1A1525, var(--bg-card)); border: 1px solid var(--borda-nitida); border-radius: 18px; padding: 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .stat-card span { font-size: 10px; color: var(--texto-med); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .stat-card strong { font-size: 24px; font-weight: 900; color: #FFF; }
+        .stat-card.destaque { border-color: rgba(236, 26, 124, 0.3); }
+        .stat-card.destaque strong { color: var(--cyan-neon); }
+
+        /* BOX ACESSO REDE */
+        .box-acesso-rede { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 18px; padding: 24px 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .box-acesso-rede h3 { font-size: 15px; color: #FFF; margin-bottom: 8px; text-transform: uppercase; font-weight: 900; }
+        .box-acesso-rede p { font-size: 12px; color: var(--texto-med); margin-bottom: 20px; line-height: 1.5; }
+        .btn-rede { width: 100%; background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0,255,255,0.3); color: var(--cyan-neon); padding: 16px; border-radius: 12px; font-size: 13px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,255,255,0.1); }
+        .btn-rede:active { transform: scale(0.98); }
+
+        /* TABS OTIMIZADAS */
+        .tabs { display: flex; gap: 15px; margin-top: 10px; border-bottom: 1px solid var(--borda-nitida); padding-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+        .tab-btn { background: transparent; border: none; color: var(--texto-med); font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 5px 5px; cursor: pointer; position: relative; white-space: nowrap; transition: 0.3s; }
+        .tab-btn.active { color: var(--magenta); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -13px; left: 0; width: 100%; height: 3px; background: var(--magenta); border-radius: 3px 3px 0 0; }
+
+        /* LISTA E SKELETONS */
+        .membros-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .skeleton-item { background: var(--bg-card); border: 1px solid var(--borda-nitida); padding: 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .skel-avatar { width: 40px; height: 40px; border-radius: 10px; }
+        .skel-line { height: 10px; border-radius: 5px; background: #2D3748; }
+        .anim-shimmer { background: linear-gradient(90deg, #1A202C 0%, #2D3748 50%, #1A202C 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .membro-item { background: linear-gradient(160deg, var(--bg-card) 0%, #0F111A 100%); border: 1px solid var(--borda-nitida); padding: 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: slideUp 0.4s ease forwards; opacity: 0; transform: translateY(15px); }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        
+        .m-left { display: flex; align-items: center; gap: 14px; }
+        
+        .m-avatar { 
+            width: 42px; height: 42px; border-radius: 10px; 
+            background: linear-gradient(135deg, rgba(236,26,124,0.05), rgba(78,63,234,0.05)); 
+            display: flex; justify-content: center; align-items: center; 
+            font-weight: 900; font-size: 16px; color: var(--cyan-neon); 
+            border: 1px solid rgba(255,255,255,0.05); text-transform: uppercase;
+        }
+        
+        .m-info h4 { font-size: 14px; color: #FFF; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; font-weight: 800; }
+        .m-info p { font-size: 11px; color: var(--texto-low); font-weight: 600; }
+        .badge-nivel { background: rgba(236,26,124,0.15); color: var(--magenta); font-size: 9px; padding: 3px 8px; border-radius: 6px; font-weight: 900; border: 1px solid rgba(236,26,124,0.3); }
+        
+        .m-right { text-align: right; }
+        .m-ganho { font-size: 12px; font-weight: 800; display: block; margin-bottom: 5px; color: var(--cyan-neon); text-transform: uppercase; }
+        .m-status { font-size: 10px; font-weight: 800; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 20px; }
+        .status-ativo { color: var(--verde-menta); border: 1px solid rgba(56,224,144,0.2); } 
+        .status-inativo { color: var(--alerta); border: 1px solid rgba(255,75,75,0.2); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 5px currentColor; } 
+        .status-ativo .dot { background: var(--verde-menta); } 
+        .status-inativo .dot { background: var(--alerta); }
+        
+        .empty-state { text-align: center; padding: 60px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+        /* MODAL CHECKLIST */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .chk-modal { max-width: 450px; width: 100%; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--borda-nitida); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .chk-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; text-align: center; background: linear-gradient(180deg, rgba(236,26,124,0.05) 0%, transparent 100%); }
+        .chk-fechar { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--borda-nitida); color: #FFF; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; }
+        .chk-fechar:hover { background: rgba(255,255,255,0.1); }
+        .chk-title { color: #FFF; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+        .chk-progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; margin-top: 15px; border: 1px solid var(--borda-nitida); }
+        .chk-progress-fill { height: 100%; background: var(--gradiente-cta); width: 0%; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .req-item { background: var(--bg-canvas); border: 1px solid var(--borda-nitida); border-left: 4px solid var(--texto-med); border-radius: 16px; padding: 18px; display: flex; gap: 15px; align-items: center; transition: 0.3s; }
+        .req-item.concluido { border-left-color: var(--verde-menta); background: rgba(56, 224, 144, 0.03); border-color: rgba(56, 224, 144, 0.2); }
+        .req-item.progresso { border-left-color: var(--cyan-neon); background: rgba(0, 255, 255, 0.03); border-color: rgba(0, 255, 255, 0.2); }
+        .req-item.falha { border-left-color: var(--alerta); background: rgba(255, 75, 75, 0.03); border-color: rgba(255, 75, 75, 0.2); }
+
+        .req-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; background: rgba(255,255,255,0.05); color: var(--texto-med); }
+        .req-item.concluido .req-icon { background: rgba(56,224,144,0.1); color: var(--verde-menta); }
+        .req-item.progresso .req-icon { background: rgba(0,255,255,0.1); color: var(--cyan-neon); }
+        .req-item.falha .req-icon { background: rgba(255,75,75,0.1); color: var(--alerta); }
+
+        .req-info { flex-grow: 1; }
+        .req-titulo { font-size: 14px; font-weight: 800; color: #FFF; margin-bottom: 6px; }
+        .req-desc { font-size: 12px; color: var(--texto-med); line-height: 1.4; margin-bottom: 8px; }
+        .req-detalhe { font-size: 10px; font-weight: 900; color: var(--cyan-neon); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* BARRA INFERIOR */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(14, 17, 23, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--borda-nitida); display: flex; justify-content: space-around; padding: 14px 0 calc(14px + env(safe-area-inset-bottom)) 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--texto-med); text-decoration: none; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; }
+        .nav-icon { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: 0.3s; }
+        .nav-item.active { color: var(--cyan-neon); }
+        .nav-item.active .nav-icon { stroke: var(--cyan-neon); filter: drop-shadow(0 0 8px rgba(0,255,255,0.5)); transform: translateY(-2px); }
+
+        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 15px 30px; border-radius: 50px; font-size: 14px; font-weight: 700; display: none; z-index: 4000; text-align: center; width: 85%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    <header class="header-fixed">
+        <div class="h-left">
+            <div class="h-avatar" id="topo-avatar">U</div>
+            <div class="h-info">
+                <span class="h-welcome">Gestão de Equipa</span>
+                <span class="h-status">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"></circle></svg> Bónus de Rede
+                </span>
+            </div>
+        </div>
+        <div class="h-right">
+            <a href="notificacoes.html" class="btn-notif">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <div class="badge-notif" id="notif-count" style="display: none;">0</div>
+            </a>
+        </div>
+    </header>
+
+    <div id="toast">Notificação</div>
+
+    <div class="main-content">
+        <div class="equipe-stats">
+            <div class="stat-card">
+                <span>Total Convidados</span>
+                <strong id="st-total">0</strong>
+            </div>
+            <div class="stat-card destaque">
+                <span>Comissão Recebida</span>
+                <strong id="st-comissao">0,00 MZN</strong>
+            </div>
+        </div>
+
+        <div class="box-acesso-rede">
+            <h3>Bónus de 1º Depósito</h3>
+            <p>Acompanhe o seu progresso de desbloqueio para receber comissões automáticas por cada convite ativo.</p>
+            <button class="btn-rede" onclick="abrirChecklistAuto()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                VER CHECKLIST DE DESBLOQUEIO
+            </button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filtrarMembros('diretos', this)">Equipa Direta (N1)</button>
+            <button class="tab-btn" onclick="filtrarMembros('indiretos', this)">Equipa Indireta (N2+)</button>
+            <button class="tab-btn" onclick="filtrarMembros('inativos', this)">Pendentes & Expirados</button>
+        </div>
+
+        <div class="membros-list" id="lista-membros">
+        </div>
+    </div>
+
+    <div id="modalChecklistAuto" class="modal-overlay">
+        <div class="chk-modal">
+            <div class="chk-header">
+                <h3 class="chk-title">Validação de Requisitos</h3>
+                <button class="chk-fechar" onclick="fecharChecklistAuto()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 18px; border-radius: 16px; margin-top: 20px; text-align: left; border: 1px solid var(--borda-nitida);">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--texto-med); text-transform: uppercase;">
+                        <span>Progresso</span>
+                        <span id="chk-pct-text" style="color: var(--cyan-neon);">0% / 100%</span>
+                    </div>
+                    <div class="chk-progress-bg">
+                        <div id="chk-pct-bar" class="chk-progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chk-alerta-analise" style="display: none; background: rgba(255, 75, 75, 0.05); border-left: 4px solid var(--alerta); padding: 15px; margin: 20px 20px 0; border-radius: 12px; color: #FFF; font-size: 12px; font-weight: 600; align-items: center; gap: 12px; border: 1px solid rgba(255,75,75,0.2);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--alerta)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>CONTA SOB ANÁLISE: Detectamos risco. Contacte o Suporte.</span>
+            </div>
+
+            <div id="chk-lista-dinamica" style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                <div style="text-align:center; padding: 30px;">
+                    <div class="anim-shimmer" style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 15px;"></div>
+                    <p style="font-size:12px; font-weight:800; color:var(--texto-med); text-transform:uppercase;">Conectando ao cofre central...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Início
+        </a>
+        <a href="planos.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Planos
+        </a>
+        <a href="tarifas.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Tarifas
+        </a>
+        <a href="equipe.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Equipa
+        </a>
+        <a href="feed.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="10" y1="10" x2="10" y2="20"></line></svg> Feed
+        </a>
+        <a href="perfil.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Perfil
+        </a>
+    </div>
+
+   <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let todosMembros = []; 
+
+        function formatar(valor) { return (Number(valor) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+function mostrarNotificacao(msg, cor = '#10B981') {
+            const t = document.getElementById('toast'); 
+            t.innerText = msg; t.style.background = cor; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        window.onload = async () => {
+            const token = localStorage.getItem('br_token');
+            const userStr = localStorage.getItem('br_user');
+            
+            if (!token || !userStr) { window.location.href = 'login.html'; return; }
+            
+            try {
+                const userObj = JSON.parse(userStr);
+                const inicial = userObj.nome ? userObj.nome.charAt(0).toUpperCase() : 'U';
+                document.getElementById('topo-avatar').innerText = inicial;
+            } catch(e) {
+                document.getElementById('topo-avatar').innerText = 'U';
+            }
+
+            await buscarNotificacoes(token);
+            buscarEquipe(token);
+        };
+
+        async function buscarNotificacoes(token) {
+            try {
+                const resNotif = await fetch(`${URL_BASE}/api/notificacoes`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if(resNotif.ok) {
+                    const dataNotif = await resNotif.json();
+                    if(dataNotif.notifications) {
+                        const unread = dataNotif.notifications.filter(n => n.lida === false).length;
+                        const badgeNotif = document.getElementById('notif-count');
+                        if(unread > 0) { badgeNotif.innerText = unread; badgeNotif.style.display = 'flex'; } 
+                        else { badgeNotif.style.display = 'none'; }
+                    }
+                }
+            } catch(e) {}
+        }
+
+        async function buscarEquipe(token) {
+            const container = document.getElementById('lista-membros');
+            container.innerHTML = Array(4).fill(`
+                <div class="skeleton-item">
+                    <div style="display:flex; gap:14px; align-items:center;">
+                        <div class="skel-avatar anim-shimmer"></div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div class="skel-line anim-shimmer" style="width: 120px;"></div>
+                            <div class="skel-line anim-shimmer" style="width: 70px;"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                        <div class="skel-line anim-shimmer" style="width: 60px;"></div>
+                        <div class="skel-line anim-shimmer" style="width: 40px; height:18px; border-radius:10px;"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/rede/equipe`, { headers: { 'Authorization': `Bearer ${token}` } });
+
+                if(res.ok) {
+                    const data = await res.json();
+                    document.getElementById('st-total').innerText = data.totalConvidados || 0;
+                    document.getElementById('st-comissao').innerText = formatar(data.comissaoTotal || 0) + " MZN";
+                    
+                    todosMembros = data.membros || [];
+                    filtrarMembros('diretos', document.querySelector('.tab-btn.active'));
+                } else {
+                    desenharVazio('lista-membros', 'A sua equipa ainda está vazia. Partilhe o seu link!');
+                }
+            } catch(e) { desenharVazio('lista-membros', 'Sem ligação à rede.'); }
+        }
+function filtrarMembros(tipo, btnClicado) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(btnClicado) btnClicado.classList.add('active');
+
+            let lista = [];
+            
+            if(tipo === 'diretos') { lista = todosMembros.filter(m => m.nivel === 1 && m.status === 'ativo'); } 
+            else if(tipo === 'indiretos') { lista = todosMembros.filter(m => m.nivel > 1 && m.status === 'ativo'); } 
+            else if(tipo === 'inativos') { lista = todosMembros.filter(m => m.status !== 'ativo'); }
+
+            const container = document.getElementById('lista-membros');
+            if(lista.length === 0) { desenharVazio('lista-membros', `Nenhum investidor encontrado nesta categoria.`); return; }
+
+            container.innerHTML = lista.map((m, index) => {
+                const isAtivo = m.status === 'ativo';
+                const isExpirado = m.status === 'expirado';
+                
+                const statusClass = isAtivo ? 'status-ativo' : 'status-inativo';
+                const statusText = isAtivo ? 'Ativo' : (isExpirado ? 'Expirado' : 'Pendente');
+                const badgeHtml = m.nivel > 1 ? `<span class="badge-nivel" style="background:${isAtivo?'rgba(236,26,124,0.15)':'rgba(148,163,184,0.1)'}; color:${isAtivo?'var(--magenta)':'var(--texto-med)'}">NÍVEL ${m.nivel}</span>` : '';
+                
+                const valorInfo = `<span class="m-ganho" style="color:var(--cyan-neon);">Node: ${m.planoAtivo || 'Nenhum'}</span>`;
+
+                return `
+                    <div class="membro-item" style="animation-delay: ${index * 0.05}s">
+                        <div class="m-left">
+                            <div class="m-avatar">${m.nome.charAt(0).toUpperCase()}</div>
+                            <div class="m-info">
+                                <h4>${m.nome} ${badgeHtml}</h4>
+                                <p>ID: ${m.idUnico}</p>
+                            </div>
+                        </div>
+                        <div class="m-right">
+                            ${valorInfo}
+                            <span class="m-status ${statusClass}"><div class="dot"></div> ${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function desenharVazio(containerId, msg) {
+            document.getElementById(containerId).innerHTML = `
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--borda-nitida)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <p style="font-size:13px; color:var(--texto-med); margin-top:15px; font-weight:600;">${msg}</p>
+                </div>
+            `;
+        }
+        
+        async function abrirChecklistAuto() {
+            document.getElementById('modalChecklistAuto').style.display = 'flex';
+            const lista = document.getElementById('chk-lista-dinamica');
+            
+            lista.innerHTML = `
+                <div style="text-align:center; padding: 40px 20px;">
+                    <div class="anim-shimmer" style="width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 15px;"></div>
+                    <p style="font-size:12px; font-weight:800; color:var(--texto-med); text-transform:uppercase; letter-spacing:1px;">Lendo Regras da Diretoria...</p>
+                </div>
+            `;
+            
+            try {
+                const token = localStorage.getItem('br_token');
+                const res = await fetch(`${URL_BASE}/api/usuario/requisitos-bonus`, { headers: { 'Authorization': `Bearer ${token}` } });
+                
+                if(res.ok) {
+                    const data = await res.json();
+                    renderizarChecklistDinamico(data);
+                } else { throw new Error("Erro na API"); }
+            } catch(e) {
+                renderizarChecklistDinamico({
+                    progressoGeral: 0, 
+                    isSobAnalise: false,
+                    requisitos: [
+{ status: 'falha', titulo: 'Plano de Investimento Ativo', descricao: 'Possuir um NODE ativo para ter o direito de receber comissões de rede.', detalhe: 'Aguardando servidor...' }
+                    ]
+                });
+            }
+        }
+        
+        function fecharChecklistAuto() { document.getElementById('modalChecklistAuto').style.display = 'none'; }
+
+        function renderizarChecklistDinamico(data) {
+            document.getElementById('chk-pct-text').innerText = `${data.progressoGeral}% / 100%`;
+            const bar = document.getElementById('chk-pct-bar');
+            setTimeout(() => { bar.style.width = `${data.progressoGeral}%`; }, 100);
+
+            if(data.isSobAnalise) {
+                document.getElementById('chk-alerta-analise').style.display = 'flex';
+                bar.style.background = 'var(--alerta)';
+            } else {
+                document.getElementById('chk-alerta-analise').style.display = 'none';
+                bar.style.background = 'var(--gradiente-cta)';
+            }
+
+            const container = document.getElementById('chk-lista-dinamica');
+            container.innerHTML = data.requisitos.map(req => {
+                let icone = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'; 
+                if(req.status === 'concluido') icone = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                else if(req.status === 'progresso') icone = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+
+                return `
+                    <div class="req-item ${req.status}">
+                        <div class="req-icon">${icone}</div>
+                        <div class="req-info">
+                            <div class="req-titulo">${req.titulo}</div>
+                            <div class="req-desc">${req.descricao}</div>
+                            <div class="req-detalhe">${req.detalhe}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if(data.progressoGeral >= 100 && !data.isSobAnalise) {
+                setTimeout(() => { mostrarNotificacao("✅ BÓNUS DESBLOQUEADO COM SUCESSO!", "var(--magenta)"); }, 800);
+            }
+        }
+    </script>
+    
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

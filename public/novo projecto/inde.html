@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>BlackRock - Início</title>
+    <style>
+        :root {
+            --bg-canvas: #0A0C12; --bg-card: #141721; --navbar-bg: #0E1117;
+            --borda-nitida: #1A202C; --texto-high: #FFFFFF; --texto-med: #94A3B8;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --borda-secundaria: #94A3B8; --btn-disabled-bg: #2D3748;
+            --btn-disabled-text: #4A5568; --verde-sucesso: #38E090;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        /* 🚀 CORREÇÃO DO BUG DE ALTURA NO MOBILE (100dvh) */
+        body { 
+            background-color: var(--bg-canvas); color: var(--texto-high); 
+            min-height: 100dvh; /* A Mágica Acontece Aqui */
+            display: flex; flex-direction: column; overflow-y: auto !important; overflow-x: hidden;
+        }
+
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-canvas); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .splash-welcome { font-size: 12px; color: var(--verde-sucesso); letter-spacing: 3px; margin-bottom: 15px; font-weight: 600; text-transform: uppercase; }
+        .logo-splash { font-size: 36px; font-weight: 800; letter-spacing: 2px; color: var(--texto-high); text-transform: uppercase; line-height: 1; }
+        .logo-splash span { background: var(--gradiente-cta); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-sub { font-size: 13px; font-weight: 600; letter-spacing: 4px; color: var(--texto-med); margin-top: 5px; }
+
+        .content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; overflow-y: auto; }
+        .logo-main { font-size: 36px; font-weight: 800; letter-spacing: 2px; margin-bottom: 0px; line-height: 1;}
+        .logo-main span { background: var(--gradiente-cta); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitulo { color: var(--texto-med); font-size: 14px; max-width: 85%; line-height: 1.5; margin-top: 25px; }
+
+        .btn-ler-termos { background: transparent; border: none; color: var(--texto-med); font-size: 13px; text-decoration: underline; margin-top: 30px; cursor: pointer; padding: 10px; }
+
+        /* 🚀 ZONA DE SEGURANÇA PARA A BARRA INFERIOR DO ANDROID/IOS */
+        .bottom-nav { background-color: var(--navbar-bg); border-top: 1px solid var(--borda-nitida); padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); width: 100%; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; }
+        
+        .aceite-container { display: flex; align-items: center; gap: 10px; padding: 0 10px; margin-bottom: 5px; }
+        .aceite-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: #4E3FEA; cursor: pointer; }
+        .aceite-container label { color: var(--texto-med); font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        .btn { width: 100%; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .btn-primary { background: var(--gradiente-cta); color: var(--texto-high); border: none; box-shadow: 0 4px 15px rgba(78, 63, 234, 0.3); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-disabled { background: var(--btn-disabled-bg); color: var(--btn-disabled-text); border: none; cursor: not-allowed; pointer-events: none; }
+        .btn-secondary { background: transparent; border: 1px solid var(--borda-secundaria); color: var(--texto-high); }
+        .btn-secondary:active { background: rgba(255,255,255,0.1); }
+
+        #modalTermos { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: var(--bg-canvas); z-index: 1000; flex-direction: column; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--borda-nitida); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding-top: calc(20px + env(safe-area-inset-top)); }
+        .modal-header h2 { font-size: 18px; color: var(--texto-high); }
+        .btn-fechar { background: transparent; border: none; color: #FF4B4B; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .modal-body { padding: 20px; overflow-y: auto; color: var(--texto-med); font-size: 14px; line-height: 1.6; flex: 1; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <p class="splash-welcome">Iniciando Terminal...</p>
+        <h1 class="logo-splash">BLACK<span>ROCK</span></h1>
+        <p class="logo-sub">GESTÃO de ATIVOS</p>
+    </div>
+
+    <div class="content">
+        <h1 class="logo-main">BLACK<span>ROCK</span></h1>
+        <p class="logo-sub">GESTÃO de ATIVOS</p>
+        <p class="subtitulo">Terminal avançado de Gestão de Ativos e Operações de Alta Frequência.</p>
+        <button class="btn-ler-termos" onclick="abrirTermos()">Ler Diretrizes da Comunidade</button>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="aceite-container">
+            <input type="checkbox" id="chkTermos" onchange="verificarTermos()">
+            <label for="chkTermos">Eu li e aceito as Diretrizes da Comunidade.</label>
+        </div>
+        <a href="registro.html" id="btnCriarConta" class="btn btn-disabled">🔒 Criar Conta</a>
+        <a href="login.html" class="btn btn-secondary">Entrar no Terminal</a>
+    </div>
+
+    <div id="modalTermos">
+        <div class="modal-header">
+            <h2>Termos e Condições</h2>
+            <button class="btn-fechar" onclick="fecharTermos()">FECHAR ✕</button>
+        </div>
+        <div class="modal-body" id="textoTermos">
+            Conectando aos servidores da Diretoria...
+        </div>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+
+        setTimeout(() => {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500);
+        }, 5000);
+
+        function verificarTermos() {
+            const checkbox = document.getElementById('chkTermos');
+            const btnRegistro = document.getElementById('btnCriarConta');
+            if (checkbox.checked) {
+                btnRegistro.classList.remove('btn-disabled'); btnRegistro.classList.add('btn-primary'); btnRegistro.innerHTML = 'CRIAR CONTA';
+            } else {
+                btnRegistro.classList.remove('btn-primary'); btnRegistro.classList.add('btn-disabled'); btnRegistro.innerHTML = '🔒 Criar Conta';
+            }
+        }
+
+        async function abrirTermos() {
+            document.getElementById('modalTermos').style.display = 'flex';
+            try {
+                const res = await fetch(`${URL_BASE}/api/sistema/termos`);
+                const dados = await res.json();
+                if(dados.termos) document.getElementById('textoTermos').innerHTML = dados.termos.replace(/\n/g, '<br><br>');
+            } catch (e) { document.getElementById('textoTermos').innerHTML = "Erro de conexão."; }
+        }
+
+        function fecharTermos() { document.getElementById('modalTermos').style.display = 'none'; }
+    </script>
+</body>
+</html>

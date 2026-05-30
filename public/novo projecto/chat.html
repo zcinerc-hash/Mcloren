@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>BlackRock - Suporte Oficial</title>
+    <style>
+        :root {
+            --bg-canvas: #0F111A; --bg-card: #171923; --navbar-bg: #0A0C12;
+            --borda-nitida: #2D3748; --input-bg: #1A202C; --texto-high: #FFFFFF;
+            --texto-med: #94A3B8; --magenta: #EC1A7C; --verde-menta: #38E090;
+            --cyan-neon: #00FFFF; --alerta: #FF4B4B;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+    body { 
+        background-color: var(--bg-canvas); 
+        color: var(--texto-high); 
+        height: 100dvh; /* Aqui usamos height exato */
+        display: flex; 
+        flex-direction: column; /* Coloca os elementos em coluna */
+        overflow: hidden; /* Corta o scroll do fundo da página */
+        margin: 0;
+        padding: 0;
+     }
+        
+        .header-chat { background: var(--bg-canvas); border-bottom: 1px solid var(--borda-nitida); display: flex; align-items: center; justify-content: space-between; padding: calc(15px + env(safe-area-inset-top)) 20px 15px; z-index: 1000; flex-shrink: 0; }
+        .btn-back { background: none; border: none; color: var(--texto-high); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .header-center { display: flex; flex-direction: column; align-items: center; }
+        .header-center h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin-bottom: 2px; }
+        .status-box { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--verde-menta); background: rgba(56,224,144,0.1); padding: 3px 10px; border-radius: 20px; }
+        .status-dot { width: 6px; height: 6px; background: var(--verde-menta); border-radius: 50%; box-shadow: 0 0 5px var(--verde-menta); animation: piscar 1.5s infinite; }
+        .status-box.offline { color: var(--texto-med); background: var(--input-bg); }
+        .status-box.offline .status-dot { background: var(--texto-med); animation: none; box-shadow: none; }
+        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .chat-container { flex: 1; overflow-y: auto; padding-bottom: 20px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        
+        .msg-row { display: flex; width: 100%; }
+        .msg-row.admin { justify-content: flex-start; }
+        .msg-row.user { justify-content: flex-end; }
+        
+        .msg-wrapper { max-width: 85%; display: flex; flex-direction: column; }
+        .msg-row.admin .msg-wrapper { align-items: flex-start; }
+        .msg-row.user .msg-wrapper { align-items: flex-end; }
+
+        .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 18px; word-wrap: break-word; word-break: break-word; font-size: 14.5px; line-height: 1.4; box-shadow: 0 1px 3px rgba(0,0,0,0.15); white-space: pre-wrap; }
+        .msg-row.admin .msg-bubble { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-bottom-left-radius: 4px; color: #FFF; }
+        .msg-row.user .msg-bubble { background: var(--gradiente-cta); border-bottom-right-radius: 4px; color: #FFF; }
+        .msg-bubble.apagada { background: transparent !important; border: 1px dashed var(--borda-nitida) !important; color: var(--texto-med) !important; font-style: italic; box-shadow: none !important; }
+
+        .msg-info { display: flex; align-items: center; gap: 4px; font-size: 10px; margin-top: 4px; font-weight: 600; }
+        .msg-row.admin .msg-info { justify-content: flex-start; color: var(--texto-med); }
+        .msg-row.user .msg-info { justify-content: flex-end; color: rgba(255,255,255,0.7); }
+        
+        .tick-icon { width: 14px; height: 14px; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .tick-sent { color: rgba(255,255,255,0.6); }
+        .tick-read { color: var(--cyan-neon); }
+
+        .msg-actions { display: flex; gap: 12px; margin-top: 5px; font-size: 11px; font-weight: 600; padding: 0 5px; }
+        .msg-actions span { cursor: pointer; color: var(--texto-med); transition: 0.2s; display: flex; align-items: center; gap: 3px; }
+        .msg-actions span:hover { color: #FFF; }
+        .msg-actions .btn-delete:hover { color: var(--alerta); }
+        
+        .input-area { background: var(--navbar-bg); position: relative; border-top: 1px solid var(--borda-nitida); padding: 15px 20px calc(15px + env(safe-area-inset-bottom)); display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
+        .input-box { flex: 1; background: var(--input-bg); border: 1px solid var(--borda-nitida); border-radius: 15px; padding: 14px 18px; color: #FFF; font-size: 14px; outline: none; transition: 0.3s; resize: none; overflow-y: hidden; min-height: 48px; max-height: 150px; line-height: 1.4; font-family: inherit; }
+        .input-box:focus { border-color: var(--cyan-neon); }
+        
+        .btn-send { width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: var(--gradiente-cta); border: none; display: flex; justify-content: center; align-items: center; color: #FFF; cursor: pointer; transition: 0.2s; }
+        .btn-send:active { transform: scale(0.95); }
+        .btn-send:disabled { background: var(--borda-nitida); cursor: not-allowed; color: var(--texto-med); }
+        
+        .date-divider { text-align: center; margin: 10px 0; }
+        .date-divider span { background: rgba(255,255,255,0.05); color: var(--texto-med); font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 10px; text-transform: uppercase; }
+
+        #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: 700; display: none; z-index: 4000; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="toast">Notificação</div>
+
+    <header class="header-chat">
+        <button class="btn-back" onclick="window.location.href='perfil.html'">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="header-center">
+            <h1>Diretoria</h1>
+            <div class="status-box" id="status-indicador"><div class="status-dot"></div> Suporte Online</div>
+        </div>
+        <div style="width: 26px;"></div>
+    </header>
+
+    <div class="chat-container" id="chat-box"></div>
+    
+    <div class="input-area">
+        <textarea id="input-msg" class="input-box" rows="1" placeholder="Escreva a sua mensagem..." oninput="autoResize(this)"></textarea>
+        <button class="btn-send" id="btn-send" onclick="acaoBotaoEnviar()">
+            <svg id="icon-send" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let dadosUsuario = null;
+        let hashChatAtual = ""; 
+        let editandoId = null;
+        
+        // 🚀 VARIÁVEIS DO THROTTLING INTELIGENTE
+        let loopAtualizacao = null;
+        let inatividadeTicks = 0; 
+
+        function escapeHTML(str) {
+            if(!str) return '';
+            return String(str).replace(/[&<>'"]/g, match => {
+                const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+                return escapeMap[match];
+            });
+        }
+
+        window.onload = () => {
+            const token = localStorage.getItem('br_token');
+            const userStr = localStorage.getItem('br_user');
+            if(!token || !userStr) { window.location.href = 'login.html'; return; }
+            dadosUsuario = JSON.parse(userStr);
+            
+            setTimeout(() => window.scrollTo(0, 1), 100);
+
+            carregarChat();
+            
+            // 🚀 MOTOR DE POLLING OTIMIZADO
+            loopAtualizacao = setInterval(() => {
+                // 1. VISIBILITY API: Corta totalmente o uso de CPU se o telemóvel for bloqueado ou aba oculta
+                if (document.hidden) return; 
+                
+                // 2. SLEEP MODE: Se o utilizador deixar o ecrã aberto e for dormir (mais de 60 ciclos = 5 mins inativo)
+                inatividadeTicks++;
+                if (inatividadeTicks > 60) {
+                    const status = document.getElementById('status-indicador');
+                    status.classList.add('offline');
+                    status.innerHTML = `<div class="status-dot"></div> Hibernação (Toque para acordar)`;
+                    return; // Poupa a banda do servidor!
+                }
+
+                carregarChat();
+            }, 5000); // 5 segundos é o padrão de ouro para estabilidade
+
+            // 3. WAKE UP: Acorda o chat instantaneamente se ele tocar em qualquer lado
+            ['touchstart', 'mousemove', 'keypress'].forEach(evt => 
+                document.addEventListener(evt, acordarChat, { passive: true })
+            );
+        };
+
+        function acordarChat() {
+            if (inatividadeTicks > 60) {
+                carregarChat();
+                const status = document.getElementById('status-indicador');
+                status.classList.remove('offline');
+                status.innerHTML = `<div class="status-dot"></div> Suporte Online`;
+            }
+            inatividadeTicks = 0;
+        }
+
+        function mostrarNotificacao(msg, cor = '#FF4B4B') {
+            const t = document.getElementById('toast'); 
+            t.innerText = msg; t.style.background = cor; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }
+
+        function formatarHora(dataISO) { return new Date(dataISO).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }); }
+
+        function rolarParaFim() {
+            const box = document.getElementById('chat-box');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            if (textarea.scrollHeight > 150) textarea.style.overflowY = 'auto';
+            else textarea.style.overflowY = 'hidden';
+            
+            setTimeout(rolarParaFim, 50);
+        }
+        
+        async function carregarChat() {
+            const token = localStorage.getItem('br_token');
+            try {
+                const res = await fetch(`${URL_BASE}/api/suporte/meu-chat`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) {
+                    const mensagens = await res.json();
+                    const novoHash = JSON.stringify(mensagens); 
+                    if (novoHash !== hashChatAtual) {
+                        hashChatAtual = novoHash; 
+                        desenharMensagens(mensagens);
+                        if (!editandoId) rolarParaFim();
+                    }
+                }
+            } catch (e) { }
+        }
+
+        function desenharMensagens(mensagens) {
+            const box = document.getElementById('chat-box');
+            const dataAgora = new Date().getTime(); 
+            
+            let htmlBase = `
+                <div class="date-divider"><span>Histórico Recente</span></div>
+                <div class="msg-row admin">
+                    <div class="msg-wrapper">
+                        <div class="msg-bubble">Olá ${escapeHTML(dadosUsuario.nome.split(' ')[0])}! Sou o assistente da Diretoria BlackRock. Como posso ajudar o seu terminal hoje?</div>
+                        <div class="msg-info">Automático</div>
+                    </div>
+                </div>
+            `;
+
+            mensagens.forEach(msg => {
+                const isUser = msg.remetente === 'usuario';
+                const classeRow = isUser ? 'user' : 'admin';
+                let acoesHtml = ''; let vistoHtml = '';
+                let textoFinal = escapeHTML(msg.texto);
+                let classeBubble = 'msg-bubble';
+
+                if (msg.isApagada || msg.texto === "🚫 Mensagem anulada") {
+                    classeBubble += " apagada";
+                    textoFinal = isUser ? "🚫 Anulaste o envio desta mensagem" : "🚫 Mensagem anulada";
+                } else {
+                    if (isUser) {
+                        vistoHtml = msg.lida ? `<svg class="tick-icon tick-read" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="18 6 7 17 2 12"></polyline><path d="M22 10l-5.5 5.5"></path></svg>` : `<svg class="tick-icon tick-sent" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                        const diffMinutos = (dataAgora - new Date(msg.createdAt).getTime()) / (1000 * 60);
+
+                        if (diffMinutos <= 20) {
+                            const textoLimpo = msg.texto.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n');
+                            acoesHtml = `
+                                <div class="msg-actions">
+                                    <span onclick="prepararEdicao('${msg._id}', '${textoLimpo}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg> Editar</span>
+                                    <span class="btn-delete" onclick="excluirMensagem('${msg._id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Anular</span>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                htmlBase += `
+                    <div class="msg-row ${classeRow}" id="row-${msg._id}">
+                        <div class="msg-wrapper">
+                            <div class="${classeBubble}">${textoFinal}</div>
+                            <div class="msg-info">${formatarHora(msg.createdAt)} ${vistoHtml}</div>
+                            ${acoesHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            box.innerHTML = htmlBase;
+        }
+
+        function acaoBotaoEnviar() { if (editandoId) salvarEdicao(); else enviarMensagem(); }
+
+        async function enviarMensagem() {
+            const input = document.getElementById('input-msg');
+            const texto = input.value.trim();
+            const btn = document.getElementById('btn-send');
+            const token = localStorage.getItem('br_token');
+
+            if (!texto) return;
+            const textoSeguro = escapeHTML(texto);
+
+            const box = document.getElementById('chat-box');
+            box.innerHTML += `<div class="msg-row user" id="msg-temp"><div class="msg-wrapper"><div class="msg-bubble" style="opacity:0.7">${textoSeguro}</div><div class="msg-info">A enviar...</div></div></div>`;
+            rolarParaFim();
+            
+            // Acorda o chat e zera o contador
+            acordarChat();
+
+            input.value = ''; autoResize(input); btn.disabled = true;
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/suporte/enviar`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ texto: texto })
+                });
+                if (res.ok) await carregarChat(); else mostrarNotificacao("Erro.");
+            } catch (e) {
+                mostrarNotificacao("Erro de rede."); document.getElementById('msg-temp').remove();
+            } finally { btn.disabled = false; input.focus(); }
+        }
+
+        function prepararEdicao(id, textoAtual) {
+            editandoId = id; const textarea = document.getElementById('input-msg');
+            textarea.value = textoAtual; autoResize(textarea); textarea.focus();
+            document.getElementById('icon-send').innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline>';
+            mostrarNotificacao("Modo edição", "var(--cyan-neon)");
+        }
+
+        async function salvarEdicao() {
+            const input = document.getElementById('input-msg');
+            const novoTexto = input.value.trim(); const token = localStorage.getItem('br_token'); const btn = document.getElementById('btn-send');
+
+            if (!novoTexto) return; btn.disabled = true;
+            acordarChat();
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/suporte/editar/${editandoId}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ texto: novoTexto })
+                });
+                if (res.ok) { mostrarNotificacao("Editado", "var(--verde-menta)"); await carregarChat(); } else mostrarNotificacao("Não é possível editar.");
+            } catch (e) { mostrarNotificacao("Erro."); } 
+            finally {
+                editandoId = null; input.value = ''; autoResize(input); btn.disabled = false;
+                document.getElementById('icon-send').innerHTML = '<line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>';
+            }
+        }
+
+        async function excluirMensagem(id) {
+            if (!confirm("Anular mensagem?")) return;
+            const token = localStorage.getItem('br_token');
+            acordarChat();
+            try {
+                const res = await fetch(`${URL_BASE}/api/suporte/apagar/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) { mostrarNotificacao("Mensagem apagada", "var(--verde-menta)"); await carregarChat(); } else mostrarNotificacao("Não é possível apagar.");
+            } catch (e) { mostrarNotificacao("Erro."); }
+        }
+    </script>
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

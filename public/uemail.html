@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Contato</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("8HF6PhhG0QT_FwbIu"); // tua Public Key
+      console.log("🔑 EmailJS inicializado com sucesso.");
+    })();
+  </script>
+</head>
+<body>
+  <h2>Contact Us</h2>
+  <form id="contact-form">
+    <input type="text" name="name" placeholder="Seu nome" required><br>
+    <input type="text" name="title" placeholder="Assunto" required><br>
+    <textarea name="message" placeholder="Mensagem" required></textarea><br>
+
+    <div id="email-fields">
+      <input type="email" name="email" placeholder="Email 1" required><br>
+    </div>
+    <button type="button" id="add-email">+ Adicionar Email</button><br><br>
+
+    <!-- Envio de foto via URL -->
+    <fieldset style="border:1px solid #ccc; padding:10px;">
+      <legend>📎 Enviar Foto</legend>
+      <label>Usar link da foto:</label><br>
+      <input type="url" id="photo-link" placeholder="Cole o link da foto"><br>
+      <small>Se vazio, será usado o logotipo padrão.</small>
+    </fieldset><br>
+
+    <button type="submit">Salvar e Enviar</button>
+  </form>
+
+  <h3>📋 Emails salvos</h3>
+  <ul id="saved-emails"></ul>
+
+  <div id="log" style="margin-top:15px; font-family:monospace; color:#333;"></div>
+
+  <script>
+    const logBox = document.getElementById("log");
+    const savedEmails = [];
+
+    function logMessage(msg, type="info") {
+      console.log(msg);
+      const p = document.createElement("p");
+      p.textContent = msg;
+      p.style.color = type === "error" ? "red" : "green";
+      logBox.appendChild(p);
+    }
+
+    // Adicionar novo campo de email
+    document.getElementById("add-email").addEventListener("click", () => {
+      const div = document.getElementById("email-fields");
+      const index = div.querySelectorAll("input[type=email]").length + 1;
+      const input = document.createElement("input");
+      input.type = "email";
+      input.name = "email" + index;
+      input.placeholder = "Email " + index;
+      div.appendChild(input);
+      div.appendChild(document.createElement("br"));
+    });
+
+    // Salvar emails e enviar em tempo real
+    document.getElementById("contact-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      const name = formData.get("name");
+      const title = formData.get("title");
+      const message = formData.get("message");
+
+      // Foto via URL (fallback para suporte.png)
+      let photoUrl = document.getElementById("photo-link").value.trim();
+      if (!photoUrl) {
+        photoUrl = "https://mclaren-capital.onrender.com/suporte.png";
+      }
+
+      const emailInputs = document.querySelectorAll("#email-fields input[type=email]");
+      emailInputs.forEach(input => {
+        if (input.value && !savedEmails.includes(input.value)) {
+          savedEmails.push(input.value);
+          const li = document.createElement("li");
+          li.textContent = input.value;
+          document.getElementById("saved-emails").appendChild(li);
+
+          // Envio imediato (tempo real)
+          logMessage("📤 Enviando em tempo real para: " + input.value);
+          emailjs.send("service_yvatgdh", "template_ihyywoa", {
+            name: name,
+            to_email: input.value,
+            title: title,
+            message: message,
+            time: new Date().toLocaleString(),
+            photo_url: photoUrl
+          })
+          .then((response) => {
+            logMessage("✅ Email enviado para " + input.value + ": " + JSON.stringify(response));
+          })
+          .catch((error) => {
+            logMessage("❌ Erro ao enviar para " + input.value + ": " + JSON.stringify(error), "error");
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

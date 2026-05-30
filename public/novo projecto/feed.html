@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlackRock - Feed Oficial</title>
+    <style>
+        /* ==================== PALETA CORPORATIVA PREMIUM ==================== */
+        :root {
+            --bg-canvas: #0A0C12; --bg-card: #141721; --navbar-bg: #0E1117;
+            --borda-nitida: rgba(255, 255, 255, 0.06); --borda-hover: rgba(255, 255, 255, 0.12);
+            --texto-high: #F8FAFC; --texto-med: #94A3B8; --texto-low: #64748B;
+            --magenta: #EC1A7C; --verde-menta: #38E090; --cyan-neon: #00FFFF;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --alerta: #FF4B4B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-canvas); color: var(--texto-high); min-height: 100vh; padding-top: 75px; padding-bottom: 100px; overflow-x: hidden; }
+        
+        /* CABEÇALHO GLASSMORPHISM */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background: rgba(10, 12, 18, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--borda-nitida); display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .header-fixed h1 { font-size: 16px; font-weight: 900; background: var(--gradiente-cta); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 auto; }
+        
+        .main-content { padding: 10px 16px; display: flex; flex-direction: column; gap: 20px; max-width: 600px; margin: 0 auto; }
+
+        /* AVISO DE SINCRONIZAÇÃO SILENCIOSA */
+        #sync-indicator { text-align: center; font-size: 10px; color: var(--cyan-neon); text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; display: none; margin-bottom: -5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
+        /* ==================== SKELETON LOADER PREMIUM ==================== */
+        .skeleton-card { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .skel-header { display: flex; gap: 12px; align-items: center; }
+        .skel-avatar { width: 44px; height: 44px; border-radius: 50%; }
+        .skel-text-box { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .skel-line { height: 12px; border-radius: 6px; }
+        .skel-img { width: 100%; height: 180px; border-radius: 12px; }
+        /* Animação do Brilho */
+        .anim-shimmer { background: linear-gradient(90deg, #1A202C 0%, #2D3748 50%, #1A202C 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ==================== DESIGN DOS POSTS ==================== */
+        .post-card { background: linear-gradient(160deg, var(--bg-card) 0%, #0F111A 100%); border: 1px solid var(--borda-nitida); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); transition: 0.3s border; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .post-card:hover { border-color: var(--borda-hover); }
+        .post-card.fixado { border-color: rgba(236, 26, 124, 0.3); box-shadow: 0 8px 30px rgba(236, 26, 124, 0.08); }
+        .post-card.prova { border-color: rgba(56, 224, 144, 0.3); box-shadow: 0 8px 30px rgba(56, 224, 144, 0.05); }
+        
+        .post-header { display: flex; align-items: center; gap: 14px; padding: 20px 20px 12px 20px; }
+        .post-avatar { width: 46px; height: 46px; border-radius: 50%; background: #1A202C; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; color: #FFF; flex-shrink: 0; border: 2px solid var(--bg-canvas); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .post-avatar.admin { background: var(--gradiente-cta); }
+        .post-avatar.sys { background: var(--cyan-neon); color: #000; border-color: rgba(0,255,255,0.2); }
+        
+        .post-autor-info { display: flex; flex-direction: column; flex: 1; }
+        .post-autor-nome { font-size: 15px; font-weight: 800; color: #FFF; display: flex; align-items: center; gap: 6px; letter-spacing: 0.3px; }
+        .post-data { font-size: 11px; color: var(--texto-low); font-weight: 600; margin-top: 2px; }
+        
+        .badge-fixado { font-size: 9px; background: rgba(236,26,124,0.1); color: var(--magenta); padding: 4px 10px; border-radius: 12px; font-weight: 900; text-transform: uppercase; margin-left: auto; border: 1px solid rgba(236,26,124,0.3); letter-spacing: 0.5px; }
+        
+        .post-body { padding: 0 20px 15px 20px; font-size: 14px; color: #cbd5e1; line-height: 1.6; }
+        .post-body h3 { color: #FFF; font-size: 17px; margin-bottom: 10px; font-weight: 800; line-height: 1.3; }
+        
+        /* MÍDIAS PREMIUM (COM BORDAS ARREDONDADAS) */
+        .media-wrapper { padding: 0 20px 15px 20px; }
+        .post-midia { width: 100%; max-height: 380px; object-fit: cover; border-radius: 12px; display: block; cursor: zoom-in; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid var(--borda-nitida); }
+        .video-container { position: relative; cursor: zoom-in; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid var(--borda-nitida); }
+        .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 18px; border-radius: 50%; color: white; font-size: 24px; border: 2px solid rgba(255,255,255,0.2); }
+        
+        .post-footer { padding: 15px 20px; border-top: 1px solid var(--borda-nitida); display: flex; align-items: center; gap: 20px; }
+        .action-btn { background: none; border: none; color: var(--texto-med); display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s all; padding: 6px 12px; border-radius: 20px; margin-left: -12px; }
+        .action-btn:hover { background: rgba(255,255,255,0.05); color: var(--texto-high); }
+        .action-btn.active { color: var(--cyan-neon); }
+        .action-btn.active:hover { background: rgba(0, 255, 255, 0.1); }
+        
+        /* Animação do clique no coração */
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .animate-pop svg { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* BARRA DE NAVEGAÇÃO SEGURA (iPhone Safe Area) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(14, 17, 23, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--borda-nitida); display: flex; justify-content: space-around; padding: 14px 0 calc(14px + env(safe-area-inset-bottom)) 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--texto-low); text-decoration: none; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; }
+        .nav-icon { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: 0.3s; }
+        .nav-item.active { color: var(--cyan-neon); }
+        .nav-item.active .nav-icon { stroke: var(--cyan-neon); filter: drop-shadow(0 0 8px rgba(0,255,255,0.5)); transform: translateY(-2px); }
+        
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--texto-med); display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .empty-state h3 { color: #FFF; font-size: 18px; font-weight: 900; }
+    </style>
+</head>
+<body>
+    
+    <div id="modal-midia-fullscreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,7,10,0.98); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px); flex-direction: column;" onclick="fecharMidiaFullscreen()">
+        <button style="position: absolute; top: 25px; right: 25px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #FFF; border-radius: 50%; width: 45px; height: 45px; font-size: 18px; cursor: pointer; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: 0.3s;">✕</button>
+        <div id="conteudo-fullscreen" style="width: 100%; display: flex; justify-content: center; align-items: center; padding: 20px;"></div>
+    </div>
+
+    <header class="header-fixed">
+        <h1>ATUALIZAÇÕES</h1>
+    </header>
+
+    <div class="main-content">
+        <div id="sync-indicator">Sincronizando feed...</div>
+        
+        <div id="feed-container">
+            <div class="skeleton-card" id="loader">
+                <div class="skel-header">
+                    <div class="skel-avatar anim-shimmer"></div>
+                    <div class="skel-text-box">
+                        <div class="skel-line anim-shimmer" style="width: 40%;"></div>
+                        <div class="skel-line anim-shimmer" style="width: 25%; height: 8px;"></div>
+                    </div>
+                </div>
+                <div class="skel-text-box" style="margin-top: 10px;">
+                    <div class="skel-line anim-shimmer" style="width: 90%;"></div>
+                    <div class="skel-line anim-shimmer" style="width: 75%;"></div>
+                    <div class="skel-line anim-shimmer" style="width: 50%;"></div>
+                </div>
+                <div class="skel-img anim-shimmer" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Início
+        </a>
+        <a href="planos.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Planos
+        </a>
+        <a href="tarifas.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Tarifas
+        </a>
+        <a href="equipe.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Equipe
+        </a>
+        <a href="feed.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="10" y1="10" x2="10" y2="20"></line></svg> Feed
+        </a>
+        <a href="perfil.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Perfil
+        </a>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+
+        // 🚀 PROTEÇÃO XSS: Impede a injeção de HTML malicioso no Feed
+        function escapeHTML(str) {
+            if(!str) return '';
+            return String(str).replace(/[&<>'"]/g, match => {
+                const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+                return escapeMap[match];
+            });
+        }
+
+        window.onload = () => {
+            if(!localStorage.getItem('br_token')) return window.location.href = 'login.html';
+            carregarMuralInteligente();
+        };
+
+        /* ===== MOTOR DE MODO CINEMA (TELA CHEIA) ===== */
+        function abrirMidiaFullscreen(url, tipo, event) {
+            if(event) event.stopPropagation(); 
+            const modal = document.getElementById('modal-midia-fullscreen');
+            const container = document.getElementById('conteudo-fullscreen');
+            
+            if(tipo === 'imagem') {
+                container.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 85vh; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">`;
+            } else if (tipo === 'video') {
+                container.innerHTML = `<video src="${url}" controls autoplay style="max-width: 100%; max-height: 85vh; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);" onclick="event.stopPropagation()"></video>`;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function fecharMidiaFullscreen() {
+            document.getElementById('modal-midia-fullscreen').style.display = 'none';
+            document.getElementById('conteudo-fullscreen').innerHTML = ''; 
+        }
+
+        function formatarDataHora(dataISO) {
+            const data = new Date(dataISO);
+            const hoje = new Date();
+            
+            const ontem = new Date();
+            ontem.setDate(hoje.getDate() - 1);
+            
+            const hora = String(data.getHours()).padStart(2, '0');
+            const min = String(data.getMinutes()).padStart(2, '0');
+
+            if (data.toDateString() === hoje.toDateString()) return `Hoje às ${hora}:${min}`;
+            if (data.toDateString() === ontem.toDateString()) return `Ontem às ${hora}:${min}`;
+
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            return `${dia}/${mes}/${data.getFullYear()} às ${hora}:${min}`;
+        }
+
+        // ========================================================
+        // O MOTOR DE CACHE INTELIGENTE "CACHE-FIRST"
+        // ========================================================
+        async function carregarMuralInteligente() {
+            const container = document.getElementById('feed-container');
+            const loader = document.getElementById('loader');
+            const syncInd = document.getElementById('sync-indicator');
+
+            // 1. Mostrar Cache Imediatamente
+            const cache = localStorage.getItem('br_feed_cache');
+            if (cache) {
+                if(loader) loader.style.display = 'none';
+                renderizarPosts(JSON.parse(cache));
+                syncInd.style.display = 'block'; 
+            }
+
+            // 2. Procurar atualizações silenciosamente
+            try {
+                const res = await fetch(`${URL_BASE}/api/feed`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('br_token')}` }
+                });
+                
+                if (res.ok) {
+                    const posts = await res.json();
+                    
+                    if (!posts || posts.length === 0) {
+                        localStorage.removeItem('br_feed_cache');
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                                <h3>Mural Limpo</h3>
+                                <p>A Diretoria ainda não lançou comunicados recentes.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    localStorage.setItem('br_feed_cache', JSON.stringify(posts));
+                    
+                    if (JSON.stringify(posts) !== cache) {
+                        renderizarPosts(posts);
+                    }
+
+                } else if (!cache) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--alerta); padding: 40px;">Sessão inválida. Reinicie o aplicativo.</div>';
+                }
+            } catch (e) {
+                console.error("Erro na rede. Usando Cache.");
+                if(!cache) container.innerHTML = '<div style="text-align:center; color:var(--alerta); padding: 40px;">Sem internet. Conecte-se para ver as atualizações.</div>';
+            } finally {
+                if(loader) loader.style.display = 'none';
+                syncInd.style.display = 'none'; 
+            }
+        }
+
+        // ========================================================
+        // RENDERIZADOR PREMIUM
+        // ========================================================
+        function renderizarPosts(posts) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+
+            const userStorage = JSON.parse(localStorage.getItem('br_user') || '{}');
+            const meuId = userStorage._id || userStorage.id;
+
+            posts.forEach(post => {
+                const isFixado = post.isFixado;
+                const isProva = post.tipo === 'prova_pagamento';
+                
+                let classeCard = 'post-card';
+                if (isFixado) classeCard += ' fixado';
+                if (isProva) classeCard += ' prova';
+
+                let autorNome = post.autor || 'BlackRock';
+                let avatarClass = 'post-avatar';
+                let iconeAvatar = 'B';
+
+                if (autorNome.includes('Administração') || autorNome.includes('Diretoria')) {
+                    avatarClass += ' admin'; iconeAvatar = '👑';
+                } else if (autorNome.includes('Sistema')) {
+                    avatarClass += ' sys'; iconeAvatar = '⚙️';
+                }
+
+                // 🚀 Aplicação da Blindagem XSS no título, corpo da mensagem e autor
+                const tituloFinal = post.titulo ? `<h3>${escapeHTML(post.titulo)}</h3>` : '';
+                const corpoTexto = post.texto || post.mensagem || '';
+                const corpoSeguro = escapeHTML(corpoTexto).replace(/\n/g, '<br>');
+                
+                // MÍDIAS COM BORDAS ARREDONDADAS E ESPAÇAMENTO
+                let midiaHTML = '';
+                if (post.formatoMidia === 'imagem' && post.midiaBase64) {
+                    midiaHTML = `<div class="media-wrapper"><img src="${post.midiaBase64}" class="post-midia" onclick="abrirMidiaFullscreen('${post.midiaBase64}', 'imagem', event)"></div>`;
+                } else if (post.formatoMidia === 'video' && post.midiaBase64) {
+                    midiaHTML = `
+                        <div class="media-wrapper">
+                            <div class="video-container" onclick="abrirMidiaFullscreen('${post.midiaBase64}', 'video', event)">
+                                <video src="${post.midiaBase64}" class="post-midia" style="pointer-events:none;"></video>
+                                <div class="play-btn">▶</div>
+                            </div>
+                        </div>`;
+                } else if (post.imagemUrl) {
+                    midiaHTML = `<div class="media-wrapper"><img src="${post.imagemUrl}" class="post-midia" onclick="abrirMidiaFullscreen('${post.imagemUrl}', 'imagem', event)"></div>`;
+                }
+
+                const curtidasArray = post.curtidas || [];
+                const jaCurtiu = curtidasArray.includes(meuId);
+                const totalLikes = post.reacoes || curtidasArray.length || 0;
+                
+                const btnClass = jaCurtiu ? 'action-btn active' : 'action-btn';
+                const fillStyle = jaCurtiu ? 'var(--cyan-neon)' : 'none';
+
+                const article = document.createElement('div');
+                article.className = classeCard;
+                
+                article.innerHTML = `
+                    <div class="post-header">
+                        <div class="${avatarClass}">${iconeAvatar}</div>
+                        <div class="post-autor-info">
+                   <span class="post-autor-nome">
+                                ${escapeHTML(autorNome)}
+                                ${isProva ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="var(--verde-menta)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>' : ''}
+                            </span>
+                            <span class="post-data">${formatarDataHora(post.createdAt || new Date())}</span>
+                        </div>
+                        ${isFixado ? '<span class="badge-fixado">Importante</span>' : ''}
+                    </div>
+                    
+                    <div class="post-body">
+                        ${tituloFinal}
+                        ${corpoSeguro}
+                    </div>
+                    
+                    ${midiaHTML}
+                       <div class="post-footer">
+                        <button class="${btnClass}" onclick="curtirPost(this, '${post._id}')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="${fillStyle}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            <span>Reconhecer <b class="like-count" style="margin-left: 4px;">${totalLikes}</b></span>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(article);
+            });
+        }
+
+        // MOTOR DE LIKES (COM ANIMAÇÃO DE PULSAR)
+        async function curtirPost(btn, postId) {
+            const icone = btn.querySelector('svg');
+            const contadorSpan = btn.querySelector('.like-count');
+            let likesAtual = parseInt(contadorSpan.innerText) || 0;
+            // Adiciona classe para a animação do CSS
+            btn.classList.add('animate-pop');
+            setTimeout(() => btn.classList.remove('animate-pop'), 300);
+            
+            if(btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                icone.style.fill = 'none';
+                contadorSpan.innerText = Math.max(0, likesAtual - 1);
+            } else {
+                btn.classList.add('active');
+                icone.style.fill = 'var(--cyan-neon)';
+                contadorSpan.innerText = likesAtual + 1;
+            }
+
+            try {
+                  await fetch(`${URL_BASE}/api/feed/${postId}/like`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('br_token')}`, 'Content-Type': 'application/json' }
+                });
+            } catch(e) { console.error("Erro no reconhecimento."); }
+        }
+    </script>
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

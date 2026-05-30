@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlackRock - Levantamento Oficial</title>
+    <style>
+        :root {
+            --bg-canvas: #0F111A; --bg-card: #171923; --navbar-bg: #0A0C12;
+            --borda-nitida: #2D3748; --input-bg: #1A202C; --texto-high: #FFFFFF;
+            --texto-med: #94A3B8; --magenta: #EC1A7C; --verde-menta: #38E090;
+            --cyan-neon: #00FFFF; --alerta: #FF4B4B; --pendente: #F6E05E;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --mpesa: #E63B2E; --emola: #F08000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background: var(--bg-canvas); color: var(--texto-high); min-height: 100vh; padding-top: 70px; padding-bottom: 50px; overflow-x: hidden; }
+        
+        /* HEADER FIXO */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-canvas); border-bottom: 1px solid var(--borda-nitida); display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; z-index: 1000; }
+        .btn-back { background: none; border: none; color: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .header-center h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin: 0; }
+
+        .container { padding: 20px; display: flex; flex-direction: column; gap: 20px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARTÃO DE SALDO */
+        .balance-card { background: var(--gradiente-cta); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(236,26,124,0.2); }
+        .balance-card span { font-size: 12px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+        .balance-card h2 { font-size: 32px; font-weight: 900; margin-top: 5px; color: #FFF; }
+
+        /* DADOS DA CONTA (ISOLAMENTO DO USUÁRIO) */
+        .user-info-box { background: var(--bg-card); border: 1px dashed var(--borda-nitida); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .ui-row { display: flex; justify-content: space-between; font-size: 13px; }
+        .ui-row span:first-child { color: var(--texto-med); font-weight: 600; }
+        .ui-row span:last-child { color: #FFF; font-weight: 800; }
+
+        /* FORMULÁRIO GERAL */
+        .form-section { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 11px; font-weight: 800; color: var(--texto-med); text-transform: uppercase; }
+        .input-padrao { background: var(--input-bg); border: 1px solid var(--borda-nitida); padding: 15px; border-radius: 10px; color: #FFF; font-size: 15px; outline: none; transition: 0.3s; width: 100%; }
+        .input-padrao:focus { border-color: var(--magenta); box-shadow: 0 0 0 2px rgba(236,26,124,0.2); }
+
+        select.input-padrao { appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+
+        /* CALCULADORA DE TAXAS EM TEMPO REAL */
+        .math-box { background: rgba(0,0,0,0.3); border: 1px solid var(--borda-nitida); border-radius: 10px; padding: 15px; margin-top: 5px; }
+        .math-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+        .math-row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px dashed var(--borda-nitida); }
+        .math-row span:first-child { color: var(--texto-med); font-weight: 600; }
+        .math-val { font-weight: 800; color: #FFF; }
+        .math-taxa { color: var(--alerta); }
+        .math-liquido { color: var(--verde-menta); font-size: 15px; }
+
+        .btn-submit { background: var(--gradiente-cta); color: #FFF; border: none; padding: 18px; border-radius: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; width: 100%; box-shadow: 0 10px 20px rgba(236,26,124,0.3); margin-top: 10px; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 15px 30px; border-radius: 50px; font-size: 13px; font-weight: 700; display: none; z-index: 4000; text-align: center; width: 85%; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+    </style>
+</head>
+<body>
+
+    <header class="header-fixed">
+        <button class="btn-back" onclick="window.location.href='perfil.html'">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="header-center"><h1>Levantamento</h1></div>
+        <div style="width: 26px;"></div>
+    </header>
+
+    <div id="toast">Notificação</div>
+
+    <div class="container">
+        <div class="balance-card">
+            <span>Saldo Disponível</span>
+            <h2 id="saldo-disponivel">0.00 MZN</h2>
+        </div>
+
+        <div class="user-info-box">
+            <div style="font-size: 10px; color: var(--magenta); font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">Requerente da Transação</div>
+            <div class="ui-row"><span>Titular do Terminal:</span><span id="ui-nome">Carregando...</span></div>
+            <div class="ui-row"><span>Número de Contrato:</span><span id="ui-tel">---</span></div>
+            <div class="ui-row"><span>ID Único:</span><span id="ui-id">---</span></div>
+        </div>
+
+        <div class="form-section">
+            <div class="input-group">
+                <label>Operadora de Destino</label>
+                <select id="sq-operadora" class="input-padrao">
+                    <option value="" disabled selected>Selecione a Carteira</option>
+                    <option value="M-Pesa">M-Pesa (Vodacom)</option>
+                    <option value="E-Mola">E-Mola (Movitel)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Número da Conta Destino</label>
+                <input type="tel" id="sq-numero-destino" class="input-padrao" placeholder="Ex: 840000000" maxlength="9">
+            </div>
+
+            <div class="input-group">
+                <label>Nome Registado na Operadora</label>
+                <input type="text" id="sq-nome-destino" class="input-padrao" placeholder="Nome exato da conta">
+            </div>
+
+            <div class="input-group">
+                <label>Valor a Levantar (MZN)</label>
+                <input type="number" id="sq-valor" class="input-padrao" placeholder="0.00" oninput="calcularTaxasEmTempoReal()">
+            </div>
+
+            <div class="math-box">
+                <div class="math-row">
+                    <span>Valor Solicitado:</span>
+                    <span class="math-val" id="math-bruto">0.00 MZN</span>
+                </div>
+                <div class="math-row">
+                    <span>Taxa da Rede (<span id="lbl-taxa-sistema">--</span>%):</span>
+                    <span class="math-val math-taxa" id="math-corte">-0.00 MZN</span>
+                </div>
+                <div class="math-row">
+                    <span style="color:var(--verde-menta);">LÍQUIDO A RECEBER:</span>
+                    <span class="math-val math-liquido" id="math-liquido">0.00 MZN</span>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 10px;">
+                <label style="color: var(--magenta);">Senha de Confirmação Financeira</label>
+                <input type="password" id="sq-senha" class="input-padrao" placeholder="Digite a sua senha de acesso">
+            </div>
+
+            <button class="btn-submit" id="btn-saque" onclick="processarSaque()">CONFIRMAR LEVANTAMENTO</button>
+        </div>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let dadosUsuario = null;
+        let taxaAtualDiretoria = 10; 
+        
+        // TRAVA EM MEMÓRIA CONTRA CLIQUES MÚLTIPLOS RÁPIDOS
+        let isProcessandoSaque = false; 
+
+        window.onload = async () => {
+            const userStore = localStorage.getItem('br_user');
+            if(!userStore) return window.location.href = 'login.html';
+            dadosUsuario = JSON.parse(userStore);
+
+            document.getElementById('ui-nome').innerText = dadosUsuario.nome;
+            document.getElementById('ui-tel').innerText = dadosUsuario.telefone;
+            document.getElementById('ui-id').innerText = dadosUsuario.idUnico;
+            document.getElementById('saldo-disponivel').innerText = Number(dadosUsuario.saldo || 0).toLocaleString('pt-MZ') + " MZN";
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/sistema/configs-publicas`);
+                const config = await res.json();
+                if(config.saqueTaxa !== undefined) {
+                    taxaAtualDiretoria = config.saqueTaxa;
+                }
+            } catch(e) { console.log("Erro de sync. A usar taxa padrão local."); }
+            
+            document.getElementById('lbl-taxa-sistema').innerText = taxaAtualDiretoria;
+        };
+
+        function mostrarNotificacao(msg, cor = 'var(--verde-menta)') {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.background = cor; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        // --- MATEMÁTICA EM TEMPO REAL ---
+        function calcularTaxasEmTempoReal() {
+            const valInput = document.getElementById('sq-valor').value;
+            const bruto = Number(valInput);
+
+            if (bruto > 0) {
+                const valorCorte = (bruto * taxaAtualDiretoria) / 100;
+                const liquido = bruto - valorCorte;
+
+                document.getElementById('math-bruto').innerText = bruto.toLocaleString('pt-MZ') + " MZN";
+                document.getElementById('math-corte').innerText = "-" + valorCorte.toLocaleString('pt-MZ') + " MZN";
+                document.getElementById('math-liquido').innerText = liquido.toLocaleString('pt-MZ') + " MZN";
+            } else {
+                document.getElementById('math-bruto').innerText = "0.00 MZN";
+                document.getElementById('math-corte').innerText = "-0.00 MZN";
+                document.getElementById('math-liquido').innerText = "0.00 MZN";
+            }
+        }
+
+        // --- ENVIO DO SAQUE PARA O BACKEND ---
+        async function processarSaque() {
+            // VERIFICAÇÃO ATÓMICA NO FRONTEND (Evita duplo clique instantâneo)
+            if (isProcessandoSaque) return; 
+
+            const operadora = document.getElementById('sq-operadora').value;
+            const numeroContaDestino = document.getElementById('sq-numero-destino').value;
+            const nomeContaDestino = document.getElementById('sq-nome-destino').value;
+            const valor = document.getElementById('sq-valor').value;
+            const senhaConfirmacao = document.getElementById('sq-senha').value;
+
+            if(!operadora || !numeroContaDestino || !nomeContaDestino || !valor || !senhaConfirmacao) {
+                return mostrarNotificacao("Por favor, preencha todos os campos e selecione a operadora.", "var(--alerta)");
+            }
+
+            if(Number(valor) > Number(dadosUsuario.saldo)) {
+                return mostrarNotificacao("Saldo insuficiente para este levantamento.", "var(--alerta)");
+            }
+
+            // ATIVA A TRAVA DE MEMÓRIA E VISUAL
+            isProcessandoSaque = true; 
+            const btn = document.getElementById('btn-saque');
+            btn.innerText = "A AUDITAR PEDIDO..."; btn.disabled = true;
+
+            const payload = { operadora, numeroContaDestino, nomeContaDestino, valor, senhaConfirmacao };
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/wallet/saque`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('br_token')}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+
+                if(res.ok) {
+                    if (data.novoSaldo !== undefined) {
+                        dadosUsuario.saldo = data.novoSaldo;
+                        localStorage.setItem('br_user', JSON.stringify(dadosUsuario));
+                    }
+                    
+                    mostrarNotificacao("Pedido registado! A verificar histórico financeiro...", "var(--verde-menta)");
+                    setTimeout(() => { window.location.href = 'historico.html'; }, 2000);
+                } else {
+                    mostrarNotificacao(data.erro || "Falha na validação de segurança.", "var(--alerta)");
+                    // APENAS SE FALHAR, LIBERTA A TRAVA
+                    isProcessandoSaque = false;
+                    btn.innerText = "CONFIRMAR LEVANTAMENTO"; btn.disabled = false;
+                }
+            } catch(e) {
+                mostrarNotificacao("Erro de comunicação com o servidor financeiro.", "var(--alerta)");
+                isProcessandoSaque = false;
+                btn.innerText = "CONFIRMAR LEVANTAMENTO"; btn.disabled = false;
+            }
+        }
+    </script>
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

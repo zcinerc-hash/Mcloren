@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlackRock - Depósito Oficial</title>
+    <style>
+        :root {
+            --bg-canvas: #0F111A; --bg-card: #171923; --navbar-bg: #0A0C12;
+            --borda-nitida: #2D3748; --input-bg: #1A202C; --texto-high: #FFFFFF;
+            --texto-med: #94A3B8; --magenta: #EC1A7C; --verde-menta: #38E090;
+            --cyan-neon: #00FFFF; --alerta: #FF4B4B; --pendente: #F6E05E;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --mpesa: #E63B2E; --emola: #F08000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-canvas); color: var(--texto-high); min-height: 100vh; padding-top: 70px; padding-bottom: 40px; overflow-x: hidden; }
+
+        /* HEADER */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-canvas); border-bottom: 1px solid var(--borda-nitida); display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; z-index: 1000; }
+        .btn-back { background: none; border: none; color: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .header-center h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin: 0; }
+
+        .main-content { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* DIRETRIZES DA DIRETORIA */
+        .admin-notice { background: rgba(0,255,255,0.05); border: 1px solid rgba(0,255,255,0.2); border-radius: 16px; padding: 20px; }
+        .admin-notice h3 { font-size: 13px; color: var(--cyan-neon); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+        .admin-notice p { font-size: 12px; color: var(--texto-med); line-height: 1.6; }
+
+        /* CARDS DE OPERADORA */
+        .op-card { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 16px; padding: 25px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .op-card:active { transform: scale(0.98); }
+        .op-left { display: flex; align-items: center; gap: 15px; }
+        .op-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 20px; color: #FFF; }
+        .op-icon.mpesa { background: var(--mpesa); }
+        .op-icon.emola { background: var(--emola); }
+        .op-text h3 { font-size: 16px; font-weight: 800; color: #FFF; margin-bottom: 4px; }
+        .op-text p { font-size: 12px; color: var(--texto-med); }
+
+        /* INFO DA OPERADORA (ETAPA 2) */
+        .info-box { background: rgba(0,255,255,0.05); border: 1px solid rgba(0,255,255,0.2); border-radius: 16px; padding: 20px; margin-bottom: 5px; }
+        .info-title { font-size: 12px; color: var(--cyan-neon); font-weight: 800; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label { font-size: 11px; color: var(--texto-med); text-transform: uppercase; font-weight: 700; }
+        .info-value { font-size: 16px; font-weight: 800; color: #FFF; letter-spacing: 1px; }
+        .btn-copy { background: var(--bg-card); border: 1px solid var(--borda-nitida); color: var(--texto-high); padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+        /* FORMULÁRIO */
+        .form-section { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 16px; padding: 25px 20px; display: flex; flex-direction: column; gap: 15px; }
+        .input-group { margin-bottom: 2px; }
+        .input-group label { font-size: 12px; color: var(--texto-med); font-weight: 700; display: block; margin-bottom: 8px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 16px; background: var(--input-bg); border: 1px solid var(--borda-nitida); border-radius: 10px; color: #fff; font-size: 15px; outline: none; }
+        .input-group input:focus { border-color: var(--verde-menta); }
+        .input-group input[readonly] { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05); color: #888; }
+
+        /* UPLOAD */
+        .file-upload-wrapper { position: relative; width: 100%; min-height: 120px; background: rgba(56,224,144,0.05); border: 2px dashed rgba(56,224,144,0.3); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; color: var(--verde-menta); transition: 0.3s; padding: 20px; text-align: center; }
+        .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-text { font-size: 13px; font-weight: 700; margin-top: 10px; }
+        #preview-img { display: none; max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 10px; object-fit: contain; }
+
+        .btn-submit { width: 100%; padding: 20px; border-radius: 12px; background: var(--gradiente-cta); color: #FFF; font-size: 16px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; box-shadow: 0 10px 20px rgba(236,26,124,0.3); transition: 0.3s; }
+        .btn-submit:disabled { background: var(--borda-nitida); box-shadow: none; cursor: not-allowed; color: var(--texto-med); }
+
+        #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 15px 25px; border-radius: 30px; font-size: 13px; font-weight: 800; display: none; z-index: 4000; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    
+    <header class="header-fixed">
+        <button class="btn-back" onclick="voltarPagina()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="header-center"><h1>DEPÓSITO</h1></div>
+        <div style="width: 26px;"></div>
+    </header>
+
+    <div id="toast">Notificação</div>
+
+    <div id="etapa-operadoras" class="main-content">
+        
+        <div class="admin-notice">
+            <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> DIRETRIZES DA DIRETORIA</h3>
+            <p>...
+        </div>
+
+        <h2 style="font-size: 14px; color: var(--texto-med); margin-top: 5px; text-transform: uppercase;">Selecione a Operadora:</h2>
+        
+       <div class="op-card" id="btn-op-mpesa" onclick="abrirFormulario('M-PESA', window.numMpesaDyn || '---', 'var(--mpesa)', window.nomeMpesaDyn || 'BlackRock Gestão')">
+            <div class="op-left">
+                <div class="op-icon mpesa">M</div>
+                <div class="op-text">
+                    <h3>Vodacom M-PESA</h3>
+                    <p>Transferência instantânea</p>
+                </div>
+            </div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--texto-med)" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <div class="op-card" id="btn-op-emola" onclick="abrirFormulario('E-MOLA', window.numEmolaDyn || '---', 'var(--emola)', window.nomeEmolaDyn || 'BlackRock Gestão')">
+            <div class="op-left">
+                <div class="op-icon emola">e</div>
+                <div class="op-text">
+                    <h3>Movitel e-Mola</h3>
+                    <p>Transferência instantânea</p>
+                </div>
+            </div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--texto-med)" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+    </div>
+    <div id="etapa-formulario" class="main-content" style="display: none;">
+        
+        <div class="info-box">
+            <div class="info-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                Dados para Transferência
+            </div>
+            <div class="info-row" style="margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                    <span class="info-label">Nome da Conta</span>
+                    <span class="info-value" style="font-size: 14px;">BlackRock Gestão</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 3px; text-align: right;">
+                    <span class="info-label">Operadora</span>
+                    <span class="info-value" id="resumo-canal" style="font-size: 14px; color: var(--mpesa);">---</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                    <span class="info-label">Número a Depositar</span>
+                    <span class="info-value" id="resumo-numero">---</span>
+                </div>
+                <button class="btn-copy" id="btn-copiar-num">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copiar
+                </button>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="info-title" style="color: var(--verde-menta); margin-bottom: 10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Registo de Depósito
+            </div>
+
+            <input type="hidden" id="f-canal">
+
+            <div class="input-group">
+                <label>Nome do Usuário</label>
+                <input type="text" id="f-auto-nome" readonly>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 2px;">
+                <div class="input-group">
+                    <label>Seu Número</label>
+                    <input type="text" id="f-auto-tel" readonly>
+                </div>
+                <div class="input-group">
+                    <label>Seu ID</label>
+                    <input type="text" id="f-auto-id" readonly>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px dashed var(--borda-nitida); margin: 15px 0;">
+
+            <div class="input-group">
+                <label style="color: #FFF;">Nº que realizou a transferência *</label>
+                <input type="tel" id="f-num-transf" placeholder="Ex: 84... ou 87...">
+            </div>
+
+            <div class="input-group">
+                <label style="color: #FFF;">Valor a Depositar (Mín. 200 MZN) *</label>
+                <input type="number" id="f-valor" placeholder="Ex: 1000">
+            </div>
+
+            <div class="input-group">
+                <label style="color: #FFF;">ID da Transação Completo (TXID) *</label>
+                <input type="text" id="f-txid" placeholder="Código exato do SMS">
+            </div>
+
+            <div class="input-group">
+                <label style="color:var(--alerta);">Comprovativo na Galeria (Obrigatório) *</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="f-comprovante" accept="image/*" onchange="previewImagem(event)">
+                    <div id="upload-placeholder">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        <div class="file-text">Tocar para Anexar Foto</div>
+                    </div>
+                    <img id="preview-img" src="" alt="Comprovante">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 5px;">
+                <label style="color:var(--magenta);">Senha de Login (Confirmação) *</label>
+                <input type="password" id="f-senha" placeholder="A sua senha">
+            </div>
+
+            <button class="btn-submit" id="btn-enviar" onclick="processarDeposito()">Confirmar Depósito</button>
+        </div>
+    </div>
+    
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let comprovanteBase64 = null;
+        let dadosUsuario = null;
+
+        window.onload = () => {
+            const token = localStorage.getItem('br_token');
+            const userStr = localStorage.getItem('br_user');
+            
+            if(!token || !userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+            dadosUsuario = JSON.parse(userStr);
+        };
+
+        function mostrarNotificacao(msg, cor = '#10B981') {
+            const t = document.getElementById('toast'); 
+            t.innerText = msg; t.style.background = cor; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 4000);
+        }
+
+        // --- NAVEGAÇÃO ---
+        function voltarPagina() {
+            const form = document.getElementById('etapa-formulario');
+            const ops = document.getElementById('etapa-operadoras');
+            
+            if (form.style.display === 'flex') {
+                form.style.display = 'none';
+                ops.style.display = 'flex';
+                limparFormulario();
+            } else {
+                window.location.href = 'perfil.html';
+            }
+        }
+
+        // --- ABRIR FORMULÁRIO E PREENCHER AUTOMÁTICO ---
+        function abrirFormulario(canalNome, canalNumero, cor, titularNome) {
+            document.getElementById('etapa-operadoras').style.display = 'none';
+            document.getElementById('etapa-formulario').style.display = 'flex';
+            
+            // Dados da Operadora
+            document.getElementById('f-canal').value = canalNome;
+            document.getElementById('resumo-canal').innerText = canalNome;
+            document.getElementById('resumo-canal').style.color = cor;
+            document.getElementById('resumo-numero').innerText = canalNumero;
+            
+            // NOME DO TITULAR DA CONTA (Injetado dinamicamente)
+            document.querySelectorAll('.info-value')[0].innerText = titularNome;
+            
+            // PREENCHIMENTO AUTOMÁTICO DA CONTA
+            document.getElementById('f-auto-nome').value = dadosUsuario.nome || "Não definido";
+            document.getElementById('f-auto-tel').value = dadosUsuario.telefone || "Não definido";
+            document.getElementById('f-auto-id').value = dadosUsuario.idUnico || "---";
+
+            document.getElementById('btn-copiar-num').onclick = () => {
+                navigator.clipboard.writeText(canalNumero);
+                mostrarNotificacao("Número copiado para transferência!", "var(--cyan-neon)");
+            };
+        }
+
+        // ==========================================================
+        // MÁGICA: COMPRESSÃO DE IMAGEM NO FRONTEND (Evita Crash no Backend)
+        // ==========================================================
+        function previewImagem(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            document.getElementById('upload-placeholder').innerHTML = '<div class="file-text" style="color:var(--pendente);">A comprimir imagem...</div>';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Define o limite de largura e altura máxima (800px)
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Desenha a imagem redimensionada
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Converte para JPEG com 70% de qualidade (Reduz de MB para KB)
+                    comprovanteBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+                    document.getElementById('upload-placeholder').style.display = 'none';
+                    const imgPreview = document.getElementById('preview-img');
+                    imgPreview.src = comprovanteBase64;
+                    imgPreview.style.display = 'block';
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- FUNÇÃO PARA LIMPAR TUDO ---
+        function limparFormulario() {
+            document.getElementById('f-num-transf').value = '';
+            document.getElementById('f-valor').value = '';
+            document.getElementById('f-txid').value = '';
+            document.getElementById('f-senha').value = '';
+            
+            comprovanteBase64 = null;
+            document.getElementById('upload-placeholder').innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg><div class="file-text">Tocar para Anexar Foto</div>';
+            document.getElementById('upload-placeholder').style.display = 'flex';
+            document.getElementById('preview-img').style.display = 'none';
+            document.getElementById('preview-img').src = '';
+            document.getElementById('f-comprovante').value = ''; 
+        }
+
+        // --- ENVIO DO DEPÓSITO COM VALIDAÇÕES RÍGIDAS ---
+        async function processarDeposito() {
+            const canal = document.getElementById('f-canal').value;
+            const numTransf = document.getElementById('f-num-transf').value.trim();
+            const valor = document.getElementById('f-valor').value.trim();
+            const txid = document.getElementById('f-txid').value.trim();
+            const senha = document.getElementById('f-senha').value;
+            const btn = document.getElementById('btn-enviar');
+
+            if(!numTransf || !valor || !txid || !senha) {
+                return mostrarNotificacao("Preencha todos os campos obrigatórios (Número, Valor, TXID e Senha).", "var(--alerta)");
+            }
+
+            if(Number(valor) < 200) {
+                return mostrarNotificacao("O depósito mínimo permitido é de 200 MZN.", "var(--alerta)");
+            }
+
+            if(!comprovanteBase64) {
+                return mostrarNotificacao("Aviso: O upload da foto do comprovativo é obrigatório!", "var(--alerta)");
+            }
+
+            btn.innerText = "A Processar...";
+            btn.disabled = true;
+
+            const payload = {
+                canal: canal,
+                numeroOrigem: numTransf, 
+                valor: Number(valor),
+                idTransacaoBancaria: txid,
+                comprovanteBase64: comprovanteBase64,
+                senhaConfirmacao: senha 
+            };
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/wallet/deposito`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('br_token')}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+
+                if(res.ok) {
+                    mostrarNotificacao("SUCESSO: Registo concluído! O seu depósito encontra-se em análise.", "var(--verde-menta)");
+                    setTimeout(() => { window.location.href = 'historico.html'; }, 2000);
+                } else {
+                    mostrarNotificacao(data.erro || "Falha ao confirmar. Verifique a senha e o TXID.", "var(--alerta)");
+                    btn.innerText = "Confirmar Depósito";
+                    btn.disabled = false;
+                }
+            } catch(e) {
+                mostrarNotificacao("Erro de ligação com a Diretoria.", "var(--alerta)");
+                btn.innerText = "Confirmar Depósito";
+                btn.disabled = false;
+            }
+        }
+
+        // MOTOR DE SINCRONIZAÇÃO BLACKROCK (BLINDADO)
+        async function sincronizarComDiretoria() {
+            try {
+                const res = await fetch(`${URL_BASE}/api/sistema/configs-publicas`);
+                const cfg = await res.json();
+                
+                // 1. ATUALIZA AS DIRETRIZES DA DIRETORIA
+                if(cfg.depositoMsg) {
+                    const caixaTexto = document.querySelector('.admin-notice p');
+                    caixaTexto.innerHTML = cfg.depositoMsg.replace(/\n/g, '<br>');
+                }
+
+                // 2. ALIMENTA AS VARIÁVEIS GLOBAIS (A Mágica do Clique)
+                window.numMpesaDyn = cfg.mpesaNum;
+                window.numEmolaDyn = cfg.emolaNum;
+                window.nomeMpesaDyn = cfg.mpesaNome;
+                window.nomeEmolaDyn = cfg.emolaNome;
+
+            } catch(e) { console.log("Erro ao sincronizar com a Diretoria."); }
+        }
+        window.addEventListener('load', sincronizarComDiretoria);
+    </script>
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

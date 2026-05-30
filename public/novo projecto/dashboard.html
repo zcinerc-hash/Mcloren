@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BlackRock - Terminal Cockpit</title>
+    <style>
+        :root {
+            --bg-canvas: #0A0C12; --bg-card: #141721; --navbar-bg: #0E1117;
+            --borda-nitida: #1A202C; --texto-high: #FFFFFF; --texto-med: #94A3B8;
+            --magenta: #EC1A7C; --violeta: #4E3FEA; --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --verde-menta: #38E090; --cyan-neon: #00FFFF; --alerta: #FF4B4B; --pendente: #F6E05E;
+            --ouro: #F59E0B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: var(--bg-canvas); color: var(--texto-high); height: 100dvh; overflow-x: hidden; overflow-y: auto; display: flex; flex-direction: column; }
+
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background-color: rgba(10, 12, 18, 0.95); backdrop-filter: blur(10px); padding: calc(15px + env(safe-area-inset-top)) 20px 15px; border-bottom: 1px solid var(--borda-nitida); z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        .h-left { display: flex; align-items: center; gap: 12px; }
+        .h-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--borda-nitida); display: flex; justify-content: center; align-items: center; overflow: hidden; font-weight: 900; color: var(--cyan-neon); cursor: pointer; }
+        .h-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .h-info { display: flex; flex-direction: column; }
+        .h-welcome { font-size: 13px; font-weight: 800; color: #FFF; }
+        .h-status { font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 4px; margin-top: 2px; text-transform: uppercase; }
+        
+        .h-right { position: relative; }
+        .btn-notif { background: none; border: none; color: var(--texto-high); cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .badge-notif { position: absolute; top: 0; right: 2px; background: var(--alerta); color: #FFF; font-size: 8px; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--bg-canvas); }
+
+        .main-content { flex: 1; overflow-y: auto; padding: 100px 20px calc(100px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 15px; animation: fadeIn 0.4s ease; width: 100%; max-width: 600px; margin: 0 auto;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .saldo-master { background: linear-gradient(145deg, #1A1525, var(--bg-card)); border: 1px solid #3d1c54; border-radius: 20px; padding: 25px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .sm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .sm-label { font-size: 11px; color: var(--texto-med); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        .btn-eye { background: none; border: none; color: var(--texto-med); cursor: pointer; }
+        .sm-total { font-size: 34px; font-weight: 900; color: #FFF; display: flex; align-items: baseline; gap: 5px; margin-bottom: 20px; }
+        .sm-total small { font-size: 14px; color: var(--cyan-neon); }
+        .sm-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; }
+        .sm-sub { display: flex; flex-direction: column; gap: 4px; }
+        .sm-sub span { font-size: 9px; color: var(--texto-med); text-transform: uppercase; font-weight: 700; }
+        .sm-sub strong { font-size: 12px; color: #FFF; font-weight: 800; }
+
+        .ganhos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .g-card { background: var(--bg-card); border: 1px solid var(--borda-nitida); padding: 15px; border-radius: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .g-header { display: flex; justify-content: space-between; align-items: center; }
+        .g-header span { font-size: 10px; color: var(--texto-med); text-transform: uppercase; font-weight: 700; }
+        .g-icon { color: var(--cyan-neon); }
+        .g-val { font-size: 16px; font-weight: 900; color: #FFF; }
+        .g-trend { font-size: 10px; font-weight: 800; display: flex; align-items: center; gap: 3px; }
+        .trend-up { color: var(--verde-menta); } .trend-down { color: var(--alerta); }
+
+        .level-card { background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .level-info h4 { font-size: 10px; color: var(--texto-med); text-transform: uppercase; margin-bottom: 2px; }
+        .level-info h2 { font-size: 16px; font-weight: 900; color: var(--cyan-neon); text-transform: uppercase; }
+        .level-action { color: var(--texto-med); }
+
+        .plan-section { margin-top: 10px; }
+        .ps-title { font-size: 12px; font-weight: 800; color: var(--texto-med); text-transform: uppercase; margin-bottom: 10px; padding-left: 5px; border-left: 3px solid var(--magenta); }
+        .plan-card { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 15px; padding: 20px; display: none; }
+        .pc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .pc-header h3 { font-size: 18px; font-weight: 900; color: #FFF; }
+        .pc-header span { font-size: 10px; background: rgba(236,26,124,0.1); color: var(--magenta); padding: 4px 8px; border-radius: 4px; font-weight: 800; }
+        .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .pc-item span { font-size: 10px; color: var(--texto-med); display: block; margin-bottom: 2px; text-transform: uppercase; font-weight: 700;}
+        .pc-item strong { font-size: 14px; color: #FFF; font-weight: 800; }
+        .pc-progress { width: 100%; height: 6px; background: var(--borda-nitida); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+        .pc-bar { height: 100%; background: var(--gradiente-cta); width: 0%; transition: width 1s ease; }
+        .pc-time { font-size: 10px; color: var(--texto-med); font-weight: 600; text-align: right; }
+
+        .empty-plan { background: var(--bg-card); border: 1px dashed var(--borda-nitida); border-radius: 15px; padding: 30px 20px; text-align: center; display: none; flex-direction: column; align-items: center; gap: 10px; }
+        .empty-plan h3 { font-size: 14px; color: #FFF; font-weight: 800; margin-top: 10px; }
+        .empty-plan p { font-size: 11px; color: var(--texto-med); margin-bottom: 10px; }
+        .btn-comecar { background: var(--gradiente-cta); border: none; color: #FFF; font-size: 12px; font-weight: 900; padding: 12px 24px; border-radius: 8px; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+
+        .banner-mercado { 
+            display: none; background: linear-gradient(135deg, #1A1525, #0F1219); 
+            border: 2px solid var(--ouro); border-radius: 16px; padding: 25px 20px; 
+            text-align: center; margin-top: 5px; margin-bottom: 25px;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); 
+            animation: pulseGlow 2s infinite; position: relative; overflow: hidden;
+            cursor: pointer;
+        }
+        .banner-mercado::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--ouro), var(--magenta), var(--cyan-neon)); }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(245,158,11,0.1); } 50% { box-shadow: 0 0 40px rgba(245,158,11,0.3); transform: scale(1.01); } 100% { box-shadow: 0 0 15px rgba(245,158,11,0.1); } }
+        .bm-title { color: var(--ouro); font-size: 18px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .bm-desc { color: var(--texto-med); font-size: 12px; margin-bottom: 15px; line-height: 1.5;}
+        .bm-timer { font-size: 26px; font-weight: 900; color: #FFF; margin-bottom: 15px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.3); font-variant-numeric: tabular-nums; }
+        .btn-acessar-mercado { background: linear-gradient(135deg, var(--ouro), #D97706); color: #000; border: none; padding: 18px 20px; border-radius: 12px; font-weight: 900; font-size: 14px; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(245,158,11,0.3); pointer-events: none;}
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--borda-nitida); width: 100%; max-width: 400px; border-radius: 16px; padding: 25px; text-align: center; }
+        .modal-content h3 { color: var(--cyan-neon); font-size: 18px; margin-bottom: 10px; font-weight: 900; text-transform: uppercase;}
+        .modal-content p { color: var(--texto-med); font-size: 12px; line-height: 1.6; margin-bottom: 20px; }
+        .btn-fechar { background: transparent; border: 1px solid var(--borda-nitida); color: #FFF; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--navbar-bg); border-top: 1px solid var(--borda-nitida); display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--texto-med); text-decoration: none; font-size: 10px; font-weight: 700; text-transform: uppercase; width: 60px;}
+        .nav-icon { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: 0.3s; }
+        .nav-item.active { color: var(--cyan-neon); }
+        .nav-item.active .nav-icon { stroke: var(--cyan-neon); filter: drop-shadow(0 0 5px rgba(0,255,255,0.4)); }
+        
+        /* PULSAR ALERTA DE RENOVAÇÃO */
+        @keyframes pulseAlertText { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <header class="header-fixed">
+        <div class="h-left">
+            <div class="h-avatar" id="topo-avatar" onclick="visualizarFoto()">U</div>
+            <div class="h-info">
+                <span class="h-welcome" id="txt-welcome">A carregar...</span>
+                <span class="h-status" id="txt-status">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"></circle></svg>
+                    A verificar...
+                </span>
+            </div>
+        </div>
+         <div class="h-right">
+            <a href="notificacoes.html" class="btn-notif">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <div class="badge-notif" id="notif-count" style="display: none;">0</div>
+            </a>
+        </div>
+    </header>
+
+    <div id="modal-foto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center;" onclick="this.style.display='none'">
+        <img id="foto-ampliada" src="" style="max-width:90%; max-height:80%; border-radius:20px; box-shadow: 0 0 40px rgba(0, 255, 255, 0.4); object-fit:contain;">
+    </div>
+    
+    <div class="main-content">
+        <div class="saldo-master">
+            <div class="sm-header">
+                <span class="sm-label">Capital Disponível</span>
+                <button class="btn-eye" onclick="toggleSaldo()">
+                    <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+            <div class="sm-total">
+                <span id="val-total">0,00</span>
+                <small id="moeda-total">MZN</small>
+            </div>
+            <div class="sm-grid">
+                <div class="sm-sub">
+                    <span>Principal</span>
+                    <strong id="val-princ">0,00 MZN</strong>
+                </div>
+                <div class="sm-sub" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                    <span>Bônus</span>
+                    <strong id="val-bonus">0,00 MZN</strong>
+                </div>
+                <div class="sm-sub" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                    <span>Bloqueado</span>
+                    <strong id="val-block" style="color: var(--alerta);">0,00 MZN</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="ganhos-grid">
+            <div class="g-card">
+                <div class="g-header"><span>Ganhos Hoje</span><svg class="g-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                <div class="g-val" id="g-hoje">0,00 MZN</div>
+                <div class="g-trend trend-up">↓ <span id="t-hoje" style="color:var(--texto-med); font-weight:normal;">Zera às 00h</span></div>
+            </div>
+            <div class="g-card">
+                <div class="g-header"><span>Ganhos Semana</span><svg class="g-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                <div class="g-val" id="g-semana">0,00 MZN</div>
+                <div class="g-trend trend-up">↓ <span id="t-semana" style="color:var(--texto-med); font-weight:normal;">Ciclo Semanal</span></div>
+            </div>
+            <div class="g-card">
+                <div class="g-header"><span>Ganhos Mês</span><svg class="g-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                <div class="g-val" id="g-mes">0,00 MZN</div>
+                <div class="g-trend trend-down">↓ <span id="t-mes" style="color:var(--texto-med); font-weight:normal;">Ciclo Mensal</span></div>
+            </div>
+            <div class="g-card">
+                <div class="g-header"><span>Ganhos Totais</span><svg class="g-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                <div class="g-val" id="g-total" style="color: var(--verde-menta);">0,00 MZN</div>
+                <div class="g-trend trend-up">↑ <span id="t-total" style="color:var(--verde-menta); font-weight:normal;">Rendimento Global</span></div>
+            </div>
+        </div>
+
+        <div class="level-card" onclick="abrirModalNivel()">
+            <div class="level-info">
+                <h4>Nível Atual de Investidor</h4>
+                <h2 id="txt-nivel">OBSERVADOR</h2>
+            </div>
+            <div class="level-action">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </div>
+        </div>
+
+        <div class="plan-section">
+            <h3 class="ps-title">Seu Investimento Ativo</h3>
+            <div class="plan-card" id="card-plano-ativo" onclick="window.location.href='planos.html'" style="cursor:pointer;">
+                <div class="pc-header">
+                    <h3 id="p-nome">NODE ---</h3>
+                    <span id="p-estrato">---</span>
+                </div>
+                <div class="pc-grid">
+                    <div class="pc-item"><span>Valor Investido</span><strong id="p-investido">0,00 MZN</strong></div>
+                    <div class="pc-item"><span>Lucro Diário</span><strong id="p-diario" style="color: var(--verde-menta);">0,00 MZN</strong></div>
+                </div>
+                <div class="pc-progress"><div class="pc-bar" id="p-bar"></div></div>
+                <div class="pc-time" id="p-tempo">A calcular...</div>
+            </div>
+
+            <div class="empty-plan" id="card-sem-plano">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--texto-med)" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <h3>Você ainda não começou a investir</h3>
+                <p>Ative um plano para começar a gerar lucros diários na plataforma.</p>
+                <a href="planos.html" class="btn-comecar">Começar Agora 👉</a>
+            </div>
+        </div>
+
+        <div class="banner-mercado" id="banner-mercado" onclick="window.location.href='mercado_premium.html'">
+            <div class="bm-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 
+                OPERAÇÕES ESTRATÉGICAS
+            </div>
+            <div class="bm-desc" id="bm-desc-text">Oportunidade Temporária de Alto Rendimento com Vagas Limitadas.<br><strong>O Mercado fecha em:</strong></div>
+            <div class="bm-timer" id="bm-timer">00d 00h 00m 00s</div>
+            <button class="btn-acessar-mercado">ACESSAR O COFRE AGORA 👉</button>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="modalNivel">
+        <div class="modal-content">
+            <h3 id="modal-nivel-titulo">Nível</h3>
+            <p id="modal-nivel-texto">A carregar informações...</p>
+            <button class="btn-fechar" onclick="fecharModalNivel()">Entendido</button>
+        </div>
+    </div>
+
+<div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Início</a>
+        <a href="planos.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Planos</a>
+        <a href="tarifas.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Tarifas</a>
+        <a href="equipe.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Equipe</a>
+        <a href="feed.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="10" y1="10" x2="10" y2="20"></line></svg> Feed</a>
+        <a href="perfil.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Perfil</a>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let saldoOculto = false;
+
+        let db = {
+            isFirstLogin: false, nome: "Usuário", statusConta: "ativo", notifs: 0, isMercadoAberto: false, dataFechamentoMercado: null,
+            temContratoMercadoAtivo: false,
+            saldos: { total: 0, principal: 0, bonus: 0, bloqueado: 0 },
+            ganhos: { hoje: 0, semana: 0, mes: 0, total: 0 },
+            plano: { ativo: false, nome: "Nenhum", estrato: "Nenhum", investido: 0, diario: 0, validade: 0, diasRestantes: 0, dataExp: null }
+        };
+
+        window.onload = async () => {
+            const token = localStorage.getItem('br_token');
+            if(!token) { window.location.href = 'login.html'; return; }
+
+            const avatarLocal = localStorage.getItem('br_user_foto');
+            const avatarContainer = document.getElementById('topo-avatar');
+            if (avatarLocal && avatarLocal.startsWith('data:image')) {
+                avatarContainer.innerHTML = `<img src="${avatarLocal}" alt="Perfil" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+
+            await buscarDadosDaAPI(token);
+        };
+
+        function visualizarFoto() {
+            const avatarLocal = localStorage.getItem('br_user_foto');
+            if(avatarLocal && avatarLocal.startsWith('data:image')) {
+                document.getElementById('foto-ampliada').src = avatarLocal;
+                document.getElementById('modal-foto').style.display = 'flex';
+            } else {
+                alert("Você ainda não configurou uma foto de perfil. Vá até a aba Perfil.");
+            }
+        }
+
+        function formatar(valor) { return (Number(valor) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        async function buscarDadosDaAPI(token) {
+            try {
+                const res = await fetch(`${URL_BASE}/api/usuario/dashboard`, { headers: { 'Authorization': `Bearer ${token}` } });
+                
+                if(res.ok) {
+                    const data = await res.json();
+                    
+                    if(data.user) {
+                        localStorage.setItem('br_user', JSON.stringify(data.user));
+
+                        db.nome = data.user.nome || "Investidor";
+                        db.statusConta = data.user.status || "ativo";
+                        db.saldos.total = data.user.saldo || 0;
+                        db.saldos.principal = data.user.saldoPrincipal || data.user.saldo || 0;
+                        db.saldos.bloqueado = data.user.saldoBloqueado || 0;
+
+                        const pNome = data.user.planoAtivo || "Nenhum";
+                        if(pNome !== "Nenhum" && data.planoDetails) {                            
+                            db.plano.ativo = true;
+                            db.plano.nome = pNome;
+                            db.plano.investido = data.planoDetails.valor || 0;
+                            db.plano.diario = data.planoDetails.ganhoDiario || 0;
+                            db.plano.validade = data.planoDetails.duracao || 0;
+                            
+                            if (data.user.dataExpiracaoPlano) {
+db.plano.dataExp = new Date(data.user.dataExpiracaoPlano);
+                                const diferencaTempo = db.plano.dataExp.getTime() - new Date().getTime();
+                                const diferencaDias = Math.ceil(diferencaTempo / (1000 * 3600 * 24));
+                                db.plano.diasRestantes = diferencaDias >= 0 ? diferencaDias : 0;
+                            } else {
+                                db.plano.diasRestantes = db.plano.validade;
+                            }
+                            if(pNome.includes('1') || pNome.includes('2') || pNome.includes('3')) db.plano.estrato = "STANDARD";
+                            else if(pNome.includes('4') || pNome.includes('5') || pNome.includes('6')) db.plano.estrato = "PREMIUM PLUS";
+                            else if(pNome.includes('7') || pNome.includes('8') || pNome.includes('VIP')) db.plano.estrato = "VIP GOLD";
+                            else db.plano.estrato = "INVESTIDOR";
+                        }
+                    }
+
+                    if(data.ganhos) {
+                        db.ganhos.hoje = data.ganhos.hoje || 0;
+                        db.ganhos.semana = data.ganhos.semana || 0;
+                        db.ganhos.mes = data.ganhos.mes || 0;
+                        db.ganhos.total = data.ganhos.total || 0;
+                        db.saldos.bonus = data.ganhos.bonus || 0;
+                    }
+
+                    db.notifs = data.unreadNotifications || 0;
+                    db.isMercadoAberto = data.isMercadoAberto || false;
+                    db.dataFechamentoMercado = data.dataFechamentoMercado || null;
+                    db.temContratoMercadoAtivo = data.temContratoMercadoAtivo || false;
+
+                } else {
+                    localStorage.removeItem('br_token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                renderizarDashboard();
+            } catch(e) { 
+                console.log("Erro de conexão.", e); 
+                renderizarDashboard(); 
+            }
+        }
+
+        let timerExpDashboard = null;
+        function renderizarDashboard() {
+            document.getElementById('txt-welcome').innerText = `Olá, ${db.nome.split(' ')[0]}`;
+            
+            const avatarContainer = document.getElementById('topo-avatar');
+            if(avatarContainer.innerHTML === "U") avatarContainer.innerText = db.nome.charAt(0).toUpperCase();
+
+            const badgeNotif = document.getElementById('notif-count');
+            if(db.notifs > 0) { badgeNotif.innerText = db.notifs; badgeNotif.style.display = 'flex'; } 
+            else { badgeNotif.style.display = 'none'; }
+
+            const sBadge = document.getElementById('txt-status');
+            if(db.plano.ativo || db.statusConta === 'ativo') { sBadge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="var(--verde-menta)"><circle cx="12" cy="12" r="10"></circle></svg> <span style="color:var(--verde-menta)">Conta Ativa</span>`; }
+            else if(db.statusConta === 'bloqueado') { sBadge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="var(--alerta)"><circle cx="12" cy="12" r="10"></circle></svg> <span style="color:var(--alerta)">Conta Bloqueada</span>`; }
+            else { sBadge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="var(--pendente)"><circle cx="12" cy="12" r="10"></circle></svg> <span style="color:var(--pendente)">Conta Pendente</span>`; }
+
+            atualizarValoresVisiveis();
+
+            document.getElementById('g-hoje').innerText = `${formatar(db.ganhos.hoje)} MZN`;
+            document.getElementById('g-semana').innerText = `${formatar(db.ganhos.semana)} MZN`;
+            document.getElementById('g-mes').innerText = `${formatar(db.ganhos.mes)} MZN`;
+            document.getElementById('g-total').innerText = `${formatar(db.ganhos.total)} MZN`;
+
+            let nivelLabel = "OBSERVADOR";
+            if(db.plano.ativo) {
+                if(db.plano.estrato === "STANDARD") nivelLabel = "Investidor STANDARD";
+                else if(db.plano.estrato === "PREMIUM PLUS") nivelLabel = "Investidor PREMIUM PLUS";
+                else if(db.plano.estrato === "VIP GOLD") nivelLabel = "Investidor VIP GOLD";
+            }
+            document.getElementById('txt-nivel').innerText = nivelLabel;
+
+            if(db.plano.ativo) {
+document.getElementById('card-sem-plano').style.display = 'none';
+                document.getElementById('card-plano-ativo').style.display = 'block';
+                
+                document.getElementById('p-nome').innerText = db.plano.nome;
+                document.getElementById('p-estrato').innerText = db.plano.estrato;
+                document.getElementById('p-investido').innerText = `${formatar(db.plano.investido)} MZN`;
+                document.getElementById('p-diario').innerText = `${formatar(db.plano.diario)} MZN`;
+                
+                if (db.plano.dataExp) {
+                    if(timerExpDashboard) clearInterval(timerExpDashboard);
+                    
+                    timerExpDashboard = setInterval(() => {
+                        const target = db.plano.dataExp.getTime();
+                        const agora = new Date().getTime();
+                        const diff = target - agora;
+
+                        const el = document.getElementById('p-tempo');
+                        if (diff > 0 && diff <= (5 * 24 * 60 * 60 * 1000)) {
+                            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((diff % (1000 * 60)) / 1000);
+                            el.innerHTML = `<span style="color: var(--ouro); font-weight: 900; animation: pulseAlertText 1.5s infinite;">⚠️ URGENTE: Expira em ${String(d).padStart(2,'0')}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s</span>`;
+                            document.getElementById('card-plano-ativo').style.border = "1px solid var(--ouro)";
+                        } else if (diff > 0) {
+                            const d = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                            el.innerText = `Faltam ${d} dias`;
+                            document.getElementById('card-plano-ativo').style.border = "1px solid var(--borda-nitida)";
+                        } else {
+                            el.innerHTML = `<span style="color: var(--alerta); font-weight: 900;">CONTRATO EXPIRADO</span>`;
+                            document.getElementById('card-plano-ativo').style.border = "1px solid var(--alerta)";
+                            clearInterval(timerExpDashboard);
+                        }
+                    }, 1000);
+                }
+                
+                let progresso = 0;
+                if(db.plano.validade > 0) {
+                    progresso = (db.plano.diasRestantes / db.plano.validade) * 100;
+                    if(progresso < 0) progresso = 0;
+                    if(progresso > 100) progresso = 100;
+                }
+                setTimeout(() => { document.getElementById('p-bar').style.width = `${progresso}%`; }, 500);
+            } else {
+                document.getElementById('card-plano-ativo').style.display = 'none';
+                document.getElementById('card-sem-plano').style.display = 'flex';
+            }
+
+            const banner = document.getElementById('banner-mercado');
+            if(db.isMercadoAberto || db.temContratoMercadoAtivo) {
+                banner.style.display = 'block';
+                if (db.isMercadoAberto && db.dataFechamentoMercado) {
+                    document.getElementById('bm-desc-text').innerHTML = "Oportunidade Temporária de Alto Rendimento com Vagas Limitadas.<br><strong>O Mercado fecha em:</strong>";
+                    iniciarTimerDashboard(db.dataFechamentoMercado);
+                } else if (db.temContratoMercadoAtivo && !db.isMercadoAberto) {
+                    document.getElementById('bm-desc-text').innerHTML = "Você possui um contrato estratégico ativo em processamento.<br><strong>Acesso exclusivo liberado.</strong>";
+                    document.getElementById('bm-timer').innerText = "CONTRATO ATIVO ⏳";
+                    if(timerDashInterval) clearInterval(timerDashInterval);
+                }
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        function atualizarValoresVisiveis() {
+            const vTot = document.getElementById('val-total');
+            const vPri = document.getElementById('val-princ');
+            const vBon = document.getElementById('val-bonus');
+            const vBlo = document.getElementById('val-block');
+            const mTot = document.getElementById('moeda-total');
+            const iEye = document.getElementById('eye-icon');
+
+            if(saldoOculto) {
+vTot.innerText = '••••'; mTot.style.display = 'none';
+                vPri.innerText = '••••'; vBon.innerText = '••••'; vBlo.innerText = '••••';
+                iEye.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a2 2 0 1 1-2.83-2.83l18-18a2 2 0 0 1 2.83 2.83z"></path>';
+            } else {
+                vTot.innerText = formatar(db.saldos.total); mTot.style.display = 'inline-block';
+                vPri.innerText = `${formatar(db.saldos.principal)} MZN`;
+                vBon.innerText = `${formatar(db.saldos.bonus)} MZN`;
+                vBlo.innerText = `${formatar(db.saldos.bloqueado)} MZN`;
+                iEye.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        }
+
+        function toggleSaldo() { saldoOculto = !saldoOculto; atualizarValoresVisiveis(); }
+
+        function abrirModalNivel() {
+            const t = document.getElementById('modal-nivel-titulo');
+            const p = document.getElementById('modal-nivel-texto');
+            
+            if(!db.plano.ativo) {
+                t.innerText = "Nível Observador";
+                p.innerText = "Você está a assistir o mercado de fora. Ative um Plano STANDARD para entrar no jogo, começar a gerar rendimentos diários e desbloquear os bônus de equipe da plataforma!";
+            } else if(db.plano.estrato === "STANDARD") {
+                t.innerText = "Investidor Standard";
+                p.innerText = "Excelente! Você já está a lucrar diariamente. O seu próximo objetivo é o PREMIUM PLUS, onde os algoritmos HFT operam com maior frequência, multiplicando os seus rendimentos líquidos.";
+            } else if(db.plano.estrato === "PREMIUM PLUS") {
+                t.innerText = "Investidor Premium Plus";
+                p.innerText = "Você faz parte da elite da plataforma! Os seus lucros são consistentes. O último passo é o VIP GOLD, que lhe garantirá atendimento prioritário, saques imediatos e a maior taxa de retorno da BlackRock.";
+            } else {
+                t.innerText = "Investidor VIP GOLD";
+                p.innerText = "Mestre! Você atingiu o nível máximo. Aproveite os maiores lucros da plataforma, prioridade absoluta no suporte e saques instantâneos. Mantenha os seus nodes ativos para continuar no topo.";
+            }
+            
+            document.getElementById('modalNivel').style.display = 'flex';
+        }
+
+        function fecharModalNivel() { document.getElementById('modalNivel').style.display = 'none'; }
+
+        let timerDashInterval = null;
+        function iniciarTimerDashboard(dataFechoStr) {
+            if(timerDashInterval) clearInterval(timerDashInterval);
+            const dataFecho = new Date(dataFechoStr).getTime();
+
+            timerDashInterval = setInterval(() => {
+                const agora = new Date().getTime();
+                const diff = dataFecho - agora;
+
+                if (diff > 0) {
+                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((diff % (1000 * 60)) / 1000);
+                    document.getElementById('bm-timer').innerText = `${String(d).padStart(2, '0')}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+                } else {
+                    document.getElementById('bm-timer').innerText = "A ENCERRAR SESSÃO...";
+                    clearInterval(timerDashInterval);
+                }
+            }, 1000);
+        }
+    </script>
+
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+<div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) exibirModalExpiracao();
+            
+            // 🚀 INTERCETAÇÃO DO MODO MANUTENÇÃO (503)
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa, travando a app inteira
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

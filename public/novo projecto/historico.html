@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BlackRock - Histórico Financeiro</title>
+    <style>
+        :root {
+            --bg-canvas: #0F111A; --bg-card: #171923; --navbar-bg: #0A0C12;
+            --borda-nitida: #2D3748; --input-bg: #1A202C; --texto-high: #FFFFFF;
+            --texto-med: #94A3B8; --magenta: #EC1A7C; --verde-menta: #38E090;
+            --cyan-neon: #00FFFF; --alerta: #FF4B4B; --pendente: #F6E05E;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background: var(--bg-canvas); color: var(--texto-high); min-height: 100dvh; padding-top: 130px; padding-bottom: 50px; overflow-x: hidden; }
+        
+        /* HEADER FIXO */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-canvas); border-bottom: 1px solid var(--borda-nitida); display: flex; flex-direction: column; z-index: 1000; padding-top: env(safe-area-inset-top); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; }
+        .btn-back { background: none; border: none; color: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .header-center h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin: 0; }
+
+        /* TABS (FILTROS) */
+        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 15px 20px; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-tab { background: var(--bg-card); border: 1px solid var(--borda-nitida); color: var(--texto-med); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .filter-tab.active { background: rgba(56,224,144,0.1); border-color: var(--verde-menta); color: var(--verde-menta); }
+
+        /* LISTA DE TRANSAÇÕES */
+        .history-container { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .tx-card { background: var(--bg-card); border: 1px solid var(--borda-nitida); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
+        .tx-card:active { transform: scale(0.98); }
+        
+        .tx-main-info { display: flex; justify-content: space-between; align-items: center; }
+        .tx-left { display: flex; align-items: center; gap: 15px; }
+        .tx-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #FFF; flex-shrink: 0; }
+        
+        .icon-deposito { background: rgba(56,224,144,0.15); color: var(--verde-menta); border: 1px solid rgba(56,224,144,0.3); }
+        .icon-saque { background: rgba(255,75,75,0.15); color: var(--alerta); border: 1px solid rgba(255,75,75,0.3); }
+        .icon-ganho { background: rgba(0,255,255,0.15); color: var(--cyan-neon); border: 1px solid rgba(0,255,255,0.3); }
+        
+        .tx-info h3 { font-size: 14px; font-weight: 800; color: #FFF; margin-bottom: 4px; }
+        .tx-info p { font-size: 11px; color: var(--texto-med); font-weight: 600; }
+        
+        .tx-right { text-align: right; }
+        .tx-valor { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+        .tx-status { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 10px; display: inline-block; }
+        
+        .status-pendente { background: rgba(246,224,94,0.1); color: var(--pendente); border: 1px solid rgba(246,224,94,0.3); }
+        .status-aprovado { background: rgba(56,224,144,0.1); color: var(--verde-menta); border: 1px solid rgba(56,224,144,0.3); }
+        .status-rejeitado { background: rgba(255,75,75,0.1); color: var(--alerta); border: 1px solid rgba(255,75,75,0.3); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--texto-med); }
+        .empty-state svg { color: var(--borda-nitida); margin-bottom: 15px; }
+        .empty-state h3 { font-size: 15px; color: #FFF; margin-bottom: 8px; }
+        .empty-state p { font-size: 13px; line-height: 1.5; }
+
+        /* MODAL DE DETALHES */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,12,18,0.9); display: none; justify-content: center; align-items: flex-end; z-index: 2000; padding: 0 10px 20px 10px; }
+        .modal-content { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 20px; border: 1px solid var(--borda-nitida); padding: 25px 20px; position: relative; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-close { position: absolute; top: 15px; right: 15px; background: var(--input-bg); border: 1px solid var(--borda-nitida); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--texto-high); cursor: pointer; }
+        .detalhe-header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed var(--borda-nitida); padding-bottom: 20px; }
+        .detalhe-valor { font-size: 28px; font-weight: 900; margin: 10px 0; }
+        .detalhe-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; }
+        .detalhe-row span:first-child { color: var(--texto-med); font-weight: 600; }
+        .detalhe-row span:last-child { color: #FFF; font-weight: 800; text-align: right; }
+    </style>
+</head>
+<body>
+
+    <header class="header-fixed">
+        <div class="header-top">
+            <button class="btn-back" onclick="window.location.href='perfil.html'">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="header-center"><h1>HISTÓRICO</h1></div>
+            <div style="width: 26px;"></div>
+        </div>
+        
+        <div class="filter-scroll">
+            <div class="filter-tab active" onclick="filtrar('tudo', this)">Tudo</div>
+            <div class="filter-tab" onclick="filtrar('deposito', this)">Depósitos</div>
+            <div class="filter-tab" onclick="filtrar('saque', this)">Saques</div>
+            <div class="filter-tab" onclick="filtrar('ganho', this)">Ganhos / Tarefas</div>
+        </div>
+    </header>
+
+    <div class="history-container" id="historico-list">
+        <div style="text-align: center; margin-top: 40px; color: var(--texto-med);">
+            Sincronizando extrato real...
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalDetalhes">
+        <div class="modal-content">
+            <button class="modal-close" onclick="fecharDetalhes()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="detalhe-header" id="det-header"></div>
+            <div id="det-corpo"></div>
+        </div>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let transacoesReais = []; 
+        let filtroAtual = 'tudo';
+
+        window.onload = () => {
+            if(!localStorage.getItem('br_token')) window.location.href = 'login.html';
+            carregarHistoricoReal();
+        };
+
+        async function carregarHistoricoReal() {
+            try {
+                const res = await fetch(`${URL_BASE}/api/wallet/historico`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('br_token')}` }
+                });
+
+                if (res.ok) {
+                    transacoesReais = await res.json();
+                    renderizarLista();
+                } else {
+                    mostrarVazio("Falha ao carregar dados do servidor.");
+                }
+            } catch (e) {
+                mostrarVazio("Sem conexão com a rede financeira.");
+            }
+        }
+
+        function renderizarLista() {
+            const container = document.getElementById('historico-list');
+            container.innerHTML = '';
+
+            const listaFiltrada = transacoesReais.filter(tx => {
+                if (filtroAtual === 'tudo') return true;
+                if (filtroAtual === 'ganho') return tx.tipo.includes('tarefa') || tx.tipo.includes('bonus') || tx.tipo.includes('retorno_mercado');
+                return tx.tipo === filtroAtual;
+            });
+
+            if (listaFiltrada.length === 0) return mostrarVazio("Nenhum registo encontrado.");
+
+            listaFiltrada.forEach(tx => {
+                const config = getConfigPorTipo(tx.tipo);
+                const valorFormatado = Number(tx.valor).toLocaleString('pt-MZ') + ' MZN';
+                const corValor = tx.tipo === 'saque' ? 'var(--texto-high)' : 'var(--verde-menta)';
+                const sinal = tx.tipo === 'saque' ? '-' : '+';
+                
+                const dataFormatada = new Date(tx.createdAt).toLocaleString('pt-PT', { 
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+                });
+
+                let classStatus = 'status-pendente';
+                let txtStatus = 'Em Análise';
+                if(tx.status === 'aprovado' || tx.status === 'concluido') { classStatus = 'status-aprovado'; txtStatus = 'Concluído'; }
+                if(tx.status === 'rejeitado' || tx.status === 'falhou') { classStatus = 'status-rejeitado'; txtStatus = 'Rejeitado'; }
+
+                const taxaReal = tx.taxaAplicada !== undefined ? tx.taxaAplicada : 10;
+                const liquidoReal = tx.valorLiquido !== undefined ? tx.valorLiquido : (tx.valor * 0.90);
+
+                let detalhesTaxaHtml = '';
+                if (tx.tipo === 'saque') {
+                    detalhesTaxaHtml = `
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--borda-nitida);">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--alerta);">
+                                <span>Taxa (${taxaReal}%):</span>
+                                <span>-${(tx.valor - liquidoReal).toLocaleString('pt-MZ')} MZN</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--verde-menta); font-weight: 800; margin-top: 4px;">
+                                <span>Líquido:</span>
+                                <span>${Number(liquidoReal).toLocaleString('pt-MZ')} MZN</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const html = `
+                    <div class="tx-card" onclick="abrirDetalhes('${tx._id}')">
+                        <div class="tx-main-info">
+                            <div class="tx-left">
+                                <div class="tx-icon ${config.iconClass}">${config.iconSvg}</div>
+                                <div class="tx-info">
+                                    <h3>${config.titulo}</h3>
+                                    <p>${dataFormatada}</p>
+                                </div>
+                            </div>
+                            <div class="tx-right">
+                                <div class="tx-valor" style="color: ${corValor}">${sinal} ${valorFormatado}</div>
+                                <div class="tx-status ${classStatus}">${txtStatus}</div>
+                            </div>
+                        </div>
+                        ${detalhesTaxaHtml}
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function mostrarVazio(mensagem) {
+            document.getElementById('historico-list').innerHTML = `
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+                    <h3>Mural Vazio</h3><p>${mensagem}</p>
+                </div>
+            `;
+        }
+
+        function getConfigPorTipo(tipo) {
+            if (tipo === 'deposito') return { titulo: 'Depósito à Conta', iconClass: 'icon-deposito', iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="19 12 12 19 5 12"></polyline><line x1="12" y1="19" x2="12" y2="5"></line></svg>' };
+            if (tipo === 'saque') return { titulo: 'Levantamento', iconClass: 'icon-saque', iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 12 12 5 19 12"></polyline><line x1="12" y1="5" x2="12" y2="19"></line></svg>' };
+            if (tipo === 'retorno_mercado') return { titulo: 'Retorno do Mercado', iconClass: 'icon-ganho', iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>' };
+            return { titulo: 'Ganhos e Bónus', iconClass: 'icon-ganho', iconSvg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>' };
+        }
+
+        function filtrar(tipo, elemento) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            elemento.classList.add('active');
+            filtroAtual = tipo;
+            renderizarLista();
+        }
+
+        function abrirDetalhes(id) {
+            const tx = transacoesReais.find(t => t._id === id);
+            if(!tx) return;
+
+            const config = getConfigPorTipo(tx.tipo);
+            const dataObj = new Date(tx.createdAt);
+            const dataFormatada = dataObj.toLocaleDateString('pt-PT', { day:'2-digit', month:'long', year:'numeric' });
+            const horaFormatada = dataObj.toLocaleTimeString('pt-PT', { hour:'2-digit', minute:'2-digit' });
+            
+            let classStatus = 'status-pendente'; let txtStatus = 'Em Análise';
+            if(tx.status === 'aprovado' || tx.status === 'concluido') { classStatus = 'status-aprovado'; txtStatus = 'Concluído'; }
+            if(tx.status === 'rejeitado' || tx.status === 'falhou') { classStatus = 'status-rejeitado'; txtStatus = 'Rejeitado'; }
+
+            document.getElementById('det-header').innerHTML = `
+                <div style="color:var(--texto-med); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">${config.titulo}</div>
+                <div class="detalhe-valor">${Number(tx.valor).toLocaleString('pt-MZ')} MZN</div>
+                <div class="tx-status ${classStatus}">${txtStatus}</div>
+            `;
+
+            let corpoHtml = `
+                <div class="detalhe-row"><span>ID da Transação</span><span>${tx._id}</span></div>
+                <div class="detalhe-row"><span>Data</span><span>${dataFormatada}</span></div>
+                <div class="detalhe-row"><span>Hora</span><span>${horaFormatada}</span></div>
+                <div class="detalhe-row"><span>Nome do Titular</span><span>${tx.nomeUsuario || '---'}</span></div>
+                <div class="detalhe-row"><span>ID do Usuário</span><span>${tx.idUnicoUsuario || '---'}</span></div>
+                <div class="detalhe-row"><span>Número da Conta</span><span>${tx.telefoneUsuario || '---'}</span></div>
+                <div style="margin: 15px 0; border-top: 1px dashed var(--borda-nitida);"></div>
+            `;
+            
+            if (tx.tipo === 'saque') {
+                corpoHtml += `
+                    <div class="detalhe-row"><span>Operadora Destino</span><span style="color:var(--magenta);">${tx.operadora || 'M-Pesa'}</span></div>
+                    <div class="detalhe-row"><span>Nome Destinatário</span><span>${tx.nomeContaDestino || '---'}</span></div>
+                    <div class="detalhe-row"><span>Número Destinatário</span><span>${tx.numeroContaDestino || '---'}</span></div>
+                    <div class="detalhe-row"><span>Valor Bruto</span><span>${Number(tx.valor).toLocaleString('pt-MZ')} MZN</span></div>
+                    <div class="detalhe-row"><span>Taxa Aplicada</span><span style="color:var(--alerta);">(${tx.taxaAplicada || 10}%) -${Number(tx.valorTaxa || (tx.valor * 0.1)).toLocaleString('pt-MZ')} MZN</span></div>
+                    <div class="detalhe-row"><span style="color:var(--verde-menta); font-size:14px;">VALOR LÍQUIDO</span><span style="color:var(--verde-menta); font-size:14px;">${Number(tx.valorLiquido || (tx.valor * 0.9)).toLocaleString('pt-MZ')} MZN</span></div>
+                `;
+            } else if (tx.tipo === 'deposito') {
+                corpoHtml += `
+                    <div class="detalhe-row"><span>Operadora</span><span style="color:var(--cyan-neon);">${tx.operadora || 'M-Pesa'}</span></div>
+                    <div class="detalhe-row"><span>Nº que Transferiu</span><span>${tx.numeroTransferencia || tx.numeroOrigem || '---'}</span></div>
+                    <div class="detalhe-row"><span>TXID Bancário</span><span style="color:var(--verde-menta);">${tx.idTransacaoBancaria || '---'}</span></div>
+                    <div class="detalhe-row"><span>Valor Creditado</span><span>${Number(tx.valor).toLocaleString('pt-MZ')} MZN</span></div>
+                `;
+            }
+
+            document.getElementById('det-corpo').innerHTML = corpoHtml;
+            document.getElementById('modalDetalhes').style.display = 'flex';
+        }
+
+        function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
+    </script>
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `; 
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) {
+                exibirModalExpiracao();
+            }
+            // 🚀 AQUI ESTÁ A MÁGICA: INTERCETAÇÃO DO 503
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa e trava o App
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

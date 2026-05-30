@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlackRock - Terminal de Operações</title>
+    <style>
+        :root {
+            --bg-canvas: #0A0C12; --bg-card: #141721; --navbar-bg: #0E1117;
+            --borda-nitida: rgba(255, 255, 255, 0.08); --texto-high: #FFFFFF; --texto-med: #94A3B8;
+            --magenta: #EC1A7C; --violeta: #4E3FEA; --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --verde-menta: #38E090; --cyan-neon: #00FFFF; --alerta: #FF4B4B; --alerta-bg: rgba(255, 75, 75, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-canvas); color: var(--texto-high); min-height: 100vh; padding-top: 85px; padding-bottom: 100px; overflow-x: hidden; }
+
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background-color: rgba(10, 12, 18, 0.85); backdrop-filter: blur(16px); padding: 15px 20px; border-bottom: 1px solid var(--borda-nitida); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .h-left { display: flex; align-items: center; gap: 12px; }
+        
+        .h-avatar {
+            width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1));
+            border: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: center; align-items: center;
+            font-weight: 900; color: var(--cyan-neon); font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase;
+        }
+        
+        .h-info { display: flex; flex-direction: column; }
+        .h-welcome { font-size: 14px; font-weight: 800; color: #FFF; letter-spacing: 0.5px; }
+        .h-status { font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 5px; margin-top: 2px; text-transform: uppercase; }
+        
+        .h-right { position: relative; }
+        .btn-notif { background: none; border: none; color: var(--texto-high); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .badge-notif { position: absolute; top: 0; right: 2px; background: var(--alerta); color: #FFF; font-size: 8px; font-weight: 900; width: 15px; height: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--bg-canvas); }
+
+        .main-content { padding: 15px 20px; display: flex; flex-direction: column; gap: 18px; animation: fadeIn 0.4s ease; max-width: 600px; margin: 0 auto; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .banner-expiracao { background: linear-gradient(145deg, var(--bg-card), #1A1525); border: 1px solid var(--borda-nitida); padding: 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .banner-expiracao.urgente { border-color: rgba(255, 75, 75, 0.4); background: linear-gradient(145deg, var(--bg-card), rgba(255, 75, 75, 0.05)); }
+        .banner-expiracao.urgente .exp-title { color: var(--alerta); }
+        .exp-info { display: flex; flex-direction: column; }
+        .exp-title { font-size: 10px; text-transform: uppercase; font-weight: 800; color: var(--texto-med); margin-bottom: 6px; letter-spacing: 0.5px; }
+        .exp-valor { font-size: 20px; font-weight: 900; color: #FFF; }
+
+        #view-armario { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 0; }
+        .circulo-container { position: relative; width: 230px; height: 230px; display: flex; justify-content: center; align-items: center; }
+        .circulo-outer { position: absolute; width: 230px; height: 230px; border-radius: 50%; border: 2px solid var(--magenta); box-shadow: 0 0 25px rgba(236,26,124,0.2); pointer-events: none; transition: 0.5s; }
+        .circulo-inner { position: absolute; width: 195px; height: 195px; border-radius: 50%; border: 3px dashed var(--magenta); animation: spin 20s linear infinite; pointer-events: none; opacity: 0.8; transition: 0.5s; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .circulo-btn { position: relative; width: 175px; height: 175px; border-radius: 50%; background: linear-gradient(135deg, #07080A, #141721); border: 1px solid rgba(236,26,124,0.3); color: var(--magenta); font-size: 14px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transition: 0.3s; z-index: 2; box-shadow: inset 0 0 20px rgba(236,26,124,0.1); }
+        .circulo-btn:hover { box-shadow: inset 0 0 40px rgba(236,26,124,0.3); transform: scale(1.03); color: #FFF; }
+        .circulo-btn:active { transform: scale(0.97); }
+        .circulo-btn:disabled { color: var(--texto-med); background: #141721; border-color: var(--borda-nitida); cursor: not-allowed; transform: none; box-shadow: none; }
+        .circulo-btn:disabled ~ .circulo-outer { border-color: var(--borda-nitida); box-shadow: none; }
+        .circulo-btn:disabled ~ .circulo-inner { border-color: var(--borda-nitida); animation: none; }
+        .circulo-btn span.sub { font-size: 9px; color: var(--texto-med); margin-top: 8px; display: block; letter-spacing: 0; font-weight: 700; }
+        
+        .firewall-log { margin-top: 30px; width: 100%; max-width: 300px; background: #000; border: 1px solid #333; padding: 15px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 10px; color: var(--cyan-neon); height: 90px; display: none; flex-direction: column; justify-content: flex-end; box-shadow: inset 0 0 15px rgba(0,255,255,0.05); }
+
+        #view-workspace { display: none; flex-direction: column; gap: 14px; }
+        .work-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border-bottom: 1px solid var(--borda-nitida); padding-bottom: 12px; }
+        .work-header h3 { font-size: 15px; font-weight: 900; color: #FFF; text-transform: uppercase; }
+        .work-header .progresso { font-size: 13px; font-weight: 900; color: var(--cyan-neon); background: rgba(0,255,255,0.1); padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(0,255,255,0.2); }
+
+        .live-balance-box { background: rgba(56, 224, 144, 0.05); border: 1px solid rgba(56, 224, 144, 0.2); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .live-balance-title { font-size: 11px; color: var(--texto-med); text-transform: uppercase; font-weight: 800; }
+        .live-balance-value { font-size: 22px; font-weight: 900; color: var(--verde-menta); font-family: 'Courier New', Courier, monospace; letter-spacing: 1px; transition: transform 0.3s; }
+        .pop-anim { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: #FFF; } 100% { transform: scale(1); } }
+
+        .tarefa-card { background: linear-gradient(160deg, var(--bg-card) 0%, #0F111A 100%); border: 1px solid var(--borda-nitida); padding: 18px; border-radius: 16px; display: flex; flex-direction: column; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .tarefa-card:hover { border-color: rgba(0,255,255,0.3); transform: translateY(-2px); }
+        
+        .tarefa-top { display: flex; justify-content: space-between; align-items: center; }
+        .tarefa-info h4 { font-size: 13px; font-weight: 800; color: #FFF; margin-bottom: 6px; text-transform: uppercase; }
+        .tarefa-info p { font-size: 10px; color: var(--texto-med); max-width: 200px; line-height: 1.4; }
+        .tarefa-acao { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .tarefa-valor { font-size: 15px; font-weight: 900; color: var(--verde-menta); }
+        
+        .btn-work { background: var(--gradiente-cta); border: none; padding: 10px 18px; border-radius: 10px; color: white; font-size: 11px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 6px 15px rgba(236, 26, 124, 0.3); transition: 0.3s; }
+        .btn-work:active { transform: scale(0.95); }
+        .btn-work:disabled { filter: grayscale(1); opacity: 0.6; cursor: not-allowed; }
+
+        .chart-box { display: none; align-items: flex-end; gap: 4px; height: 20px; margin-top: 5px; }
+        .bar { width: 4px; background: var(--cyan-neon); border-radius: 2px; animation: bounce 0.5s infinite alternate; }
+        .bar.vermelha { background: var(--magenta); animation-delay: 0.2s; }
+        .bar.verde { background: var(--verde-menta); animation-delay: 0.4s; }
+        @keyframes bounce { 0% { height: 5px; } 100% { height: 20px; } }
+
+        .terminal-box { display: none; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; margin-top: 15px; font-family: 'Courier New', Courier, monospace; font-size: 10px; color: var(--verde-menta); height: 90px; overflow-y: hidden; box-shadow: inset 0 0 10px rgba(0,255,0,0.1); }
+        .terminal-line { margin-bottom: 4px; opacity: 0; animation: fadeLine 0.2s forwards; }
+        @keyframes fadeLine { to { opacity: 1; } }
+        .t-cyan { color: var(--cyan-neon); }
+        .t-magenta { color: var(--magenta); }
+        .t-hash { color: #FFF; font-weight: bold; background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;}
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(14, 17, 23, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--borda-nitida); display: flex; justify-content: space-around; padding: 14px 0 calc(14px + env(safe-area-inset-bottom)) 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--texto-low); text-decoration: none; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; }
+        .nav-icon { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: 0.3s; }
+        .nav-item.active { color: var(--cyan-neon); }
+        .nav-item.active .nav-icon { stroke: var(--cyan-neon); filter: drop-shadow(0 0 8px rgba(0,255,255,0.5)); transform: translateY(-2px); }
+
+        #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 12px 25px; border-radius: 30px; font-size: 12px; font-weight: 800; display: none; z-index: 4000; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+    </style>
+</head>
+<body>
+    <audio id="audio-money" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+    <audio id="audio-typing" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3" loop preload="auto"></audio>
+
+    <header class="header-fixed">
+        <div class="h-left">
+            <div class="h-avatar" id="topo-avatar">U</div>
+            <div class="h-info">
+                <span class="h-welcome" id="txt-welcome">A carregar...</span>
+                <span class="h-status" id="txt-status">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"></circle></svg>
+                    A verificar...
+                </span>
+            </div>
+        </div>
+        <div class="h-right">
+            <a href="notificacoes.html" class="btn-notif">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <div class="badge-notif" id="notif-count" style="display: none;">0</div>
+            </a>
+        </div>
+    </header>
+
+    <div id="toast">Notificação</div>
+
+    <div class="main-content">
+        <div class="banner-expiracao" id="banner-exp">
+            <div class="exp-info">
+                <span class="exp-title">Validade do Contrato</span>
+                <span class="exp-valor" id="txt-dias">-- Dias</span>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 10px; color: var(--texto-med); display: block; margin-bottom: 4px; text-transform: uppercase; font-weight: 800;">Ganho Diário</span>
+                <strong style="font-size: 16px; color: var(--cyan-neon);" id="txt-ganho">0,00 MZN</strong>
+            </div>
+        </div>
+
+        <div id="view-armario">
+            <div class="circulo-container">
+                <button class="circulo-btn" id="btn-armario" onclick="iniciarFirewall()">
+                    ACESSAR
+                    <span class="sub" id="txt-armario-sub">Verificando...</span>
+                </button>
+                <div class="circulo-inner"></div>
+                <div class="circulo-outer"></div>
+            </div>
+            <div class="firewall-log" id="firewall-anim"></div>
+        </div>
+
+        <div id="view-workspace">
+            <div class="work-header">
+                <h3>Terminal Institucional</h3>
+                <div class="progresso" id="txt-progresso">0/0</div>
+            </div>
+            
+            <div class="live-balance-box">
+                <div class="live-balance-title">Saldo da Conta</div>
+                <div class="live-balance-value" id="txt-saldo-live">0.00 MZN</div>
+            </div>
+
+            <div id="lista-tarefas"></div>
+        </div>
+    </div>
+    
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Início</a>
+        <a href="planos.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Planos</a>
+        <a href="tarifas.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Tarefas</a>
+        <a href="equipe.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Equipe</a>
+        <a href="feed.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="10" y1="10" x2="10" y2="20"></line></svg> Feed</a>
+        <a href="perfil.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Perfil</a>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let infoTarefas = { totais: 0, concluidas: 0, ganhoDiario: 0, diasRestantes: 0, expirado: false, isDomingo: false, frases: [] };
+        let saldoAtualAoVivo = 0;
+        let isProcessandoTarefaGeral = false; 
+
+        window.onload = async () => {
+            const token = localStorage.getItem('br_token');
+            if(!token) { window.location.href = 'login.html'; return; }
+            
+            const userStorage = JSON.parse(localStorage.getItem('br_user') || '{}');
+            if (userStorage.nome) {
+                document.getElementById('txt-welcome').innerText = `Olá, ${userStorage.nome.split(' ')[0]}`;
+                document.getElementById('topo-avatar').innerText = userStorage.nome.charAt(0).toUpperCase();
+
+                const sBadge = document.getElementById('txt-status');
+                const temPlano = userStorage.planoAtivo && userStorage.planoAtivo !== 'Nenhum';
+                
+                if(userStorage.status === 'ativo' || temPlano) { 
+                    sBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--verde-menta)"><circle cx="12" cy="12" r="10"></circle></svg> <span style="color:var(--verde-menta)">Conta Ativa</span>`; 
+                } else { 
+                    sBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--alerta)"><circle cx="12" cy="12" r="10"></circle></svg> <span style="color:var(--alerta)">Bloqueada/Pendente</span>`; 
+                }
+
+                saldoAtualAoVivo = userStorage.saldo || 0;
+                document.getElementById('txt-saldo-live').innerText = `${formatar(saldoAtualAoVivo)} MZN`;
+            } else {
+                document.getElementById('topo-avatar').innerText = 'U';
+            }
+
+            await buscarStatusBackend(token);
+        };
+
+        function formatar(valor) { return (Number(valor) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        function mostrarNotificacao(msg, cor = '#FF4B4B') {
+            const t = document.getElementById('toast'); 
+            t.innerText = msg; t.style.background = cor; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 4000);
+        }
+
+        async function buscarStatusBackend(token) {
+            try {
+                fetch(`${URL_BASE}/api/notificacoes`, { headers: { 'Authorization': `Bearer ${token}` } })
+                .then(r => r.json()).then(d => {
+                    if(d.notifications) {
+                        const unread = d.notifications.filter(n => n.lida === false).length;
+                        const bn = document.getElementById('notif-count');
+                        if(unread > 0) { bn.innerText = unread; bn.style.display = 'flex'; } else { bn.style.display = 'none'; }
+                    }
+                }).catch(e=>{});
+
+                const res = await fetch(`${URL_BASE}/api/tarefas/status`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                
+                if(res.ok) {
+                    infoTarefas = { 
+                        totais: data.tarefasTotais||0, 
+                        concluidas: data.tarefasConcluidas||0, 
+                        ganhoDiario: data.ganhoDiario||0, 
+                        diasRestantes: data.diasRestantes||0, 
+                        expirado: data.diasRestantes <= 0, 
+                        isDomingo: data.isDomingo || false,
+                        frases: data.frases||[] 
+                    };
+                    atualizarInterfaceBasica();
+                }
+            } catch(e) { document.getElementById('txt-armario-sub').innerText = "Trabalhando offline."; }
+        }
+
+        function atualizarInterfaceBasica() {
+            const banner = document.getElementById('banner-exp');
+            const txtDias = document.getElementById('txt-dias');
+            document.getElementById('txt-ganho').innerText = Number(infoTarefas.ganhoDiario).toFixed(2) + " MZN";
+            
+            const btnArmario = document.getElementById('btn-armario');
+
+            // 🛡️ NOVO: BARREIRA VISUAL DE DOMINGO
+            if (infoTarefas.isDomingo) {
+                txtDias.innerText = infoTarefas.diasRestantes + " Dias (Pausado)";
+                
+                 // Transforma o Banner Superior em Alerta de Feriado
+                banner.innerHTML = `
+                    <div style="width: 100%; text-align: center;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--texto-med); margin-bottom: 8px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <h3 style="font-size: 13px; color: #FFF; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px;">Mercado Encerrado</h3>
+                        <p style="font-size: 11px; color: var(--texto-med);">As operações corporativas retornam na segunda-feira.</p>
+                    </div>
+                `;
+                
+                // Desativa o Cofre
+                btnArmario.disabled = true;
+                document.querySelector('.circulo-outer').style.borderColor = "var(--borda-nitida)"; 
+                document.querySelector('.circulo-inner').style.borderColor = "var(--borda-nitida)"; 
+                btnArmario.style.color = "var(--texto-med)";
+                btnArmario.innerHTML = `FERIADO<span class="sub">Mercado Fechado</span>`;
+                return; // 🛑 Impede que as outras lógicas alterem a tela
+            }
+            
+            // LÓGICA NORMAL SE NÃO FOR DOMINGO
+            if (infoTarefas.totais === 0) { txtDias.innerText = "--"; } 
+            else if (infoTarefas.expirado) { banner.classList.add('urgente'); txtDias.innerText = "EXPIRADO"; txtDias.style.color = "var(--alerta)"; } 
+            else if (infoTarefas.diasRestantes <= 3) { banner.classList.add('urgente'); txtDias.innerText = infoTarefas.diasRestantes + " Dias (CRÍTICO)"; } 
+            else { txtDias.innerText = infoTarefas.diasRestantes + " Dias"; }
+
+            if (infoTarefas.expirado) {
+                btnArmario.disabled = true; btnArmario.innerHTML = `NEGADO<span class="sub">Plano expirado.</span>`;
+            } else if (infoTarefas.concluidas >= infoTarefas.totais && infoTarefas.totais > 0) {
+                btnArmario.disabled = true;
+                document.querySelector('.circulo-outer').style.borderColor = "var(--verde-menta)"; document.querySelector('.circulo-inner').style.borderColor = "var(--verde-menta)"; btnArmario.style.color = "var(--verde-menta)";
+                btnArmario.innerHTML = `CONCLUÍDO<span class="sub">Volte amanhã.</span>`;
+            } else if (infoTarefas.totais === 0) {
+                btnArmario.disabled = true; btnArmario.innerHTML = `INATIVO<span class="sub">Ative um plano.</span>`;
+            } else {
+                btnArmario.disabled = false; btnArmario.innerHTML = `ACESSAR<span class="sub">${infoTarefas.totais - infoTarefas.concluidas} Pendentes</span>`;
+            }
+        }
+
+        async function iniciarFirewall() {
+            const btn = document.getElementById('btn-armario');
+            const fw = document.getElementById('firewall-anim');
+            btn.disabled = true;
+            
+            document.querySelector('.circulo-outer').style.borderColor = "var(--cyan-neon)";
+            document.querySelector('.circulo-inner').style.borderColor = "var(--cyan-neon)";
+            btn.style.color = "var(--cyan-neon)";
+            
+            fw.style.display = 'flex';
+            
+            const logs = [
+                "> Mapeando servidor HFT local...",
+                "> Verificando integridade IP e Firewall...",
+                "> Encriptação SHA-256 ativa...",
+                "<span style='color:var(--verde-menta)'>> ACESSO INSTITUCIONAL GARANTIDO.</span>"
+            ];
+            
+            const audioType = document.getElementById('audio-typing');
+            if (audioType) { audioType.volume = 0.3; audioType.play().catch(()=>{}); }
+
+            for(let i=0; i<logs.length; i++) {
+                await new Promise(r => setTimeout(r, 2000));
+                fw.innerHTML += `<div class="terminal-line">${logs[i]}</div>`;
+            }
+            
+            if (audioType) audioType.pause();
+
+            setTimeout(() => {
+                document.getElementById('view-armario').style.display = 'none';
+                document.getElementById('view-workspace').style.display = 'flex';
+                renderizarWorkspace();
+            }, 800); 
+        }
+     function renderizarWorkspace() {
+            document.getElementById('txt-progresso').innerText = `${infoTarefas.concluidas}/${infoTarefas.totais}`;
+            const container = document.getElementById('lista-tarefas');
+            container.innerHTML = '';
+
+            const tarefasRestantes = infoTarefas.totais - infoTarefas.concluidas;
+            const valorPorTarefa = infoTarefas.ganhoDiario / infoTarefas.totais;
+            const frasesFallback = ["Auditoria em ETF Vanguard", "Validação de Liquidez", "Arbitragem de Alta Frequência"];
+
+            for (let i = 0; i < tarefasRestantes; i++) {
+                const titulo = infoTarefas.frases[i] || frasesFallback[i % frasesFallback.length];
+                const idUnico = `tarefa_${i}`;
+
+                container.innerHTML += `
+                    <div class="tarefa-card" id="${idUnico}">
+                        <div class="tarefa-top">
+                            <div class="tarefa-info">
+                                <h4>${titulo}</h4>
+                                <p id="desc_${idUnico}">Aguardando ordem de processamento do nó central.</p>
+                                <div class="chart-box" id="chart_${idUnico}">
+                                    <div class="bar verde"></div><div class="bar vermelha"></div>
+                                    <div class="bar verde"></div><div class="bar cyan"></div><div class="bar vermelha"></div>
+                                </div>
+                            </div>
+                            <div class="tarefa-acao">
+                                <span class="tarefa-valor">+${valorPorTarefa.toFixed(2)} MZN</span>
+                                <button class="btn-work" id="btn_${idUnico}" onclick="executarTarefaTerminal('${idUnico}', ${valorPorTarefa}, '${titulo}')">PROCESSAR</button>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-box" id="term_${idUnico}">
+                            <div class="terminal-line" style="color:var(--texto-med);">> Canal seguro aberto.</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function executarTarefaTerminal(idCard, valor, tituloTarefa) {
+            if (isProcessandoTarefaGeral) return;
+            isProcessandoTarefaGeral = true;
+
+            const btn = document.getElementById(`btn_${idCard}`);
+            const card = document.getElementById(idCard);
+            const terminal = document.getElementById(`term_${idCard}`);
+            const desc = document.getElementById(`desc_${idCard}`);
+            const chart = document.getElementById(`chart_${idCard}`);
+            const audioType = document.getElementById('audio-typing');
+
+            document.querySelectorAll('.btn-work').forEach(b => { b.disabled = true; });
+
+            btn.style.display = 'none'; desc.style.display = 'none'; chart.style.display = 'flex'; terminal.style.display = 'block';
+            card.style.borderColor = 'var(--cyan-neon)'; card.style.boxShadow = '0 0 25px rgba(0,255,255,0.15)';
+
+            if (audioType) { audioType.currentTime = 0; audioType.volume = 0.4; audioType.play().catch(()=>{}); }
+
+            const logs = [
+                `<span class="t-cyan">> ${tituloTarefa}...</span>`,
+                `> Calculando spread e injetando liquidez...`,
+                `> Executando ordem no livro de ofertas...`,
+                `<span class="t-magenta">> Aguardando consenso do Blockchain...</span>`
+            ];
+
+            for(let i=0; i<logs.length; i++) {
+                await new Promise(r => setTimeout(r, 2000)); 
+                terminal.innerHTML += `<div class="terminal-line">${logs[i]}</div>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/tarefas/executar`, {
+                    method: 'POST', headers: { 'Authorization': `Bearer ${localStorage.getItem('br_token')}` }
+                });
+                    if(res.ok) {
+                    if (audioType) audioType.pause(); chart.style.display = 'none';
+                    const hashGerado = '0x' + Math.random().toString(16).substr(2, 10).toUpperCase();
+
+                    terminal.innerHTML += `<div class="terminal-line" style="color:var(--verde-menta); font-weight:bold; margin-top:8px;">> [SUCESSO] Ordem Fechada. <span class="t-hash">TXID: ${hashGerado}</span></div>`;
+                    terminal.scrollTop = terminal.scrollHeight;
+
+                    const som = document.getElementById('audio-money');
+                    if (som) { som.volume = 0.6; som.play().catch(()=>{}); }
+                    if (navigator.vibrate) { navigator.vibrate([100, 50, 100]); }
+
+                    saldoAtualAoVivo += valor;
+                    const saldoTxt = document.getElementById('txt-saldo-live');
+                    saldoTxt.innerText = `${formatar(saldoAtualAoVivo)} MZN`;
+                    saldoTxt.classList.remove('pop-anim'); void saldoTxt.offsetWidth; saldoTxt.classList.add('pop-anim');
+
+                    setTimeout(() => {
+                        card.style.opacity = '0'; card.style.transform = 'translateX(40px)';
+                        setTimeout(() => {
+                            card.style.display = 'none'; infoTarefas.concluidas++;
+                            document.getElementById('txt-progresso').innerText = `${infoTarefas.concluidas}/${infoTarefas.totais}`;
+                            
+                            isProcessandoTarefaGeral = false;
+                            document.querySelectorAll('.btn-work').forEach(b => { b.disabled = false; });
+
+                            if (infoTarefas.concluidas >= infoTarefas.totais) {
+                                setTimeout(() => { alert("Missão Cumprida! Capital e comissões alocadas com segurança. Volte amanhã."); window.location.href = 'dashboard.html'; }, 600);
+                            }
+                        }, 400);
+                    }, 1800);
+
+                } else {
+                    if (audioType) audioType.pause(); chart.style.display = 'none';
+                    const data = await res.json();
+                    terminal.innerHTML += `<div class="terminal-line" style="color:var(--alerta);">> [ERRO] ${data.erro}</div>`;
+                    setTimeout(() => {
+                        terminal.style.display = 'none'; desc.style.display = 'block'; btn.style.display = 'block';
+                        btn.innerText = "FALHOU. REPETIR"; btn.style.background = "transparent"; btn.style.border = "1px solid var(--alerta)"; btn.style.color = "var(--alerta)"; card.style.borderColor = 'var(--alerta)';
+                        isProcessandoTarefaGeral = false; document.querySelectorAll('.btn-work').forEach(b => { b.disabled = false; });
+                    }, 2500);
+                }
+            } catch(e) {
+                if (audioType) audioType.pause(); chart.style.display = 'none';
+                terminal.innerHTML += `<div class="terminal-line" style="color:var(--alerta);">> [FALHA DE REDE] Servidor não responde.</div>`;
+                setTimeout(() => { 
+                    terminal.style.display = 'none'; btn.style.display = 'block'; btn.innerText = "REPETIR"; 
+                    isProcessandoTarefaGeral = false; document.querySelectorAll('.btn-work').forEach(b => { b.disabled = false; });
+                }, 2500);
+            }
+        }
+    </script>
+
+    <script>
+    (function() {
+        const isAreaAdmin = window.location.pathname.includes('admin_');
+        const TOKEN_KEY = isAreaAdmin ? 'br_admin_token' : 'br_token';
+        const URL_LOGIN = isAreaAdmin ? 'admin_login.html' : 'login.html';
+        let temporizadorSessao = null;
+
+        function exibirModalExpiracao() {
+            if (document.getElementById('modal-expiracao-seguranca')) return;
+            const html = `
+                <div id="modal-expiracao-seguranca" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div style="background: #0F1219; border: 1px solid #1A202C; border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: dropInModal 0.4s ease forwards;">
+                        <div style="font-size: 40px; color: #EC1A7C; margin-bottom: 15px;">🔒</div>
+                        <h2 style="font-size: 18px; color: #FFF; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 10px;">Sessão Expirada</h2>
+                        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.5;">A sua sessão foi encerrada por medidas de segurança da plataforma.<br>Faça login novamente para continuar.</p>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='${URL_LOGIN}'" style="width: 100%; background: #EC1A7C; color: #FFF; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-size: 13px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(236,26,124,0.3);">Entrar Novamente</button>
+                    </div>
+                </div>
+                <style>@keyframes dropInModal { from { transform: translateY(-20px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function exibirModalManutencao() {
+            if (document.getElementById('modal-manutencao-global')) return;
+            // 🛡️ A BARREIRA NEGRA DA BLACKROCK
+            document.body.innerHTML = ''; 
+            const html = `
+                <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                        <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                        Operação em Andamento
+                    </div>
+                    <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                    <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+                </div>
+                <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        function auditarSessao() {
+            const tokenAtivo = localStorage.getItem(TOKEN_KEY);
+            if (!tokenAtivo && !window.location.pathname.includes('login.html')) {
+                window.location.href = URL_LOGIN; return;
+            }
+            if (tokenAtivo) {
+                try {
+                    const payload = JSON.parse(atob(tokenAtivo.split('.')[1]));
+                    if (Date.now() >= payload.exp * 1000) exibirModalExpiracao();
+                    else {
+                        clearTimeout(temporizadorSessao);
+                        temporizadorSessao = setTimeout(exibirModalExpiracao, (payload.exp * 1000) - Date.now());
+                    }
+                } catch (e) { localStorage.clear(); window.location.href = URL_LOGIN; }
+            }
+        }
+
+        window.addEventListener('load', auditarSessao);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') auditarSessao(); });
+
+        const fetchOriginal = window.fetch;
+        window.fetch = async function() {
+            const resposta = await fetchOriginal.apply(this, arguments);
+            if (resposta.status === 401) exibirModalExpiracao();
+            
+            // 🚀 INTERCETAÇÃO DO MODO MANUTENÇÃO (503)
+            if (resposta.status === 503) {
+                exibirModalManutencao();
+                return new Promise(() => {}); // Mata a promessa, travando a app inteira
+            }
+            return resposta;
+        };
+    })();
+    </script>
+</body>
+</html>

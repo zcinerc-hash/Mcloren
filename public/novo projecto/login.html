@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>BlackRock - Acesso ao Terminal</title>
+    <style>
+        :root {
+            --bg-canvas: #0A0C12;
+            --bg-card: #141721;
+            --borda-nitida: #1A202C;
+            --texto-high: #FFFFFF;
+            --texto-med: #94A3B8;
+            --gradiente-cta: linear-gradient(135deg, #EC1A7C, #4E3FEA);
+            --input-bg: #1A202C;
+            --input-border: #2D3748;
+            --erro: #FF4B4B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-canvas); color: var(--texto-high); display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 20px; }
+
+        .auth-card { background: var(--bg-card); width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; border: 1px solid var(--borda-nitida); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 24px; letter-spacing: 2px; text-transform: uppercase; line-height: 1; }
+        .header h1 span { background: var(--gradiente-cta); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-sub { font-size: 11px; font-weight: 600; letter-spacing: 3px; color: var(--texto-med); margin-top: 5px; text-transform: uppercase; }
+        .header p { color: var(--texto-med); font-size: 12px; margin-top: 15px; font-weight: 700; letter-spacing: 1px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 11px; color: var(--texto-med); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700; }
+        
+        .phone-wrapper { display: flex; align-items: center; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        .phone-wrapper:focus-within { border-color: #4E3FEA; box-shadow: 0 0 0 2px rgba(78, 63, 234, 0.2); }
+        .prefixo { background: rgba(255,255,255,0.05); padding: 14px 12px; font-size: 14px; font-weight: 600; color: var(--texto-high); border-right: 1px solid var(--input-border); display: flex; align-items: center; gap: 6px; }
+        .phone-wrapper input { border: none; background: transparent; width: 100%; padding: 14px; color: white; font-size: 15px; outline: none; }
+        
+        .password-wrapper { position: relative; width: 100%; }
+        .password-wrapper input { width: 100%; padding: 14px; padding-right: 45px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
+        .password-wrapper input:focus { border-color: #4E3FEA; box-shadow: 0 0 0 2px rgba(78, 63, 234, 0.2); }
+        .toggle-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--texto-med); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; transition: 0.2s; }
+        .toggle-icon:hover { color: var(--texto-high); }
+
+        .input-padrao { width: 100%; padding: 14px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-padrao:focus { border-color: #4E3FEA; box-shadow: 0 0 0 2px rgba(78, 63, 234, 0.2); }
+
+        .btn-entrar { background: var(--gradiente-cta); color: white; border: none; width: 100%; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(236, 26, 124, 0.2); transition: 0.3s; }
+        .btn-entrar:active { transform: scale(0.98); }
+        .btn-entrar:disabled { filter: grayscale(1); cursor: not-allowed; }
+
+        .footer-links { text-align: center; margin-top: 25px; }
+        .link { color: var(--texto-med); font-size: 13px; text-decoration: none; display: block; margin-bottom: 10px; transition: 0.2s; }
+        .link:hover { color: white; }
+        .link b { color: #EC1A7C; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--erro); color: white; padding: 12px 25px; border-radius: 50px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+
+    <div class="auth-card">
+        <div class="header">
+            <h1>BLACK<span>ROCK</span></h1>
+            <p class="logo-sub">GESTÃO de ATIVOS</p>
+            <p>CONEXÃO SEGURA AO TERMINAL</p>
+        </div>
+
+        <div class="input-group">
+            <label>Nome do Operador</label>
+            <input type="text" id="nome" class="input-padrao" placeholder="Seu nome completo">
+        </div>
+
+        <div class="input-group">
+            <label>Número de Identificação</label>
+            <div class="phone-wrapper">
+                <div class="prefixo">🇲🇿 +258</div>
+                <input type="tel" id="telefone" placeholder="Ex: 840000000">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Chave de Acesso</label>
+            <div class="password-wrapper">
+                <input type="password" id="senha" placeholder="Sua senha">
+                <div class="toggle-icon" onclick="toggleSenha('senha', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-entrar" onclick="executarLogin()">ENTRAR NO TERMINAL</button>
+
+        <div class="footer-links">
+            <a href="registro.html" class="link">Não tem conta? <b>CRIAR AGORA</b></a>
+        </div>
+    </div>
+
+    <script>
+        const URL_BASE = 'https://blackrock-gest-o.onrender.com';
+        let isProcessando = false;
+
+        function toggleSenha(inputId, element) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                element.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+            } else {
+                input.type = 'password';
+                element.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            }
+        }
+
+        function mostrarErro(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 4000);
+        }
+
+        async function executarLogin() {
+            if (isProcessando) return;
+            
+            const nome = document.getElementById('nome').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const senha = document.getElementById('senha').value;
+
+            if (!nome || !telefone || !senha) return mostrarErro("Preencha todos os campos.");
+
+            const btn = document.querySelector('.btn-entrar');
+            const originalText = btn.innerText;
+            isProcessando = true;
+            btn.innerText = "AUTENTICANDO..."; btn.disabled = true;
+
+            const payload = { nome, telefone, senha };
+
+            try {
+                const res = await fetch(`${URL_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const dados = await res.json();
+
+                // 🛡️ A BARREIRA DA DIRETORIA: O ADMIN NÃO PODE FICAR DE FORA DA MANUTENÇÃO!
+                if (res.status === 503) {
+                    if (dados.usuario && dados.usuario.isAdmin) {
+                        // Se o sistema devolver 503 MAS as credenciais forem do Admin, ele entra!
+                        localStorage.setItem('br_token', dados.token);
+                        localStorage.setItem('br_user', JSON.stringify(dados.usuario));
+                        window.location.href = 'dashboard.html';
+                        return;
+                    } else {
+                        // É um utilizador comum, aciona a tela preta.
+                        exibirModalManutencao();
+                        return;
+                    }
+                }
+
+                if (res.ok && dados.token) {
+                    localStorage.setItem('br_token', dados.token);
+                    localStorage.setItem('br_user', JSON.stringify(dados.usuario || dados.user)); 
+                    window.location.href = 'dashboard.html';
+                } else {
+                    mostrarErro(dados.erro || "Dados de acesso inválidos.");
+                    isProcessando = false; btn.innerText = originalText; btn.disabled = false;
+                }
+            } catch (e) {
+                mostrarErro("Erro de conexão com o terminal.");
+                isProcessando = false; btn.innerText = originalText; btn.disabled = false;
+             } 
+        }
+    </script>
+    <script>
+    function exibirModalManutencao() {
+        if (document.getElementById('modal-manutencao-global')) return;
+        document.body.innerHTML = ''; 
+        const html = `
+            <div id="modal-manutencao-global" style="position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background: #05070A; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+                <div style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, rgba(236,26,124,0.1), rgba(78,63,234,0.1)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <h1 style="font-size: 22px; color: #FFF; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Manutenção Global</h1>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(246, 224, 94, 0.1); border: 1px solid rgba(246, 224, 94, 0.2); color: #F6E05E; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px;">
+                    <span style="width: 8px; height: 8px; background: #F6E05E; border-radius: 50%; box-shadow: 0 0 10px #F6E05E; animation: pulseManut 1.5s infinite;"></span>
+                    Operação em Andamento
+                </div>
+                <p style="font-size: 14px; color: #94A3B8; max-width: 400px; line-height: 1.6; margin-bottom: 20px;">A plataforma encontra-se temporariamente em manutenção programada.</p>
+                <p style="font-size: 12px; color: #64748B; max-width: 350px; line-height: 1.5;">Estamos realizando melhorias estruturais para oferecer mais estabilidade, segurança e desempenho.<br><br>Por favor, aguarde o sinal da Diretoria.</p>
+            </div>
+            <style>@keyframes pulseManut { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</style>
+        `;
+        document.body.insertAdjacentHTML('beforeend', html);
+    }
+    </script>
+</body>
+</html>

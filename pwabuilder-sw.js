@@ -44,8 +44,7 @@ self.addEventListener('fetch', (event) => {
 
     // ⚠️ Não intercepta login nem chamadas externas
     if (
-      url.pathname.includes('/auth.html') ||
-      url.hostname.includes('firebaseapp.com') ||
+           url.hostname.includes('firebaseapp.com') ||
       url.hostname.includes('googleapis.com') ||
       url.hostname.includes('gstatic.com')
     ) {

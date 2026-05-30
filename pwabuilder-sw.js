@@ -1,6 +1,6 @@
 // ─── McLaren Service Worker com suporte offline e preload ───
 
-const CACHE = "mclaren-cache-v2"; // incrementa versão para invalidar cache antigo
+const CACHE = "mclaren-cache-v3"; // incrementa versão para invalidar cache antigo
 const offlineFallbackPage = "/offline.html";
 
 // ─── Mensagem para ativar imediatamente ───
@@ -29,19 +29,15 @@ self.addEventListener('activate', (event) => {
       await self.registration.navigationPreload.enable();
     }
 
-    // limpa caches antigos
+    // limpa todos os caches antigos
     const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames
-        .filter(name => name !== CACHE)
-        .map(name => caches.delete(name))
-    );
+    await Promise.all(cacheNames.map(name => caches.delete(name)));
 
     await self.clients.claim();
   })());
 });
 
-// ─── Intercepta navegações (network-first) ───
+// ─── Intercepta navegações (network-first sem cache de HTML) ───
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     const url = new URL(event.request.url);
@@ -58,18 +54,11 @@ self.addEventListener('fetch', (event) => {
 
     event.respondWith((async () => {
       try {
-        // tenta usar preload
         const preloadResp = await event.preloadResponse;
         if (preloadResp) return preloadResp;
 
-        // busca sempre da rede primeiro
-        const networkResp = await fetch(event.request);
-
-        // atualiza cache com versão nova
-        const cache = await caches.open(CACHE);
-        cache.put(event.request, networkResp.clone());
-
-        return networkResp;
+        // busca sempre da rede primeiro, sem cachear HTML
+        return await fetch(event.request);
       } catch (error) {
         console.warn('[SW] Network failed, showing offline page:', error);
         const cache = await caches.open(CACHE);
